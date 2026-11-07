@@ -11,13 +11,18 @@
           ((c.order : ℝ) - 1) * c.witnessUpper - c.threshold - trialSourceSmallMass c X))
 
 and `TrialSourceDomain` (`:25-29`) restricts to `Σ i, trialCellIndex (X i) ∈ [p.first,p.last]`.
-So a low row's integrand is an UNTILTED fragment-law mass times a single
-exponential `exp (s * (affine in the mass))` with `s = c.slope > 0`
+Note `trialTotalMass X - trialSourceSmallMass c X` is the mass carried ABOVE
+`c.low` (`trialSourceSmallMass` is the part below it), so the exponent is
+`s * (massAboveLow + (order-1)*witnessUpper - threshold)` — monotone increasing
+in the cell-sum coordinate that indexes the window.  So a low row's integrand is
+an UNTILTED fragment-law count times a single exponential, with `s = c.slope > 0`
 (`SourceData182.lean`: 94 covers carry `kind := .low`; all 94 have `slope ≠ 0`,
 inner block 64, outer block 30).
 
 The D1/D1c exp-sandwich existed only to produce `E[e^{-s*mass}]`, i.e. to
-*approximate* the tilted mass by an MGF. On `(0, zeta)` the fragment density is
+*approximate* the tilted mass by an MGF. Its argument `m` is bounded above by
+`last*hq` on a cell (the frozen generator's own maximiser), which is exactly the
+direction the lemma below needs. On `(0, zeta)` the fragment density is
 exactly constant (`EnvLemmas.cell_integral_eq_const`, `A = e^{-γ}/zeta`), so the
 tilted cell mass has a closed form and no MGF is needed:
 

@@ -48,7 +48,12 @@ Three consequences, all mechanical:
   convention chosen on top of it.
 
 Hence a density bound is compared per cell, and the whole-window statement is
-*derived* from it. That derivation is now proved, with the factor explicit:
+*derived* from it. One precision about "which cell": the window lives in the
+**cell-sum** coordinate `r` (dimension 38 for every inner cover), so the operative
+density is the one for the 38-fold law — D2's `D = 0.29586259` — not the
+single-coordinate `d = 1` law of D1c's "fine level". Both are per-cell readings;
+only the density differs, and `HasLocalBound` is uniform in `(a, h)` for either.
+That derivation is now proved, with the factor explicit:
 
 ```lean
 window_measure_le_cells :   -- Pg182D2LowRows
