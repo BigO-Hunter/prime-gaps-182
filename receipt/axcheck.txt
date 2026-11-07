@@ -1,0 +1,3 @@
+'PrimeGap182D1.cell_probability_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+'PrimeGap182D1.mgf_fragmentLaw_le_finset' depends on axioms: [propext, Classical.choice, Quot.sound]
+'PrimeGap182D1.mass_finiteFragments' depends on axioms: [propext, Classical.choice, Quot.sound]
