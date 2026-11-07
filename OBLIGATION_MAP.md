@@ -102,7 +102,7 @@ Neither is analytic; both are now stated in Lean, and everything between them an
 | **the modulus identity** `‖φ_ζ(t)‖ = exp(-Cin (t ζ))` | **PROVED** (D4) | `re_charExponent`, `norm_exp_neg_charExponent`, `norm_charFun_exp_exponent`, `integral_norm_charFun_pow` |
 | **the truncation chain** | **PROVED** (D4) | `integral_norm_charFun_pow_le`, `hasLocalBound_convPow_of_certified`, `cell_measure_le_hq_of_certified_integral` |
 | **the margin** `0.39446770 ≤ 4/π` | **PROVED** (D4, `norm_num`) | `certifiedIntegralBound_le_four_div_pi` (3.23×) |
-| (N1) the Poisson bridge `charFun (fragment mass law) t = exp(-charExponent t ζ)` | **prefix PROVED + one named residual** (`Pg182D2/CharFunBridge.lean`): the Bochner mixture `integral_finitePoissonLaw_normalized`, the analytic core `poisson_integral_pow`, the mass split `exp_mass_weightedEmpirical`, the interface `charFun_mass_map`.  Residual = the **band assembly** over `k : ℤ`, named as the Lean prop `N1Residual` / `N1ResidualBand` |
+| (N1) the Poisson bridge `charFun (fragment mass law) t = exp(-charExponent t ζ)` | **prefix PROVED + step 1 PROVED (N3b) + one named residual** (`Pg182D2/CharFunBridge.lean`, `Pg182D2/BandStep1.lean`): the Bochner mixture `integral_finitePoissonLaw_normalized`, the analytic core `poisson_integral_pow`, the mass split `exp_mass_weightedEmpirical`, the interface `charFun_mass_map`, and **the single band itself** `n1ResidualBand_of_nonneg` (with the a.e.-nonnegativity hypothesis the statement genuinely needs — `N1ResidualBand` was false as first stated).  Residual = the **band assembly** over `k : ℤ` = `N1Residual`, now mechanical (§7.3) |
 | **the structural `Cin` bounds** (monotone, `Cin π ≥ 1`, `Cin ≥ x²/π²` on `[0,π]`, `Cin (2x) ≥ Cin x + 1/4`, `Cin (4·2^k) ≥ 1 + k/4`) | **PROVED** (D4) | `Pg182D2/CinBounds.lean`, 14 theorems |
 | (N2) `∀ R, ∫_0^R e^{-38 Cin} ≤ B` with `B ≤ 4/π` | **PROVED (lane N1N2)** — `∫_0^R e^{-38 Cin} ≤ 38/39 < 4/π` for every `R` | `Pg182D2/HeadTail.lean`: head (Jordan + `integral_gaussian_Ioi`) + mid (`Cin π ≥ 1`) + dyadic tail (`Cin_dyadic` + geometric block sum), `integral_cinDecay_le_four_div_pi` |
 
@@ -160,6 +160,15 @@ Quot.sound]` only.
 including `hasLocalBound_of_charFun_bound`, `hasLocalBound_one_div_zeta`,
 `cell_measure_le_hq_of_charFun`: `[propext, Classical.choice, Quot.sound]` only.
 
+`receipt/axcheck_bandstep1.txt` (**N3b**, 4 theorems — `n1ResidualBand_of_nonneg`,
+`n1ResidualBand_holds`, `ae_nonneg_normalize_of_ne_zero`, `ae_nonneg_cappedDyadicIntensity`) and
+`receipt/axcheck_infinitepiproduct.txt` (**N3, extended N3b**, 5 theorems — the finite-subset case,
+the a.e. summability, the generalized `_of_norm_le` theorem, the `≤ 1` corollary, the equation
+form): `[propext, Classical.choice, Quot.sound]` only.
+
+Aggregate for the lane: **11 receipt files, 116 declarations, every one on
+`[propext, Classical.choice, Quot.sound]`; zero `sorryAx`, zero `native_decide`.**
+
 `receipt/axcheck_lowrows.txt` — `tilted_cell_le`, `tilt_cancels`,
 `untilted_cell_le_hq`, `window_measure_le_cells`, `inner_window_inside_period`,
 `cellCount_mul_mesh`, `inner_window_top_lt_cellCount_mul_mesh`, plus D2's
@@ -185,4 +194,80 @@ Two consequences for the table above:
 * `N1ResidualBand` as stated is **false** and needs one more hypothesis (`∀ᵐ u ∂μ.normalize, 0 ≤ u`):
   `weightedEmpirical` truncates negative atoms via `toNNReal`, so for `μ = δ_{-1}` the LHS is `1`
   while the RHS is `exp (e^{-It} - 1)`.  Every `cappedDyadicIntensity ζ k` satisfies it.
-  The corrected step 1 is reduced to a single coercion in `wip/BAND_STEP1_WIP.lean`.
+  The corrected step 1 is now LANDED in `Pg182D2/BandStep1.lean` (§7) — the coercion that blocked
+  lane N3 is solved, and the claim "every `cappedDyadicIntensity` satisfies it" is corrected there
+  too: an *empty* band is the zero measure, whose `normalize` is `δ (Classical.choice ‹Nonempty ℝ›)`
+  by Mathlib's definition, so the hypothesis is discharged for **nonzero** bands
+  (`ae_nonneg_normalize_of_ne_zero` ∘ `ae_nonneg_cappedDyadicIntensity`).
+
+## 7. N3b update — step 1 landed, the generalized lemma is PR-ready, the residual is MECHANICAL
+
+Lane N3b (`N3B_REPORT.md`), three commits on top of N3.
+
+### 7.1 Step 1 is a theorem, and it is the *corrected* statement
+
+`Pg182D2/BandStep1.lean`:
+
+| theorem | content |
+|---|---|
+| `n1ResidualBand_of_nonneg` | `charFun ((finitePoissonLaw μ).map mass) t = exp (∫ u, (e^{I t u} - 1) ∂μ)` given `∀ᵐ u ∂μ.normalize, 0 ≤ u` |
+| `n1ResidualBand_holds` | a proof term of the corrected `N1ResidualBand` — the proposition stops being a named input |
+| `ae_nonneg_normalize_of_ne_zero` | the hypothesis transfers to `μ.normalize` for `μ ≠ 0` (normalize is a positive scalar multiple) |
+| `ae_nonneg_cappedDyadicIntensity` | a dyadic band lives on `(0, ∞)` |
+
+The coercion that stopped lane N3: `FiniteMeasure.self_eq_mass_mul_normalize` is an `ℝ≥0`
+statement, both measures' `coeFn` are `ℝ≥0∞`-valued, and
+`FiniteMeasure.ennreal_coeFn_eq_coeFn_toMeasure` fires **only in the `←` direction** here (on the
+`Measure` side `↑μ s` is already `Measure.coeFn`); after it, `ENNReal.coe_mul` closes the goal.
+Same for `ProbabilityMeasure`.
+
+One correction to the campaign's own claim, made in Lean and in prose: **not every**
+`cappedDyadicIntensity ζ k` satisfies the hypothesis. For an *empty* band `μ = 0`, and Mathlib's
+`FiniteMeasure.normalize 0 = δ (Classical.choice ‹Nonempty ℝ›)` — a point mass at an unspecified
+real, with no provable sign. Empty bands need no hypothesis because their identity is trivial
+(`finitePoissonLaw 0 = δ_0`, so both sides are `1`), so the assembly quantifies over the nonzero
+bands only. `cappedDyadicIntensity ζ k ≠ 0` under `2^k < ζ` is the one bridge not yet written.
+
+### 7.2 The PR lemma is generalized
+
+`Pg182D2/InfinitePiProduct.lean` now proves the head theorem with a **norm bound family**
+`‖f i x‖ ≤ C i`, `C i ≥ 0`, `∑ i, ‖C i - 1‖` summable, dominating by
+`∏ i ∈ s, C i ≤ exp (∑ i ∈ s, (C i - 1)) ≤ exp (∑' i, ‖C i - 1‖)`; the `≤ 1` form is kept,
+statement unchanged, as the `C ≡ 1` corollary the map consumes. PR form applied: licence header
+(`Copyright (c) 2026 darkhipo`, Apache 2.0), module/`public import`/`public section`, docstrings,
+`autoImplicit false`. `PR_BODY.md` regenerated; the "reviewed by a human Lean expert" box is
+UNCHECKED.
+
+### 7.3 The exact remaining steps of the 182 data side
+
+Both remaining steps consume theorems that exist. Nothing here is new analysis; the only
+non-elementary ingredient is `HasSum.exp`, which is in Mathlib.
+
+**Step 2 — the band product** (`charFun` of `fragmentLaw` is the product of the band charFuns):
+
+1. `fragmentLaw ζ = Measure.infinitePi (fun k : ℤ => finitePoissonLaw (cappedDyadicIntensity ζ k))`
+   (definitional, `Pg182D1/Law.lean:85`) and the evaluated coordinate mass is
+   `X.mass → ∏' k, exp (I (X_k.mass * t))` — `Complex.exp_sum` + `hasProd_integral_tprod_infinitePi`
+   with `f k := fun X => exp (I (X.mass * t))` and `C ≡ 1` (`‖f k X‖ = 1` exactly).
+2. `HasSum.exp` on the exponent family `E k = ∫ u, (e^{I t u} - 1) ∂(band k)`:
+   `HasSum E a ⟹ HasProd (fun k => exp (E k)) (exp a)` — one application, lemma exists.
+3. **the bounded estimate** (the only real work): discharge the product lemma's hypothesis
+   `∑' k, ∫⁻ X, ‖exp (I (X.mass * t)) - 1‖ ∂(finitePoissonLaw ν_k) ≠ ⊤`.
+   Route: `‖e^{i a} - 1‖ ≤ |a|`, so the `∫⁻` is `≤ |t| * ∫⁻ X, X.mass ∂(Poisson ν_k)`; the Poisson
+   first moment is the **mass integral** (4) giving `= |t| * ν_k.mass`; then
+   `∑ k, ν_k.mass = ζ < ∞` is `sum_cappedDyadicIntensity` (`Pg182D1/Support.lean:146`).
+4. **the mass integral**: `∫ X, X.mass ∂(finitePoissonLaw μ) = μ.mass` — mechanical from
+   `integral_finitePoissonLaw_normalized` with `F = mass`, `∫ x : Fin n, ∑ i, x i ∂π(μ.normalize) =
+   n * ∫ u, u ∂μ.normalize` (`integral_fintype_prod_eq_prod`), and `poisson_integral_pow`-style
+   first-moment summation (`∑' n, n * m^n/n! * e^{-m} = m`).
+
+**Step 3 — the join** `∑'_k ∫_{band k} = ∫_0^ζ` for `(e^{I t u} - 1)`:
+
+5. `∫ u, (e^{I t u} - 1) ∂(fragment intensity)` is a `tsum` over the bands:
+   `integral_iUnion_ae` + `dyadic_bands_disjoint` + `sum_cappedDyadicIntensity`
+   (`Pg182D1/Support.lean:131,146`) + `integrable_charExponent_integrand`
+   (`Pg182D2/CharFunMod.lean:92`), then `charExponent` unfolds to `∫_0^ζ`.
+
+That is the whole remainder: **4 mechanical obligations, no named analytic input.** With them, the
+`(N1)` row of §1 becomes a theorem and the data side's named-input count is **zero** (Katz, FKM and
+Type III are campaign-level deep inputs, not data-side obligations — §3 of `N1N2_REPORT.md`).

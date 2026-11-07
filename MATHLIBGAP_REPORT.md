@@ -58,6 +58,14 @@ nonnegative integrands through `lintegral_tsum` (this is how `Pg182D1/Support.le
 not nonnegative, so monotone convergence does not apply, and the honest proof needs a limit of
 finite products with a dominator — which is what §1 supplies.
 
+> **UPDATE (lane N3b, supersedes this section's status):** the corrected step 1 is **LANDED**
+> (`Pg182D2/BandStep1.lean`, `n1ResidualBand_of_nonneg` / `n1ResidualBand_holds`), the coercion
+> described below is solved, and the `‖f i x‖ ≤ C i` generalization of §1 is **DONE**
+> (`hasProd_integral_tprod_infinitePi_of_norm_le`). See `N3B_REPORT.md` and `OBLIGATION_MAP.md` §7.
+> One further correction, made in that lane: an **empty** band is the zero measure, whose
+> `normalize` is `δ (Classical.choice ‹Nonempty ℝ›)` — so not *every* `cappedDyadicIntensity`
+> satisfies the new hypothesis, only the nonzero ones (empty bands are trivial in the assembly).
+
 ## 3. A correction to the campaign's step 1 (`N1ResidualBand`)
 
 **`N1ResidualBand` as stated in `CharFunBridge.lean` is FALSE.**  It quantifies over *all*
