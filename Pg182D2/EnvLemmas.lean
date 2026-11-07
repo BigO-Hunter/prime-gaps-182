@@ -145,4 +145,51 @@ theorem cell_mass_lt_hq (f : ℝ → ℝ) (A : ℝ) (n : ℕ)
     ∫ x in ((n : ℝ) * mesh)..((n : ℝ) * mesh + mesh), f x < hq := by
   refine lt_of_le_of_lt (cell_mass_le_fine_env f A n hA hint hconst) fine_env_lt_hq
 
+
+/-! ### D2-LEDGER: the contract shape shared by every D2 route
+
+Every route in ROUTE2.md (exact convolution, Bernstein/Bennett, Berry–Esseen,
+local limit) bottoms out in the same object: a *local density bound* `D` on the
+law, i.e. `mu (Ioc a (a+h)) <= D * h` for every interval of width `h`.  This
+structure records it, and the theorem below is the whole D1-data ledger: with
+`D <= 1/zeta` the frozen uniform per-cell mass `hq = mesh` dominates the envelope
+at EVERY cell.
+-/
+
+/-- A law whose mass on any interval of width `h` is at most `D * h`. -/
+structure HasLocalBound (mu : Measure ℝ) (D : ℝ) : Prop where
+  nonneg : 0 ≤ D
+  bound : ∀ a h : ℝ, 0 < h → mu (Set.Ioc a (a + h)) ≤ ENNReal.ofReal (D * h)
+
+/-- **D2-LEDGER**: `D <= 1/zeta` gives the per-cell envelope `mesh/zeta <= hq`
+for every cell, i.e. the D1-data contract `frozen >= env` holds uniformly. -/
+theorem cell_measure_le_hq (mu : Measure ℝ) (hb : HasLocalBound mu (1 / zeta)) (n : ℕ) :
+    mu (Set.Ioc ((n : ℝ) * mesh) ((n : ℝ) * mesh + mesh)) ≤ ENNReal.ofReal hq := by
+  have h1 := hb.bound ((n : ℝ) * mesh) mesh mesh_pos
+  refine le_trans h1 (ENNReal.ofReal_le_ofReal ?_)
+  rw [mesh_eq_hq]
+  calc (1 / zeta) * mesh ≤ (1 / zeta) * mesh := le_rfl
+    _ = mesh / zeta := by ring
+    _ ≤ hq := fine_env_lt_hq.le
+
+/-- The strictly-tighter form: the envelope is *strictly* inside `hq`. -/
+theorem cell_measure_lt_hq (mu : Measure ℝ) (hb : HasLocalBound mu (1 / zeta)) (n : ℕ) :
+    mu (Set.Ioc ((n : ℝ) * mesh) ((n : ℝ) * mesh + mesh)) < ENNReal.ofReal hq := by
+  have h1 := hb.bound ((n : ℝ) * mesh) mesh mesh_pos
+  have hpos : (0:ℝ) < mesh / zeta := div_pos mesh_pos zeta_pos
+  calc mu (Set.Ioc ((n : ℝ) * mesh) ((n : ℝ) * mesh + mesh))
+      ≤ ENNReal.ofReal ((1 / zeta) * mesh) := h1
+    _ = ENNReal.ofReal (mesh / zeta) := by rw [one_div_mul_eq_div]
+    _ < ENNReal.ofReal hq := (ENNReal.ofReal_lt_ofReal_iff hq_pos).mpr fine_env_lt_hq
+
+/-- The sum-level instance: `D_38 = 0.29586259 <= 1` is the certified upper bound
+of the Esseen/Fejér constant (receipt/receipt.py); it is still inside `hq`. -/
+theorem sum_env_lt_hq :
+    (0.29586259 : ℝ) * mesh < hq := by
+  rw [mesh_eq_hq]
+  have : (0.29586259 : ℝ) < 1 := by norm_num
+  calc (0.29586259 : ℝ) * mesh < 1 * mesh := by
+        apply mul_lt_mul_of_pos_right this mesh_pos
+    _ = mesh := one_mul _
+
 end PrimeGap182D2

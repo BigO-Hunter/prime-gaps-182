@@ -4,3 +4,6 @@
 'PrimeGap182D2.cell_integral_eq_const' depends on axioms: [propext, Classical.choice, Quot.sound]
 'PrimeGap182D2.cell_mass_le_fine_env' depends on axioms: [propext, Classical.choice, Quot.sound]
 'PrimeGap182D2.cell_mass_lt_hq' depends on axioms: [propext, Classical.choice, Quot.sound]
+'PrimeGap182D2.cell_measure_le_hq' depends on axioms: [propext, Classical.choice, Quot.sound]
+'PrimeGap182D2.cell_measure_lt_hq' depends on axioms: [propext, Classical.choice, Quot.sound]
+'PrimeGap182D2.sum_env_lt_hq' depends on axioms: [propext, Classical.choice, Quot.sound]

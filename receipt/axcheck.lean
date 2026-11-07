@@ -5,3 +5,6 @@ import Pg182D2.EnvLemmas
 #print axioms PrimeGap182D2.cell_integral_eq_const
 #print axioms PrimeGap182D2.cell_mass_le_fine_env
 #print axioms PrimeGap182D2.cell_mass_lt_hq
+#print axioms PrimeGap182D2.cell_measure_le_hq
+#print axioms PrimeGap182D2.cell_measure_lt_hq
+#print axioms PrimeGap182D2.sum_env_lt_hq
