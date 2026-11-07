@@ -1,0 +1,25 @@
+Lane C0: kernel-clean row-77 certificate + reusable bridge lemmas (pg182)
+
+First rankTwo inner row end-to-end in Lean (Lean index 77 = G3 bin 13,
+smallest of the 68 rankTwo inner rows of the bigospeedrun 182 certificate).
+
+- Pg182C0/Bridges.lean: verbatim replica of the trial/source-cover surface
+  (TrialData182/PhysicalTrial182/SourceKernels182, hash-referenced) + the
+  reusable bridge family:
+  B1 integral_le_of_pointwise_le + integral_run_table (partition majorization),
+  B3 countMeasure_le_mass_mul / countMeasure_real_le_mass_div (count-measure
+  domination) + rankTwo_kernel_le_count (kernel dominated by its q-window).
+  Physical-law primitives (fragmentLaw, trialStepFunction) stand opaque; the
+  frozen envelope hypothesis carries their analytic content.
+- Pg182C0/RowCert.lean: cover77 + rowFaceUpper77 literals byte-equal to the
+  frozen payload; NLB partial-sum normalizer lower bound (kernel-proved);
+  row_77 theorem kernel-proved modulo ONE named hypothesis (hEnv77, the
+  repo's flagged algorithm-to-integral gap); arith77 gives the exact
+  required envelope strength faceUpper*NLB/39.
+- Cross-check: Lean literal == coverage.json inner[77] == receipt G3/comp13
+  upper, byte-equal (python-flint Fraction), receipt in row77_receipt_component.json.
+
+`#print axioms` on all eight exported theorems: propext, Classical.choice,
+Quot.sound only. No native_decide, no sorry, no new axioms.
+Toolchain v4.34.1, Mathlib via ~/bigo-campaign/staircase-port/.lake/packages
+symlink; LAKE_JOBS=1, LEAN_NUM_THREADS=1, detached builds with retry.
