@@ -55,8 +55,8 @@ density exactly constant the cell integral is available in closed form, so the
 sandwich buys nothing and is not used.  It remains the fallback if the
 constant-density fact is ever lost (e.g. if a row's window leaves `(0, zeta)`).
 
-Measured window placement (`num/low_scan.py`, 64/64 rows): every low row's
-source window lies inside the single period `(0, zeta]` — the largest window top
+Measured window placement (`num/window_scan.py`, from the certificate source):
+every one of the 137 inner rows' source windows lies inside `(0, zeta]` — the largest window top
 is `2405/10000 = 0.2405 < zeta = 1.05096`. That is `D2B-WINDOW` below, and it is
 the hypothesis that makes the constant-density fact applicable at every cell a
 low row touches.

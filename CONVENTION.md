@@ -56,7 +56,7 @@ only the density differs, and `HasLocalBound` is uniform in `(a, h)` for either.
 That derivation is now proved, with the factor explicit:
 
 ```lean
-window_measure_le_cells :   -- Pg182D2LowRows
+window_measure_le_cells :   -- Pg182D2/LowRows.lean
   (∀ n, μ (Ioc (n*m) (n*m + m)) ≤ ofReal (D*m)) →
   Σ_{n<N} μ (Ioc (n*m) (n*m + m)) ≤ ofReal (N * D * m)
 ```
