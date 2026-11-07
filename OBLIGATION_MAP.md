@@ -166,3 +166,23 @@ including `hasLocalBound_of_charFun_bound`, `hasLocalBound_one_div_zeta`,
 `fine_env_lt_hq`, `cell_measure_le_hq`: all on
 **[propext, Classical.choice, Quot.sound]** only. No `sorryAx`, no
 `native_decide`, no new axioms.
+
+## 6. N3 update — the Mathlib gap is closed, the assembly is what remains
+
+The residual described in §4 as "blocked on the Bochner `infinitePi` product-integral" is no longer
+blocked at the Mathlib level: `Pg182D2/InfinitePiProduct.lean` (lane N3) proves
+
+    ∫ x, ∏' i, f i (x i) ∂(Measure.infinitePi μ) = ∏' i, ∫ x, f i x ∂(μ i)
+
+for countable `ι`, probability measures `μ i`, and `ℂ`-valued `f i` with `‖f i x‖ ≤ 1` and
+`∑ i, ∫⁻ x, ‖f i x - 1‖` finite (all four theorems on `[propext, Classical.choice, Quot.sound]`).
+See `MATHLIBGAP_REPORT.md` and the PR draft `PR_BODY.md`.
+
+Two consequences for the table above:
+
+* (N1) is still a named input — steps 1 and 3 of the band assembly are not landed — but **no
+  Mathlib-level obstruction remains anywhere on the data side**.
+* `N1ResidualBand` as stated is **false** and needs one more hypothesis (`∀ᵐ u ∂μ.normalize, 0 ≤ u`):
+  `weightedEmpirical` truncates negative atoms via `toNNReal`, so for `μ = δ_{-1}` the LHS is `1`
+  while the RHS is `exp (e^{-It} - 1)`.  Every `cappedDyadicIntensity ζ k` satisfies it.
+  The corrected step 1 is reduced to a single coercion in `wip/BAND_STEP1_WIP.lean`.
