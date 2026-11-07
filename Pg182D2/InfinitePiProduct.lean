@@ -1,12 +1,15 @@
 /-
-Copyright (c) 2026 ...
+Copyright (c) 2026 darkhipo. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
+Authors: darkhipo
 -/
-import Mathlib.Analysis.SpecialFunctions.Log.Summable
-import Mathlib.MeasureTheory.Integral.DominatedConvergence
-import Mathlib.MeasureTheory.Integral.Lebesgue.Map
-import Mathlib.MeasureTheory.Integral.Pi
-import Mathlib.Probability.ProductMeasure
+module
+
+public import Mathlib.Analysis.SpecialFunctions.Log.Summable
+public import Mathlib.MeasureTheory.Integral.DominatedConvergence
+public import Mathlib.MeasureTheory.Integral.Lebesgue.Map
+public import Mathlib.MeasureTheory.Integral.Pi
+public import Mathlib.Probability.ProductMeasure
 
 /-!
 # Integration of product families over `Measure.infinitePi`
@@ -46,6 +49,8 @@ noncomputable section
 
 open MeasureTheory Filter
 open scoped ENNReal NNReal Topology BigOperators
+
+public section
 
 namespace MeasureTheory
 
