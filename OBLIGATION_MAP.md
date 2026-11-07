@@ -1,4 +1,4 @@
-# OBLIGATION_MAP.md — the 262 obligations, definitive counts (Lane D2b)
+# OBLIGATION_MAP.md — the 262 obligations, definitive counts (Lane D2b; data side finalised by N1N2)
 
 Supersedes `pg182-d1/OBLIGATION_MAP.md` on the count table and on the low-row
 class. Source of every count here: **the certificate source itself**,
@@ -102,20 +102,56 @@ Neither is analytic; both are now stated in Lean, and everything between them an
 | **the modulus identity** `‖φ_ζ(t)‖ = exp(-Cin (t ζ))` | **PROVED** (D4) | `re_charExponent`, `norm_exp_neg_charExponent`, `norm_charFun_exp_exponent`, `integral_norm_charFun_pow` |
 | **the truncation chain** | **PROVED** (D4) | `integral_norm_charFun_pow_le`, `hasLocalBound_convPow_of_certified`, `cell_measure_le_hq_of_certified_integral` |
 | **the margin** `0.39446770 ≤ 4/π` | **PROVED** (D4, `norm_num`) | `certifiedIntegralBound_le_four_div_pi` (3.23×) |
-| (N1) the Poisson bridge `charFun (fragment mass law) t = exp(-charExponent t ζ)` | **named** | the hypothesis of `hasLocalBound_convPow_of_certified`; ℂ/Bochner version of `Pg182D1/Support.lean:220` |
+| (N1) the Poisson bridge `charFun (fragment mass law) t = exp(-charExponent t ζ)` | **prefix PROVED + one named residual** (`Pg182D2/CharFunBridge.lean`): the Bochner mixture `integral_finitePoissonLaw_normalized`, the analytic core `poisson_integral_pow`, the mass split `exp_mass_weightedEmpirical`, the interface `charFun_mass_map`.  Residual = the **band assembly** over `k : ℤ`, named as the Lean prop `N1Residual` / `N1ResidualBand` |
 | **the structural `Cin` bounds** (monotone, `Cin π ≥ 1`, `Cin ≥ x²/π²` on `[0,π]`, `Cin (2x) ≥ Cin x + 1/4`, `Cin (4·2^k) ≥ 1 + k/4`) | **PROVED** (D4) | `Pg182D2/CinBounds.lean`, 14 theorems |
-| (N2) `∀ R, ∫_0^R e^{-38 Cin} ≤ B` with `B ≤ 4/π` | **named** (structural half proved) | likewise; `hasLocalBound_convPow_of_integral_le` takes ANY such `B` |
+| (N2) `∀ R, ∫_0^R e^{-38 Cin} ≤ B` with `B ≤ 4/π` | **PROVED (lane N1N2)** — `∫_0^R e^{-38 Cin} ≤ 38/39 < 4/π` for every `R` | `Pg182D2/HeadTail.lean`: head (Jordan + `integral_gaussian_Ioi`) + mid (`Cin π ≥ 1`) + dyadic tail (`Cin_dyadic` + geometric block sum), `integral_cinDecay_le_four_div_pi` |
 
-So the ledger at `d = 38` reads: `(N1) ∧ (N2) ⇒ HasLocalBound (μ^{*38}) (1/ζ) ⇒ cell mass ≤ hq`,
-with `hq` reached by proved theorems only.  `FINALSET_REPORT.md` §3 gives the exact remaining
-proof obligations (the ℂ Poisson series with Bochner integrals; the integral bound by
-transcription of the receipt's rationals or, since the margin is `4/π = 1.27324`, by the
-elementary Jordan + Gaussian + dyadic-doubling chain with `≈ 0.4517 ≤ 1 ≤ 4/π`).
+So the ledger at `d = 38` reads: `(N1) ⇒ HasLocalBound (μ^{*38}) (1/ζ) ⇒ cell mass ≤ hq`,
+with `hq` reached by proved theorems only — and (N2) is no longer on the left-hand side:
+
+```lean
+hasLocalBound_convPow_of_charFun  : (∀ t, charFun μ t = exp (-(charExponent t ζ))) →
+    HasLocalBound (convPow μ 38) (1 / zeta)                  -- Pg182D2/HeadTail.lean
+cell_measure_le_hq_of_charFun'    : ... → cell mass ≤ hq      -- likewise
+```
+
+**The FINAL named-input list of the 182 data side (after N1N2).**
+
+| # | input | status |
+|---|---|---|
+| 1 | **(N1)** the fragment-law charFun identity | prefix proved (`CharFunBridge.lean`); residual = the band assembly over `k : ℤ` |
+| — | ~~(N2) the certified integral~~ | **CLOSED** — `Pg182D2/HeadTail.lean`, `38/39 < 4/π` |
+
+The residual's exact blocker is a Mathlib gap, stated in `CharFunBridge.lean` and
+`N1N2_REPORT.md` §2: *no Bochner analogue of "the integral of a product family over
+`Measure.infinitePi` is the product of the integrals"* (finite index:
+`integral_fintype_prod_eq_prod`; nonnegative `∫⁻` index: `lintegral_fragment_sum`).  Three
+remaining steps, each named, none needing new mathematics: single band (from the proved
+mixture + `poisson_integral_pow`), band product (the gap, plus `HasSum.exp`), and the join
+`Σ_k ∫_{band k} = ∫_0^ζ` (available: `integral_iUnion_ae` + `integrable_charExponent_integrand`).
+
+**Campaign-level deep inputs** (not on the data side, not Lean-reachable today):
+
+* **Katz** — `|Kl₃(c)| ≤ 3`, raw rank-four `≤ 4p√p` (Katz Thm 4.1.1; Deligne purity).
+* **FKM** — two-Kloosterman correlation `≤ 8p√p` (Fouvry–Kowalski–Michel Prop 2).
+* **Type III** — `TypeIII.LocalFourierHypothesis` (no closed proof anywhere).
+* **Deduction** — the tuple/admissibility bound-from-tuple step (in `formal/`, romyar1).
+
+So the campaign's final statement is **"182 certified given N1's band assembly + Katz + FKM +
+Type III"** — the analytic-support half is empty: no smoothing lemma, no integral estimate,
+no modulus computation, no `Cin` bound left as an assumption.
 The `d = 1` level remains out of scope as a smoothing input: `∫_0^∞ ‖φ_1‖ = ∞` there
 (`e^{-Cin} → e^{-γ}/(t ζ)`), the measured 5.724 hq, and R1's exact-convolution density
 constancy is what covers it.
 
 ## 5. Axcheck
+
+`receipt/axcheck_headtail.txt` (**N1N2**, 15 theorems — the whole `∫_0^R e^{-38 Cin} ≤ 4/π`
+assembly including `integral_exp_neg_Cin_le_four_div_pi`, `hasLocalBound_convPow_of_charFun`,
+`cell_measure_le_hq_of_charFun'`) and `receipt/axcheck_charfunbridge.txt` (**N1N2**, 7
+theorems — `integral_finitePoissonLaw_normalized`, `poisson_integral_pow`,
+`exp_mass_weightedEmpirical`, `charFun_mass_map`, …): `[propext, Classical.choice,
+Quot.sound]` only.
 
 `receipt/axcheck_charfunmod.txt` (D4, 9 theorems) and `receipt/axcheck_integralbound.txt`
 (D4, 6 theorems): `[propext, Classical.choice, Quot.sound]` only.

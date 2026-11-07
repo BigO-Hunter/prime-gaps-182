@@ -194,4 +194,24 @@ theorem integral_finitePoissonLaw_normalized (μ : FiniteMeasure ℝ) (F : Finit
   · exact hφ.aemeasurable
   · exact hF.aestronglyMeasurable
 
+
+/-! ### 5. The residual, as a nameable Lean proposition -/
+
+/-- **The N1 residual (band assembly).**  The charFun of the fragment mass law is the
+exponential of the band exponent.  Not proved here; what remains is the infinite product over
+the dyadic bands `k : ℤ`, for which Mathlib v4.34.1 has no Bochner product-integral over
+`Measure.infinitePi` (the finite-index case is `integral_fintype_prod_eq_prod`; the `∫⁻` case
+is `lintegral_fragment_sum` in `Pg182D1/Support.lean`, which needs nonnegativity). -/
+def N1Residual : Prop :=
+  ∀ (ζ t : ℝ), 0 < ζ →
+    charFun ((PrimeGap182D1.fragmentLaw ζ).map (fun X : FiniteMeasure ℝ => (X.mass : ℝ))) t
+      = Complex.exp (-(charExponent t ζ))
+
+/-- The **single band** half of `N1Residual`, which §2–§4 of this file reduce to the two
+remaining elementary steps (`q` extraction, and `∫ u, (e^{I t u} - 1) ∂μ = μ.mass (q - 1)`). -/
+def N1ResidualBand : Prop :=
+  ∀ (μ : FiniteMeasure ℝ) (t : ℝ),
+    charFun ((PrimeGap182D1.finitePoissonLaw μ).map (fun X => (X.mass : ℝ))) t
+      = Complex.exp (∫ u, (Complex.exp (↑(u * t) * Complex.I) - 1) ∂(μ : Measure ℝ))
+
 end PrimeGap182D2
