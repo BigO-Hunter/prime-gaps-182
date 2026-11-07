@@ -1,0 +1,20 @@
+import Pg182D2.BandAssembly
+
+open PrimeGap182D2
+#print axioms norm_exp_imag_sub_one_le
+#print axioms band_inter_period
+#print axioms cappedDyadicIntensity_eq_restrict_withDensity
+#print axioms cappedDyadicIntensity_ne_zero_of_lt
+#print axioms coe_nnnorm_eq_ofReal_norm
+#print axioms lintegral_mass_finitePoissonLaw
+#print axioms lintegral_firstMoment_cappedDyadic
+#print axioms band_norm_le
+#print axioms tsum_band_charFun_lintegral_ne_top
+#print axioms lintegral_band_integrand_sum_le
+#print axioms integrable_band_integrand_sum
+#print axioms tsum_integral_band_exp
+#print axioms summable_band_exponent
+#print axioms cappedDyadicIntensity_eq_zero_of_le
+#print axioms band_factor_identity
+#print axioms charFun_mass_fragmentLaw
+#print axioms n1Residual_holds
