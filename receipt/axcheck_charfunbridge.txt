@@ -1,0 +1,7 @@
+'PrimeGap182D2.charFun_mass_map' depends on axioms: [propext, Classical.choice, Quot.sound]
+'PrimeGap182D2.charFun_mass_map_single' depends on axioms: [propext, Classical.choice, Quot.sound]
+'PrimeGap182D2.ennreal_mass_weightedEmpirical' depends on axioms: [propext, Classical.choice, Quot.sound]
+'PrimeGap182D2.mass_weightedEmpirical_of_nonneg' depends on axioms: [propext, Classical.choice, Quot.sound]
+'PrimeGap182D2.exp_mass_weightedEmpirical' depends on axioms: [propext, Classical.choice, Quot.sound]
+'PrimeGap182D2.poisson_integral_pow' depends on axioms: [propext, Classical.choice, Quot.sound]
+'PrimeGap182D2.integral_finitePoissonLaw_normalized' depends on axioms: [propext, Classical.choice, Quot.sound]

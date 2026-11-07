@@ -5,3 +5,4 @@ import Pg182D2.CharFunMod
 import Pg182D2.IntegralBound
 import Pg182D2.CinBounds
 import Pg182D2.HeadTail
+import Pg182D2.CharFunBridge
