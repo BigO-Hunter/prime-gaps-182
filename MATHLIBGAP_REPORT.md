@@ -79,9 +79,24 @@ genuinely needs the band measures to live on `[0, ∞)`; the repair is one hypot
 ```
 
 which every `cappedDyadicIntensity ζ k` satisfies (it is supported on `Ioc (2^k) (2^{k+1}) ∩
-(0, ζ)`).  **N3 did not land the corrected step 1**: it is a ~120-line computation
-(`integral_finitePoissonLaw_normalized` + `exp_mass_weightedEmpirical` + `poisson_integral_pow`
-+ `FiniteMeasure.coe_eq_mass_smul_normalize`), mechanical but not finished in this lane.
+(0, ζ)`).
+
+**The corrected step 1 was reduced to a coercion, not landed.**  `wip/BAND_STEP1_WIP.lean` has the
+whole proof compiling down to its last line; the verified chain is
+
+    charFun (map mass (finitePoissonLaw μ)) t
+      = ∫ c, exp (I (c.mass t))                              -- charFun_mass_map_single
+      = ∫ n, (∫ x : Fin n → ℝ, exp (I (mass (weightedEmpirical n x) t))) ∂Poisson(μ.mass)
+      = ∫ n, q ^ n ∂Poisson(μ.mass)                           -- exp_mass_weightedEmpirical + fintype prod
+      = exp (μ.mass * (q - 1))                                -- poisson_integral_pow
+      = exp (∫ u, (exp (I (u t)) - 1) ∂μ)                     -- ← BLOCKED HERE
+
+with `q = ∫ u, exp (I (u t)) ∂(μ.normalize)` and `‖q‖ ≤ 1`.  The single open obligation is the
+bookkeeping identity `(μ : Measure ℝ) = (μ.mass : ℝ≥0∞) • (μ.normalize : Measure ℝ)` from
+`FiniteMeasure.self_eq_mass_smul_normalize` / `self_eq_mass_mul_normalize`; the mismatch is
+`↑μ s` (`Measure.coeFn`) against `μ s` (`FiniteMeasure.coeFn`) plus the `ℝ≥0`/`ℝ≥0∞` scalar
+coercion.  That is a ten-minute massage for anyone not already deep in the coercion stack, and it is
+the reason this lane's honest claim stops at "step 1 reduced, not landed".
 
 ## 4. Where the map stands now
 
@@ -101,6 +116,7 @@ of this lane is: *the gap that was named is closed; the assembly that consumes i
 
 * No PR was opened, no issue filed, nothing posted to any external service (coordinator's call; see
   `PR_BODY.md` §"What the coordinator must decide").
+* Step 1 is **not** landed (reduced to a coercion, `wip/BAND_STEP1_WIP.lean`); `N1Residual` itself
+  remains a named `Prop` and the count of named inputs of the 182 data side is unchanged (one: the
+  band assembly).  What changed is the *nature* of what is left: no Mathlib-level obstruction.
 * The `‖f i x‖ ≤ C i` generalization flagged in `PR_BODY.md` is not done.
-* `N1Residual` itself remains a named `Prop`; nothing in the library depends on it, and the count
-  of named inputs of the 182 data side is unchanged (one: the band assembly).
