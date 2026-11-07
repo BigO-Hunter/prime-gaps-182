@@ -1,0 +1,102 @@
+{
+  "url": "https://api.github.com/repos/bigospeedrun/verifier/issues/148",
+  "repository_url": "https://api.github.com/repos/bigospeedrun/verifier",
+  "labels_url": "https://api.github.com/repos/bigospeedrun/verifier/issues/148/labels{/name}",
+  "comments_url": "https://api.github.com/repos/bigospeedrun/verifier/issues/148/comments",
+  "events_url": "https://api.github.com/repos/bigospeedrun/verifier/issues/148/events",
+  "html_url": "https://github.com/bigospeedrun/verifier/issues/148",
+  "id": 6213947999,
+  "node_id": "I_kwDOVDiv6M8AAAABcmFSXw",
+  "number": 148,
+  "title": "Route request: prime gaps H1 <= 246 (AxiomMath + kimihiro64)",
+  "user": {
+    "login": "darkhipo",
+    "id": 622570,
+    "node_id": "MDQ6VXNlcjYyMjU3MA==",
+    "avatar_url": "https://avatars.githubusercontent.com/u/622570?v=4",
+    "gravatar_id": "",
+    "url": "https://api.github.com/users/darkhipo",
+    "html_url": "https://github.com/darkhipo",
+    "followers_url": "https://api.github.com/users/darkhipo/followers",
+    "following_url": "https://api.github.com/users/darkhipo/following{/other_user}",
+    "gists_url": "https://api.github.com/users/darkhipo/gists{/gist_id}",
+    "starred_url": "https://api.github.com/users/darkhipo/starred{/owner}{/repo}",
+    "subscriptions_url": "https://api.github.com/users/darkhipo/subscriptions",
+    "organizations_url": "https://api.github.com/users/darkhipo/orgs",
+    "repos_url": "https://api.github.com/users/darkhipo/repos",
+    "events_url": "https://api.github.com/users/darkhipo/events{/privacy}",
+    "received_events_url": "https://api.github.com/users/darkhipo/received_events",
+    "type": "User",
+    "user_view_type": "public",
+    "site_admin": false
+  },
+  "labels": [
+
+  ],
+  "state": "closed",
+  "locked": false,
+  "assignees": [
+
+  ],
+  "milestone": null,
+  "comments": 1,
+  "created_at": "2026-11-05T00:14:19Z",
+  "updated_at": "2026-11-06T00:39:53Z",
+  "closed_at": "2026-11-06T00:39:53Z",
+  "assignee": null,
+  "author_association": "CONTRIBUTOR",
+  "issue_field_values": [
+
+  ],
+  "type": null,
+  "active_lock_reason": null,
+  "sub_issues_summary": {
+    "total": 0,
+    "completed": 0,
+    "percent_completed": 0
+  },
+  "issue_dependencies_summary": {
+    "blocked_by": 0,
+    "total_blocked_by": 0,
+    "blocking": 0,
+    "total_blocking": 0
+  },
+  "body": "ASK-FIRST route request — not a Lean submission. I have not opened a statement PR and will not use any submit tool until a maintainer opens the route and confirms the statement form.\n\n## Result\n\nPrime gaps are bounded by **246** infinitely often (`H1 ≤ 246`), verified in Lean 4.\n\n## Repo & commit\n\n- https://github.com/darkhipo/prime-gaps-246-lean\n- commit `ac0eb01b6617f5b3bd978037bff937488ad34e73` (branch `main`)\n\n## What it composes\n\n- **AxiomMath/PrimeGapsLib** @ `1faa7b1` — proves `bombieriVinogradov_implies_prime_gap_le_246` with a Lean-checked 50-tuple certificate.\n- **kimihiro64/bombieri-vinogradov** @ `7a17483` (Jonas Whidden) — proves the full Bombieri–Vinogradov theorem.\n\n`Submission.lean` feeds BV's theorem into PrimeGapsLib's implication, producing three hypothesis-free statements: `prime_gap_le_246`, `frequently_prime_gap_le_246` (liminf form), and `nth_prime_gap_le_246`.\n\n## Build (clean, no stale oleans)\n\n```\nlake build Submission\n# Build completed successfully (5437 jobs).  BUILD EXIT=0\n```\n\n## Axiom audit (`lake env lean Submission.lean`)\n\n```\n'…prime_gap_le_246'           depends on axioms: [propext, Classical.choice, Quot.sound]\n'…frequently_prime_gap_le_246' depends on axioms: [propext, Classical.choice, Quot.sound]\n'…nth_prime_gap_le_246'        depends on axioms: [propext, Classical.choice, Quot.sound]\n```\n\nNo `sorryAx`, no project-specific axioms.\n\n## Pins\n\n- Lean `v4.33.1`\n- mathlib `0df444a360eaa60ab8c11dca51a86af692955474`\n- PrimeNumberTheoremAnd (kimihiro64) `0f15a38c619298b5cd786d39a84dd4bb8997324c`\n\n## Question\n\nThis target needs a maintainer-owned trusted statement/profile: the exact \"H1 ≤ 246\" statement form is not something I can self-declare. Will you open this route? And which existing pin/statement form do you prefer — the elementary `∀ n₀ ∃ p q, n₀ ≤ p ∧ p < q ∧ p.Prime ∧ q.Prime ∧ q ≤ p + 246`, the liminf/frequently form, or a specific profile? I'll hold any statement PR until a maintainer asks.\n",
+  "closed_by": {
+    "login": "nmamano",
+    "id": 3745260,
+    "node_id": "MDQ6VXNlcjM3NDUyNjA=",
+    "avatar_url": "https://avatars.githubusercontent.com/u/3745260?v=4",
+    "gravatar_id": "",
+    "url": "https://api.github.com/users/nmamano",
+    "html_url": "https://github.com/nmamano",
+    "followers_url": "https://api.github.com/users/nmamano/followers",
+    "following_url": "https://api.github.com/users/nmamano/following{/other_user}",
+    "gists_url": "https://api.github.com/users/nmamano/gists{/gist_id}",
+    "starred_url": "https://api.github.com/users/nmamano/starred{/owner}{/repo}",
+    "subscriptions_url": "https://api.github.com/users/nmamano/subscriptions",
+    "organizations_url": "https://api.github.com/users/nmamano/orgs",
+    "repos_url": "https://api.github.com/users/nmamano/repos",
+    "events_url": "https://api.github.com/users/nmamano/events{/privacy}",
+    "received_events_url": "https://api.github.com/users/nmamano/received_events",
+    "type": "User",
+    "user_view_type": "public",
+    "site_admin": false
+  },
+  "reactions": {
+    "url": "https://api.github.com/repos/bigospeedrun/verifier/issues/148/reactions",
+    "total_count": 0,
+    "+1": 0,
+    "-1": 0,
+    "laugh": 0,
+    "hooray": 0,
+    "confused": 0,
+    "heart": 0,
+    "rocket": 0,
+    "eyes": 0
+  },
+  "timeline_url": "https://api.github.com/repos/bigospeedrun/verifier/issues/148/timeline",
+  "performed_via_github_app": null,
+  "state_reason": "completed",
+  "pinned_comment": null
+}
