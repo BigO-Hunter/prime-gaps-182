@@ -281,3 +281,14 @@ the join**, no named analytic input, and no missing Mathlib lemma — the one fr
 elementary two-case norm bound of item 3. With them, the
 `(N1)` row of §1 becomes a theorem and the data side's named-input count is **zero** (Katz, FKM and
 Type III are campaign-level deep inputs, not data-side obligations — §3 of `N1N2_REPORT.md`).
+
+## 8. FINAL — the map is closed
+
+This document is the working history. **The final map is `FINAL_MAP.md`**: the three obligations of
+§7.3 and the join are all theorems (`Pg182D2/BandAssembly.lean`), `(N1)` is no longer a named input
+(`n1Residual_holds : N1Residual`), and the composition `h1_182_of` (`COMPOSITION.lean`) consumes the
+discharged data side, axiom-clean.
+
+**The final claim: `182 certified given Katz + FKM + Type III`** (plus the rank-four companion, the
+kernel-checked deduction, and the frozen numeric/certificate table). The analytic-support half of
+the data side is empty. Per-obligation verdicts: `FINALSET_REPORT.md`.

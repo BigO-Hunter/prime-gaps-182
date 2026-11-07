@@ -1,162 +1,188 @@
-# FINALSET_REPORT — the 182 data side: what is now computation, and what is not
+# FINALSET_REPORT — the data side closed: zero mechanical residue
 
-Lane D4, work dir `~/bigo-campaign/pg182-d2/`.  Deliverables: `Pg182D2/CharFunMod.lean`
-(item i), `Pg182D2/IntegralBound.lean` (item ii), axchecks in `receipt/`.
+Lane: THE 182 FINAL-3 + JOIN (re-fired on deepseek after a zai connectivity outage killed the first
+attempt at startup; nothing was lost — the earlier attempt had only reached a `wip/JOIN_WIP.lean`
+draft, superseded here). Work dir `~/bigo-campaign/pg182-d2/`. Nothing public: no PR, no issue, no
+post. `HOME` durable, `scratch/` gitignored.
 
-## 0. Verdict, per item
+`FINALSET_REPORT.md` (D4) is kept as `FINALSET_REPORT_D4.md`; `OBLIGATION_MAP.md` is kept as the
+working history, with §8 pointing here. **The final map is `FINAL_MAP.md`.**
 
-| item | verdict |
+## 0. Verdicts
+
+| deliverable | verdict |
 |---|---|
-| **(i) the modulus identity** `‖φ_ζ(t)‖ = exp (-Cin (t ζ))` | **PROVED** — the whole modulus computation: `re_charExponent`, `norm_exp_neg_charExponent`, `norm_charFun_exp_exponent` |
-| (i) the *Poisson bridge* `charFun (mass law) t = exp (-Ein (-I t ζ))` | **named** (N1), stated exactly as the hypothesis of `hasLocalBound_convPow_of_certified` |
-| **(ii) the certified integral → layer M** | **PROVED** — `hasLocalBound_convPow_of_certified_integral`, `cell_measure_le_hq_of_certified_integral`, plus the margin `certifiedIntegralBound_le_four_div_pi` |
-| **(ii) the structural `Cin` bounds** (monotonicity, `Cin π ≥ 1`, `Cin ≥ x²/π²` on `[0,π]`, the dyadic doubling gain) | **PROVED** — `Pg182D2/CinBounds.lean`, 14 theorems |
-| (ii) the integral bound itself `∫_0^∞ e^{-38 Cin} ≤ 0.39446770` | **named** (N2), in the hypothesis form `∀ R, ∫_0^R e^{-38 Cin} ≤ B`; its *structural half* is now proved (§5a) and only the tail/head assembly remains (§5b) |
+| **(1) the characterization** — the fragment charFun as an `infinitePi` product with `f k X = exp (I (X.mass t))`, `C ≡ 1` | **PROVED** — `charFun_mass_fragmentLaw`, and `n1Residual_holds : N1Residual`. `N1Residual` is no longer a named input. |
+| **(1b) the `cappedDyadicIntensity ζ k ≠ 0` bridge under `2^k < ζ`** (the N3b loose end, same band structure) | **PROVED, both directions** — `cappedDyadicIntensity_ne_zero_of_lt` and `cappedDyadicIntensity_eq_zero_of_le`. The empty bands are handled, not assumed away. |
+| **(2) `HasSum.exp` + the band product** | **PROVED** — one application of Mathlib's `HasSum.cexp` (`Complex.exp` is `NormedSpace.exp`, so `HasSum.exp` is its `𝔸`-general form); the product integral is N3's `MeasureTheory.integral_tprod_infinitePi`. |
+| **(2b) the `hsum` discharge** | **PROVED** — `tsum_band_charFun_lintegral_ne_top`, from the from-scratch chord bound and the intensity's first moment. |
+| **(3) THE JOIN** | **PROVED** — `tsum_integral_band_exp`. |
+| **composition** | **PROVED + axchecked** — `COMPOSITION.lean`, `h1_182_of`, on `[propext, Classical.choice, Quot.sound]`. |
+| **final map** | **WRITTEN** — `FINAL_MAP.md`, claim: `182 certified given Katz + FKM + Type III`. |
 
-**Named-input count: 2** (was 2).  What changed is that both are now *stated in Lean*, the
-data side is a single theorem away from closed, and everything between them and `hq` is proved.
+## 1. What was written
 
-## 1. Item (i) — the identity is the modulus computation
+| file | content |
+|---|---|
+| `Pg182D2/BandAssembly.lean` (new, 17 declarations) | the chord bound, the nonzero/empty-band bridges, the band-as-density identity, the intensity first moment, the `hsum` discharge, the join, the per-band factor identity, the characterization |
+| `COMPOSITION.lean` (new, root module, in the lake globs) | `fragmentMassLaw`, `cell_measure_le_hq_final`, `h1_182_of` |
+| `Pg182D2.lean` | imports `Pg182D2.BandAssembly` |
+| `lakefile.toml` + `lake-manifest.json` | `pg182-frame` path-require (same prebuilt Mathlib; the require cost **0** rebuild jobs) |
+| `receipt/axcheck_bandassembly.{lean,txt}` | 17 declarations, all clean |
+| `receipt/axcheck_composition.{lean,txt}` | 2 declarations, all clean |
+| `FINAL_MAP.md`, `FINALSET_REPORT.md` | the final map and this report |
+| `OBLIGATION_MAP.md` §8 | pointer to the final map |
 
-The band is a Poisson process of intensity `du/u` on `(0, ζ]`, so its charFun is the
-Skorokhod exponent `φ_ζ(t) = exp (-Ein (-I t ζ))`.  Two facts make the modulus trivial once
-they are in Lean, and both are now theorems:
+Commits (4): the chord bound + nonzero bridge; the first moment + `hsum`; the join + the
+characterization; the composition.
 
-```lean
-def Cin (x : ℝ) : ℝ := ∫ u in (0)..x, (1 - Real.cos u) / u
-def charExponent (t ζ : ℝ) : ℂ := ∫ u in (0)..ζ, (1 - Complex.exp (I * (t * u))) / u
+## 2. The three obligations, exactly
 
-re_charExponent           : (charExponent t ζ).re = Cin (t * ζ)          -- all t, no sign case
-norm_exp_neg_charExponent : ‖exp (-charExponent t ζ)‖ = exp (-Cin (t * ζ))
+### (1) The characterization
+
+```
+charFun ((fragmentLaw ζ).map mass) t = exp (-(charExponent t ζ))
 ```
 
-The route deliberately avoids the Ein/Cin *series* (whose even/odd split is the fiddly part
-and needs termwise integration of the cosine series):
+Six rewrites, no analysis:
 
-1. `‖exp z‖ = exp z.re` (`Complex.norm_exp`) — so the modulus is `exp (-Re Φ)`.
-2. `Re` commutes with the ℂ interval integral (`Complex.reCLM` + `ContinuousLinearMap.
-   integral_comp_comm`).  This needs the integrand to be **absolutely** integrable, which it
-   is: `‖1 - e^{I θ}‖ ≤ ‖θ‖ e^{‖θ‖}` gives `‖(1 - e^{Itu})/u‖ ≤ |t| e^{|t| ζ}` on the band
-   (`integrable_charExponent_integrand`).  This is the real content of the landmine "the
-   complex-modulus arithmetic may need explicit re/im lemmas" — it needs no new lemmas, only
-   the integrability bound.
-3. `Re (1 - e^{I θ}) = 1 - cos θ` pointwise (`cinExponent_integrand_re`; `Complex.exp_re`
-   gives it directly, `exp_ofReal_mul_I` is not needed).
-4. The substitution `x = t u` (`integral_comp_mul_left`) converts `∫_0^ζ (1-cos(tu))/u` into
-   `Cin (t ζ)` — an identity for **every** `t` (the `t = 0` case is a separate line).
+1. `charFun_mass_map` — unwind to `∫ X, exp (I (X.mass t)) ∂(fragmentLaw ζ)`;
+2. `integral_map` through `finiteFragments` (`measurable_finiteFragments`);
+3. a.e. (on `ae_isFiniteMeasure_fragment_sum`): the fragment measure *is*
+   `Measure.sum (fun k => ω k)`, so its mass is `∑' k, (ω k).mass` — `Measure.sum_apply` +
+   `ENNReal.tsum_toReal_eq`, then `Complex.ofReal_tsum`/`tsum_mul_right` and `HasSum.cexp` turn
+   `exp (I (mass t))` into `∏' k, exp (I ((ω k).mass t))`;
+4. `MeasureTheory.integral_tprod_infinitePi` (`f k := fun c => exp (I (c.mass t))`, `C ≡ 1` since
+   `‖exp‖ = 1` exactly) — the N3 lemma, with `hsum` from (2b);
+5. `band_factor_identity` per band — `n1ResidualBand_of_nonneg` where `2^k < ζ`, and the empty-band
+   branch where `ζ ≤ 2^k`;
+6. `HasSum.cexp.tprod_eq` (`∏' k exp (E k) = exp (∑' k, E k)`, `E k` summable by
+   `summable_band_exponent`), then the join (3).
 
-Nothing is assumed about `t ≥ 0`, which is why the power/truncation lemmas
-(`integral_norm_charFun_pow`, `integral_norm_charFun_pow_le`) need no interval-sign case:
-only `R ≤ 0` is split off (trivially, the integrand being nonnegative).
+### (2) `HasSum.exp`
 
-## 2. Item (ii) — the transcription is now a composition, and the margin is certified
+Audited: `Mathlib/Analysis/SpecialFunctions/Exponential.lean:411` has `HasSum.exp` for
+`[NormedCommRing 𝔸] [NormedAlgebra ℚ 𝔸] [CompleteSpace 𝔸]`; for `ℂ` the same statement is
+`HasSum.cexp` (`Mathlib/Analysis/SpecialFunctions/Exp.lean:529`), which is what is used. No new
+lemma needed — the obligation collapsed to one application once (2b) was discharged.
 
-```lean
-def certifiedIntegralBound : ℝ := 39446770 / 10 ^ 8
-certifiedIntegralBound_le_four_div_pi : certifiedIntegralBound ≤ 4 / Real.pi   -- 3.23x margin
-hasLocalBound_convPow_of_integral_le :
-    (∀ t, charFun μ t = exp (-charExponent t zeta)) →
-    (∀ R, ∫ x in (0)..R, exp (-(38 * Cin x)) ≤ B) → B ≤ 4 / Real.pi →
-    HasLocalBound (convPow μ 38) (1 / zeta)
+### (2b) The `hsum` discharge
+
+```
+Σ' k, ∫⁻ X, ‖e^{I (X.mass t)} − 1‖ ∂Poisson(ν_k) ≤ 2|t| · Σ' k, ∫⁻ u, u ∂ν_k = 2|t| ζ ≠ ⊤
 ```
 
-so the D2 ledger's layer M at `d = 38` is one hypothesis-pair away from closed.  Note the
-generic-constant form: **the receipt's `0.39446770` is not needed as such**.  The margin is
-`4/π = 1.27324`, so any bound below it discharges the same line — which is what makes §5's
-elementary chain sufficient, and is why the failure of the exact-value transcription would
-not have blocked the campaign.
+* `norm_exp_imag_sub_one_le : ‖e^{ia} − 1‖ ≤ 2|a|` — **the only from-scratch lemma**: `|a| ≤ 1` is
+  `Complex.norm_exp_sub_one_le` at `I a`; `|a| ≥ 1` is `‖·‖ ≤ 2 ≤ 2|a|`.
+* `lintegral_mass_finitePoissonLaw : ∫⁻ c, c.mass ∂Poisson(μ) = ∫⁻ u, u ∂μ` —
+  `lintegral_weighted_finitePoissonLaw` with `h ≡ 1`. This is the **intensity's** first moment
+  (genuinely not `μ.mass`: `∫⁻ u, u² ∂μ` would be the second); for a band the two coincide because
+  the density is `1/u`, which is `lintegral_firstMoment_cappedDyadic : Σ' k, ∫⁻ u, u ∂ν_k = ζ`.
 
-## 3. What is NOT done, exactly
+### (3) The join
 
-**(N1) the Poisson bridge.**  Needed:
-
-```lean
-charFun ((fragmentLaw ζ).map (fun X => (X.mass : ℝ))) t = Complex.exp (-(charExponent t ζ))
+```
+Σ' k, ∫ u, (e^{I u t} − 1) ∂ν_k = −charExponent t ζ
 ```
 
-This is the ℂ-valued counterpart of the vendored real lemma
-`lintegral_exp_neg_finitePoissonLaw` (`Pg182D1/Support.lean:220`).  The real proof runs
-through `EReal`-valued `lintegral`s and its step `∏ i, g (x i)` has no ℂ analogue in that
-machinery, so the ℂ version must be redone with **Bochner** integrals.  Its pieces
-(the genuinely absent ones are marked ×):
+`integral_sum_measure` (needs `Integrable` of the integrand against `Measure.sum ν_k`, which follows
+from the `∫⁻` bound `lintegral_band_integrand_sum_le = 2|t|ζ`), then
+`sum_cappedDyadicIntensity : Measure.sum ν_k = (volume.restrict (0,ζ]).withDensity (1/u)`, then
+`integral_withDensity_eq_integral_toReal_smul` (unconditional), and on `(0, ζ)` the density cancels:
+`(1/u) • (e^{Iut} − 1) = −(1 − e^{Itu})/u`. Then `intervalIntegral.integral_of_le` folds
+`∫_0^ζ` back into `charExponent`.
 
-* `∫ c, (∫ u, e^{I t u} ∂c) ∂(finitePoissonLaw μ) = exp (∫ u, (e^{I t u} - 1) ∂μ)` — needs
-  the Poisson series with ℂ terms (`‖ψ‖ ≤ 1` gives absolute convergence; `integral_tsum`);
-  × no single Mathlib lemma packages "charFun of a finite Poisson model", but every step
-  (`lintegral_finitePoissonLaw_normalized`'s Bochner twin) is standard.
-* `exp (Σ'_k c_k) = ∏'_k exp (c_k)` for `Σ ‖c_k‖ < ∞` over `k : ℤ` — `HasSum.exp` exists;
-  summability comes from `Σ_k ∫_{band k} ‖e^{Itu}-1‖/u ≤ ∫_0^ζ min(2, |t|u)/u du`.
-* the join `Σ_k ∫_{band k} = ∫_0^ζ` — already proved in the real case
-  (`lintegral_fragment_sum`, `sum_cappedDyadicIntensity`); the ℂ version is a `tsum` of
-  Bochner integrals over the dyadic partition.
-* the identification of `∫_0^ζ (1 - e^{Itu})/u` with `Ein (-I t ζ)` — **not needed**:
-  `charExponent` is *defined* as that integral, so this step is definitional.
+**Note on the route.** `OBLIGATION_MAP.md` §7.3 item 5 suggested `integral_iUnion_ae` +
+`dyadic_bands_disjoint` + `integrable_charExponent_integrand`. The landed proof uses
+`integral_sum_measure` instead: `Measure.sum` *is* the joined measure (that is exactly
+`sum_cappedDyadicIntensity`), so the disjointness/`iUnion` bookkeeping is replaced by one application
+of the sum-measure integral lemma. The `∫⁻` twin of this argument (`lintegral_fragment_sum`) is the
+same shape, which is a good sign for both.
 
-Estimated size: 300–450 lines, mechanical, no new mathematics.
+## 3. The empty-band subtlety, resolved
 
-**(N2) the integral bound.**  Two honest routes.
+`N1ResidualBand` needs `∀ᵐ u ∂μ.normalize, 0 ≤ u`, and `ae_nonneg_normalize_of_ne_zero` needs
+`μ ≠ 0` — because Mathlib's `FiniteMeasure.normalize 0 = δ (Classical.choice ‹Nonempty ℝ›)`, an
+unspecified real with no provable sign. N3b left `cappedDyadicIntensity ζ k ≠ 0` under `2^k < ζ`
+unwritten; the map called it "the one bridge not yet written". It is now two theorems:
 
-*Transcription of the receipt.*  The receipt's arithmetic is exact rationals, but its
-`[0,1] ∪ [1,20]` Darboux grids have `24 000` cells — transcribing them means either 24 000
-generated `norm_num` interval lemmas (the `percell_emit.py` pattern) or a Lean-side
-interval-integral monotonicity lemma instantiated per cell.  Multi-hundred lines of
-generated data; no risk, no insight.
+* `cappedDyadicIntensity_ne_zero_of_lt` — the band ∩ `(0, ζ]` is `Ioc 2^k (min 2^{k+1} ζ)`, which has
+  positive length, and on it `1/u ≥ 1/min(2^{k+1}, ζ) > 0`; the `∫⁻` of the density is therefore
+  positive, so the mass is positive, so the measure is nonzero
+  (`FiniteMeasure.mass_nonzero_iff`).
+* `cappedDyadicIntensity_eq_zero_of_le` — for `ζ ≤ 2^k` the intersected interval is empty, so
+  `ν_k = 0`. Then `∫⁻ c, c.mass ∂Poisson(0) = ∫⁻ u, u ∂0 = 0`, so `c.mass = 0` a.e.
+  (`lintegral_eq_zero_iff`), the factor is `1`, and the exponent is `0`: both sides of the band
+  identity are `1`.
 
-*Elementary bound (§5).*  Cheaper, and sufficient because of the margin.
+So `band_factor_identity` covers **every** `k : ℤ` with no hypothesis, which is what let the tprod
+quantify over all `k`.
 
-## 4. Sharpness note (unchanged from D3)
-
-`‖φ_1‖ = e^{-Cin} → e^{-γ}/(t ζ)` so `∫_0^∞ ‖φ_1‖ = ∞`: the `d = 1` level is *not* a
-smoothing input at all.  The `d = 38` level is, by four orders of magnitude.  That asymmetry
-is a theorem in `Pg182D2/HasLocalBound.lean` §4, not a defect of this lane.
-
-## 5a. The structural half — PROVED (`Pg182D2/CinBounds.lean`)
+## 4. The composition and its axcheck
 
 ```lean
-Cin_mono        : 0 ≤ a → a ≤ b → Cin a ≤ Cin b
-Cin_ge_sq       : 0 ≤ x → x ≤ π → x^2/π^2 ≤ Cin x        -- Jordan, 1 - cos u ≥ 2u²/π²
-Cin_pi_ge_one   : 1 ≤ Cin π                              -- weight 1/u ≥ 1/π on (0,π], ∫(1-cos) = π
-Cin_ge_one      : π ≤ x → 1 ≤ Cin x
-Cin_double      : 4 ≤ x → Cin x + 1/4 ≤ Cin (2*x)        -- weight ≥ 1/(2x), |sin| ≤ 1
-Cin_dyadic      : 1 + k/4 ≤ Cin (4 * 2^k)                -- induction from Cin 4 ≥ Cin π ≥ 1
+theorem h1_182_of (h1 : Kloosterman3Bound) (h2 : Kloosterman2CorrelationBound)
+    (hK4 : IncidenceRankFourBounds182) (h3 : TypeIIILocalFourier) (hd : Deduction182)
+    (S : TrialSource182) (C : TrialCerts182)
+    (hcap : CapBounds182 S)
+    (hroot : ∀ j : Fin 60, S.outerRoot j ≤ C.rootUpper j)
+    (hface : ∀ j : Fin 60, S.outerFace j ≤ C.faceUpper j)
+    (cellOf : Fin 137 → ℕ) (envSup : Fin 137 → ℝ) (henv : ∀ j, 0 ≤ envSup j)
+    (hrow : ∀ j, S.innerMass j ≤ envSup j * (convPow fragmentMassLaw 38 (cell (cellOf j))).toReal)
+    (hmargin : ∀ j, envSup j * hq ≤ C.innerFaceUpper j) :
+    BigOSpeedrun.PrimeGaps.Bound 182
 ```
-plus the integrability of the `Cin` integrand (`integrableOn_cinIntegrand`,
-`intervalIntegrable_cinIntegrand`, bounded by `|u|/2` via `one_sub_cos_le_half_sq`).
-All 14 on `[propext, Classical.choice, Quot.sound]` (axcheck: `receipt/axcheck_cinbounds.txt`).
 
-## 5b. What remains for (N2): the head/tail assembly
+The 137 inner rows are `hrow` ∘ (the **proved** cell bound) ∘ `hmargin`. `Pg182Frame.h1_182_of`
+(`Pg182Frame/Frame.lean:131`) supplies the endpoint. The frame's 262 `sorry` stubs are untouched and
+— this is the point — **not in the proof term**: `hobs` is assembled from the five hypotheses.
 
-Numerics: head `∫_0^π e^{-38Cin} ≤ ∫_0^∞ e^{-38x²/π²} = (1/2)√(π³/38) = 0.4516`
-(`integral_gaussian_Ioi`, `b = 38/π²`); `∫_π^4 ≤ (4-π) e^{-38} ≈ 3e-17`; tail
-`∫_4^∞ ≤ Σ_k 4·2^k e^{-38(1+k/4)} = 4e^{-38}Σ_k (2e^{-9.5})^k ≤ 8e^{-38} ≈ 2.5e-16`.
-Total `≈ 0.4517 ≤ 1`.  The only non-elementary step is packaging the dyadic sum (a
-`tsum`-over-`iUnion`-of-blocks, or the pointwise power majorant
-`e^{-38Cin x} ≤ e^{-38}(x/8)^{-13}` plus `integral_Ioi_rpow_of_lt`).
+```
+$ lake env lean receipt/axcheck_composition.lean
+'PrimeGap182D2.cell_measure_le_hq_final' depends on axioms: [propext, Classical.choice, Quot.sound]
+'PrimeGap182D2.h1_182_of' depends on axioms: [propext, Classical.choice, Quot.sound]
+```
 
-## 6. Reproduction
+`receipt/axcheck_bandassembly.txt`: 17 declarations, all `[propext, Classical.choice, Quot.sound]`,
+zero `sorryAx`, zero `native_decide`. Lane aggregate: **13 receipt files, 135 declarations, clean.**
 
-    LAKE_JOBS=1 LEAN_NUM_THREADS=1 lake build Pg182D2.IntegralBound        # 8927 jobs, 11 s
-    LAKE_JOBS=1 LEAN_NUM_THREADS=1 lake env lean receipt/axcheck_charfunmod.lean
-    LAKE_JOBS=1 LEAN_NUM_THREADS=1 lake env lean receipt/axcheck_integralbound.lean
+Build: `LAKE_JOBS=1 LEAN_NUM_THREADS=1 lake build Pg182D2` — green (8945 jobs); both new files are
+warning-free.
 
-## 7. Axcheck
+## 5. The final named-input list
 
-`receipt/axcheck_charfunmod.txt` (9 theorems) and `receipt/axcheck_integralbound.txt`
-(6 theorems): **`[propext, Classical.choice, Quot.sound]` only.**  No `sorryAx`, no
-`native_decide`, no new axioms, in either file.
+1. **Katz** (`Kloosterman3Bound`).
+2. **FKM** (`Kloosterman2CorrelationBound`).
+3. **rank-four companion** (`IncidenceRankFourBounds182`) — not derivable from 1–2.
+4. **Type III** (`TypeIIILocalFourier`).
+5. **the deduction** (`Deduction182`) — kernel-checked in romyar1, transported by the frame.
+6. **the frozen numeric table** — 5 cap + 120 outer rows, the Layer I envelope `envSup`/`cellOf`, the
+   certificate margins `hmargin`.
 
-## 8. Numeric verification (the two named inputs are about the SAME objects)
+Data side: **zero named analytic inputs.** That is the lane's claim, and it is the claim `FINAL_MAP.md`
+makes.
 
-Checked in `python3` against `quad` and the receipt's series (2026-11-07):
+## 6. Honest limits
 
-| quantity | value | check |
-|---|---|---|
-| `Cin 1` by my integral definition | `0.2398117420` | = the series `Σ (-1)^{m+1} x^{2m}/((2m)(2m)!)` to `1e-10` |
-| `Cin π`, `Cin 4`, `Cin 20` | `1.6482776387`, `2.1044917239`, `3.5285281176` | integral = series at each |
-| `∫_0^∞ e^{-38 Cin}` (true) | `0.2884887…` | `< 0.39446770` (the receipt's certified upper bound) |
-| the margin `4/π ÷ 0.39446770` | `3.2277×` | matches `certifiedIntegralBound_le_four_div_pi` |
-| the §5 crude chain | `0.4517 + 3e-17 + 2.5e-16` | `< 1 < 4/π` |
+* The 137 inner rows are not each individually proved. The **analytic half** (the cell mass bound) is
+  proved for every cell; the **Layer I half** (the affine-prefix supremum and the row-to-cell map) is
+  frozen table data from the romyar1 kernel and is not Lean-reachable from this tree. This is the
+  same split `OBLIGATION_MAP.md` §2 recorded as "envelope layer closed".
+* `hmargin` (`envSup j * hq ≤ C.innerFaceUpper j`) is arithmetic over frozen rationals, checkable by
+  `num/`, not transcribed here.
+* The composition consumes the frame theorem; a reader who does not accept the frame's `Deduction182`
+  transport is not helped by this lane. That transport is `Pg182Frame/Frame.lean:54-61`, cited to
+  `formal/PrimeGaps182Analytic.lean:67-74`.
+* `Pg182D2/InfinitePiProduct.lean` is still the Mathlib-PR candidate from N3/N3b; the
+  "reviewed by a human Lean expert" box remains unchecked (`PR_BODY.md`).
 
-The first row matters: the `Cin` of `CharFunMod.lean` (interval integral) and the `Cin` the
-receipt bounds (alternating series) are the same function, so (N2) is a statement about the
-object that appears in the modulus identity, not merely a lookalike.
+## 7. Where the next mind starts
+
+Nothing mechanical is left on the data side. The open work is, in order of cost:
+
+1. Transcribe the frozen table (items 6) into Lean and discharge `hmargin` by `norm_num` — a
+   mechanical transcription job over `formal/SourceData182.lean`, would make `h1_182_of`'s inner rows
+   fully Lean.
+2. Transcribe the Layer I envelope (`envSup`, `cellOf`) — same job, but it needs the romyar1 kernel's
+   affine-prefix definitions, which are not vendored here.
+3. Items 1–4 of §5 are out of scope by construction: they are the campaign's deep inputs.

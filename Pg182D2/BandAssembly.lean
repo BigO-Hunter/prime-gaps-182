@@ -417,14 +417,16 @@ theorem band_factor_identity {ζ : ℝ} (hζ : 0 < ζ) (t : ℝ) (k : ℤ) :
           = ∫ _c, (1 : ℂ) ∂(PrimeGap182D1.finitePoissonLaw (0 : FiniteMeasure ℝ)) :=
             integral_congr_ae (hmass0.mono fun c hc => by simp [hc])
         _ = 1 := by
-            haveI : IsProbabilityMeasure
-                (PrimeGap182D1.finitePoissonLaw (0 : FiniteMeasure ℝ)) :=
-              PrimeGap182D1.finitePoissonLaw_isProbabilityMeasure 0
-            simp
+            rw [integral_const, Measure.real,
+              @IsProbabilityMeasure.measure_univ _ _
+                (PrimeGap182D1.finitePoissonLaw (0 : FiniteMeasure ℝ))
+                (PrimeGap182D1.finitePoissonLaw_isProbabilityMeasure 0),
+              ENNReal.toReal_one, one_smul]
     rw [hzero]
     simp only [FiniteMeasure.toMeasure_zero, integral_zero_measure, Complex.exp_zero]
     exact hL
 
+set_option linter.style.haveILetI false in
 /-- **THE CHARACTERIZATION.**  `N1Residual` is now a theorem: the characteristic function of the
 mass of the fragment law is the exponential of the band exponent. -/
 theorem charFun_mass_fragmentLaw {ζ : ℝ} (hζ : 0 < ζ) (t : ℝ) :
@@ -454,7 +456,7 @@ theorem charFun_mass_fragmentLaw {ζ : ℝ} (hζ : 0 < ζ) (t : ℝ) :
       have h1 : PrimeGap182D1.finiteFragments ω
           = (⟨Measure.sum fun k : ℤ => (ω k : Measure ℝ), hω⟩ : FiniteMeasure ℝ) := by
         unfold PrimeGap182D1.finiteFragments
-        exact dif_pos hω
+        exact dite_eq_left hω
       rw [h1]
       rfl
     have hsumE : ((PrimeGap182D1.finiteFragments ω).mass : ℝ≥0∞)
@@ -504,6 +506,6 @@ theorem charFun_mass_fragmentLaw {ζ : ℝ} (hζ : 0 < ζ) (t : ℝ) :
     _ = Complex.exp (-(charExponent t ζ)) := by rw [tsum_integral_band_exp hζ t]
 
 /-- **`N1Residual` is no longer a named input.** -/
-theorem n1Residual_holds : N1Residual := fun ζ t hζ => charFun_mass_fragmentLaw hζ t
+theorem n1Residual_holds : N1Residual := fun _ζ t hζ => charFun_mass_fragmentLaw hζ t
 
 end PrimeGap182D2
