@@ -19,17 +19,24 @@ Bochner-integrable `f i : X i → ℂ`,
   `∫ x, ∏' i, f i (x i) ∂(Measure.infinitePi μ) = ∏' i, ∫ x, f i x ∂(μ i)`.
 
 Monotone convergence cannot be used because the integrands are not nonnegative; instead the proof
-takes the limit of the finite-subset products along `atTop` on `Finset ι`, dominated by `1` (the
-hypothesis `‖f i x‖ ≤ 1`).  The pointwise convergence comes from
-`multipliable_one_add_of_summable`, fed by a.e. summability of `∑ i, ‖f i (x i) - 1‖`, which is
-Tonelli's theorem over the product measure.
+takes the limit of the finite-subset products along `atTop` on `Finset ι`, dominated by a constant.
+The pointwise convergence comes from `multipliable_one_add_of_summable`, fed by a.e. summability of
+`∑ i, ‖f i (x i) - 1‖`, which is Tonelli's theorem over the product measure.
+
+The domination is stated for a **bound family** `‖f i x‖ ≤ C i` with `∑ i, ‖C i - 1‖` summable: the
+partial products are bounded by `∏ i ∈ s, C i ≤ exp (∑ i ∈ s, (C i - 1)) ≤ exp (∑' i, ‖C i - 1‖)`,
+a constant independent of `s`.  The flat `‖f i x‖ ≤ 1` case is the corollary with `C ≡ 1`, and it is
+what the campaign consumes.
 
 ## Main results
 
 * `MeasureTheory.integral_finset_prod_infinitePi` — the finite-subset case (the marginal of
   `Measure.infinitePi` on a `Finset` is `Measure.pi`, then `integral_fintype_prod_eq_prod`).
 * `MeasureTheory.ae_summable_norm_sub_one_infinitePi` — a.e. summability of `‖f i (x i) - 1‖`.
-* `MeasureTheory.hasProd_integral_tprod_infinitePi` — the convergence form of the main theorem.
+* `MeasureTheory.hasProd_integral_tprod_infinitePi_of_norm_le` — the convergence form with a norm
+  bound family `‖f i x‖ ≤ C i`, `∑ i, ‖C i - 1‖` summable.
+* `MeasureTheory.hasProd_integral_tprod_infinitePi` — the convergence form for `‖f i x‖ ≤ 1`
+  (the `C ≡ 1` corollary).
 * `MeasureTheory.integral_tprod_infinitePi` — the equation form.
 -/
 
@@ -104,23 +111,16 @@ theorem ae_summable_norm_sub_one_infinitePi {f : (i : ι) → X i → ℂ}
     ENNReal.tsum_coe_ne_top_iff_summable.mp (ne_of_lt hx)
   simpa only [coe_nnnorm] using NNReal.summable_coe.mpr hx'
 
-/-- **The Bochner product integral over `Measure.infinitePi`, convergence form.**
-
-For a countable index type, probability measures `μ i`, and measurable `f i : X i → ℂ` bounded by
-`1` in norm, with `∑ i, ∫⁻ x, ‖f i x - 1‖` finite, the family of integrals is multipliable and its
-product is the integral of the pointwise infinite product. -/
-theorem hasProd_integral_tprod_infinitePi {f : (i : ι) → X i → ℂ}
+/-- **The dominated core**, shared by the two bounded versions below: if the partial products are
+a.e. uniformly bounded by a constant `K`, the finite-subset integrals converge to the integral of the
+pointwise product. -/
+private theorem hasProd_integral_tprod_infinitePi_of_bound {f : (i : ι) → X i → ℂ} {K : ℝ}
     (hf : ∀ i, AEStronglyMeasurable (f i) (μ i))
-    (hb : ∀ i, ∀ᵐ x ∂(μ i), ‖f i x‖ ≤ 1)
+    (hbdd : ∀ᵐ x ∂(Measure.infinitePi μ), ∀ s : Finset ι, ‖∏ i ∈ s, f i (x i)‖ ≤ K)
     (hsum : (∑' i, ∫⁻ x, (‖f i x - 1‖₊ : ℝ≥0∞) ∂(μ i)) ≠ ⊤) :
     HasProd (fun i => ∫ x, f i x ∂(μ i))
       (∫ x, ∏' i, f i (x i) ∂(Measure.infinitePi μ)) := by
   classical
-  -- the a.e. norm bound `∀ i, ‖f i (x i)‖ ≤ 1`
-  have hbnd : ∀ᵐ x ∂(Measure.infinitePi μ), ∀ i, ‖f i (x i)‖ ≤ 1 := by
-    rw [ae_all_iff]
-    intro i
-    exact (measurePreserving_eval_infinitePi μ i).quasiMeasurePreserving.ae (hb i)
   -- a.e. pointwise multipliability
   have hconv : ∀ᵐ x ∂(Measure.infinitePi μ),
       Tendsto (fun s : Finset ι => ∏ i ∈ s, f i (x i)) atTop (𝓝 (∏' i, f i (x i))) := by
@@ -134,23 +134,79 @@ theorem hasProd_integral_tprod_infinitePi {f : (i : ι) → X i → ℂ}
   -- dominated convergence over the filter `atTop` on `Finset ι`
   have hDCT := tendsto_integral_filter_of_dominated_convergence
     (l := atTop) (F := fun (s : Finset ι) (x : (i : ι) → X i) => ∏ i ∈ s, f i (x i))
-    (f := fun x => ∏' i, f i (x i)) (bound := fun _ => (1 : ℝ))
+    (f := fun x => ∏' i, f i (x i)) (bound := fun _ => K)
     (Filter.Eventually.of_forall fun s =>
       Finset.aestronglyMeasurable_fun_prod s fun i _ =>
         (hf i).comp_quasiMeasurePreserving
           (measurePreserving_eval_infinitePi μ i).quasiMeasurePreserving)
-    (by
-      filter_upwards with s
-      filter_upwards [hbnd] with x hx
-      have hle : ∏ i ∈ s, ‖f i (x i)‖₊ ≤ 1 := Finset.prod_le_one fun i _ => by exact_mod_cast hx i
-      have hnorm : ‖∏ i ∈ s, f i (x i)‖₊ = ∏ i ∈ s, ‖f i (x i)‖₊ := by simp
-      calc ‖∏ i ∈ s, f i (x i)‖ = (‖∏ i ∈ s, f i (x i)‖₊ : ℝ) := (coe_nnnorm _).symm
-        _ = ((∏ i ∈ s, ‖f i (x i)‖₊ : ℝ≥0) : ℝ) := by rw [hnorm]
-        _ ≤ 1 := by exact_mod_cast hle)
-    (integrable_const 1) hconv
+    (Filter.Eventually.of_forall fun s => hbdd.mono fun x hx => hx s)
+    (integrable_const K) hconv
   rw [HasProd]
   refine hDCT.congr' (Filter.Eventually.of_forall fun s => ?_)
   exact integral_finset_prod_infinitePi hf s
+
+/-- **The Bochner product integral over `Measure.infinitePi`, with a norm bound family.**
+
+For a countable index type, probability measures `μ i`, measurable `f i : X i → ℂ` bounded in norm
+by a family `C i ≥ 0` with `∑ i, ‖C i - 1‖` summable, and `∑ i, ∫⁻ x, ‖f i x - 1‖` finite, the
+family of integrals is multipliable and its product is the integral of the pointwise infinite
+product.
+
+The bound family is what the dominated-convergence step needs: `‖∏ i ∈ s, f i (x i)‖` is at most
+`∏ i ∈ s, C i`, and `C i ≤ exp (C i - 1)` turns the product of the bounds into
+`exp (∑ i ∈ s, (C i - 1)) ≤ exp (∑' i, ‖C i - 1‖)`, a constant independent of `s`.  (The `≤ 1` case
+`C ≡ 1` is the corollary below; a bare `∑ i, C i < ∞` would **not** suffice, since a product of
+bounds is not additive in them.) -/
+theorem hasProd_integral_tprod_infinitePi_of_norm_le {f : (i : ι) → X i → ℂ} {C : ι → ℝ}
+    (hf : ∀ i, AEStronglyMeasurable (f i) (μ i))
+    (hC0 : ∀ i, 0 ≤ C i)
+    (hb : ∀ i, ∀ᵐ x ∂(μ i), ‖f i x‖ ≤ C i)
+    (hC : Summable fun i => ‖C i - 1‖)
+    (hsum : (∑' i, ∫⁻ x, (‖f i x - 1‖₊ : ℝ≥0∞) ∂(μ i)) ≠ ⊤) :
+    HasProd (fun i => ∫ x, f i x ∂(μ i))
+      (∫ x, ∏' i, f i (x i) ∂(Measure.infinitePi μ)) := by
+  classical
+  refine hasProd_integral_tprod_infinitePi_of_bound
+    (K := Real.exp (∑' i, ‖C i - 1‖)) hf ?_ hsum
+  -- the a.e. norm bound `∀ i, ‖f i (x i)‖ ≤ C i`
+  have hbnd : ∀ᵐ x ∂(Measure.infinitePi μ), ∀ i, ‖f i (x i)‖ ≤ C i := by
+    rw [ae_all_iff]
+    intro i
+    exact (measurePreserving_eval_infinitePi μ i).quasiMeasurePreserving.ae (hb i)
+  filter_upwards [hbnd] with x hx
+  intro s
+  -- `‖∏ i ∈ s, f i‖ = ∏ i ∈ s, ‖f i‖ ≤ ∏ i ∈ s, C i ≤ ∏ i ∈ s, exp (C i - 1) ≤ exp (∑' i, ‖C i - 1‖)`
+  have hnorm : ‖∏ i ∈ s, f i (x i)‖ = ∏ i ∈ s, ‖f i (x i)‖ := by simp
+  rw [hnorm]
+  calc ∏ i ∈ s, ‖f i (x i)‖
+      ≤ ∏ i ∈ s, C i := Finset.prod_le_prod₀ (fun i _ => norm_nonneg _) fun i _ => hx i
+    _ ≤ ∏ i ∈ s, Real.exp (C i - 1) :=
+        Finset.prod_le_prod₀ (fun i _ => hC0 i) fun i _ => by
+          have h := Real.add_one_le_exp (C i - 1)
+          linarith
+    _ = Real.exp (∑ i ∈ s, (C i - 1)) := (Real.exp_sum s _).symm
+    _ ≤ Real.exp (∑' i, ‖C i - 1‖) := Real.exp_le_exp.mpr <| by
+        calc ∑ i ∈ s, (C i - 1) ≤ ∑ i ∈ s, ‖C i - 1‖ :=
+              Finset.sum_le_sum fun i _ => le_abs_self _
+          _ ≤ ∑' i, ‖C i - 1‖ := hC.sum_le_tsum s fun i _ => norm_nonneg _
+
+/-- **The Bochner product integral over `Measure.infinitePi`, convergence form.**
+
+For a countable index type, probability measures `μ i`, and measurable `f i : X i → ℂ` bounded by
+`1` in norm, with `∑ i, ∫⁻ x, ‖f i x - 1‖` finite, the family of integrals is multipliable and its
+product is the integral of the pointwise infinite product. -/
+theorem hasProd_integral_tprod_infinitePi {f : (i : ι) → X i → ℂ}
+    (hf : ∀ i, AEStronglyMeasurable (f i) (μ i))
+    (hb : ∀ i, ∀ᵐ x ∂(μ i), ‖f i x‖ ≤ 1)
+    (hsum : (∑' i, ∫⁻ x, (‖f i x - 1‖₊ : ℝ≥0∞) ∂(μ i)) ≠ ⊤) :
+    HasProd (fun i => ∫ x, f i x ∂(μ i))
+      (∫ x, ∏' i, f i (x i) ∂(Measure.infinitePi μ)) :=
+  have hC : Summable fun i => ‖((fun _ => (1 : ℝ)) i) - 1‖ := by
+    have hzero : (fun i : ι => ‖((fun _ => (1 : ℝ)) i) - 1‖) = fun _ => 0 := by
+      funext i; simp
+    rw [hzero]; exact summable_zero
+  hasProd_integral_tprod_infinitePi_of_norm_le (C := fun _ => 1) hf (fun _ => zero_le_one)
+    (fun i => hb i) hC hsum
 
 /-- **The Bochner product integral over `Measure.infinitePi`, equation form.** -/
 theorem integral_tprod_infinitePi {f : (i : ι) → X i → ℂ}
