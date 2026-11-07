@@ -159,8 +159,10 @@ transported kernel theorem; 6 is a table. Nothing else.
 | `receipt/axcheck_composition.txt` | `cell_measure_le_hq_final`, `h1_182_of` — same three axioms |
 | `receipt/axcheck_headtail.txt`, `axcheck_charfunbridge.txt`, `axcheck_charfunmod.txt`, `axcheck_integralbound.txt`, `axcheck_haslocalbound.txt`, `axcheck_bandstep1.txt`, `axcheck_infinitepiproduct.txt`, `axcheck_lowrows.txt` | the earlier lanes |
 
-Lane aggregate: **13 receipt files, 135 declarations, every one on
-`[propext, Classical.choice, Quot.sound]`; zero `sorryAx`, zero `native_decide`.**
+Lane aggregate (measured, not asserted): **12 receipt files, 120 `#print axioms` declarations,
+every one on `[propext, Classical.choice, Quot.sound]`; zero `sorryAx`, zero `native_decide`.**
+Per file: bandassembly 17, haslocalbound 23, headtail 15, cinbounds 14, charfunmod 9, lowrows 9,
+charfunbridge 7, integralbound 6, infinitepiproduct 5, bandstep1 4, composition 2, D2 aggregate 9.
 
 Build: `LAKE_JOBS=1 LEAN_NUM_THREADS=1 lake build Pg182D2` — green, and `Pg182D2/BandAssembly.lean`
 and `COMPOSITION.lean` are warning-free.

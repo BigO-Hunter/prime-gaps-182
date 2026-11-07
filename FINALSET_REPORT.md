@@ -144,7 +144,10 @@ $ lake env lean receipt/axcheck_composition.lean
 ```
 
 `receipt/axcheck_bandassembly.txt`: 17 declarations, all `[propext, Classical.choice, Quot.sound]`,
-zero `sorryAx`, zero `native_decide`. Lane aggregate: **13 receipt files, 135 declarations, clean.**
+zero `sorryAx`, zero `native_decide`. Lane aggregate (measured by counting the receipt lines):
+**12 files, 120 declarations, all clean** — bandassembly 17, haslocalbound 23, headtail 15,
+cinbounds 14, charfunmod 9, lowrows 9, charfunbridge 7, integralbound 6, infinitepiproduct 5,
+bandstep1 4, composition 2, D2 aggregate 9.
 
 Build: `LAKE_JOBS=1 LEAN_NUM_THREADS=1 lake build Pg182D2` — green (8945 jobs); both new files are
 warning-free.
