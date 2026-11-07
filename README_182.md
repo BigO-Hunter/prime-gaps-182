@@ -145,9 +145,12 @@ lake env lean receipt/axcheck_composition.lean    # the axiom receipt of the com
 ```
 
 `lakefile.toml` pins Mathlib (prebuilt), `pg182-frame` and `pg182-d1` by path; `lean-toolchain`
-pins the toolchain. Expect the composition axcheck in ~30 s on a warm build. Nothing in this
-package requires network access, and nothing here is published anywhere else — this directory is
-the deliverable.
+pins the toolchain. Expect the composition axcheck in ~30 s on a warm build. **Path-dep caveat:**
+the three dependencies are pinned to sibling directories of this checkout, so a bare tarball does
+not build standalone — a recipient needs the pinned `pg182-frame`/`pg182-d1` (one commit each,
+both self-contained) and a Mathlib checkout at the pinned revision, or should read the sources and
+receipts (which are self-contained). Nothing in this package requires network access, and nothing
+here is published anywhere else — this directory is the deliverable.
 
 *Status: data side CLOSED (zero mechanical residue, zero named analytic inputs on the data side);
 composition theorem axiom-clean; six named inputs exact; Weil gate pending.*
