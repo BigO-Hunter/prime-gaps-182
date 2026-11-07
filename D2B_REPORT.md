@@ -1,43 +1,32 @@
-# D2B_REPORT.md — Lane D2b: the low rows + the window convention
+# D2B_REPORT — the low rows + the window convention
 
-Work dir `~/bigo-campaign/pg182-d2/` (continues D2 at `da1af69`); 8927 jobs green.
+**Radial windows: R1 SERVES the 64 low rows; the exp-sandwich is dead.**
+The `.low` kernel is an untilted fragment count times
+`exp(slope·(massAboveLow + (order−1)·witnessUpper − threshold))`
+(SourceKernels182:41-45) — monotone in the cell-sum coordinate, so its cell sup
+sits at the right edge: exactly what the frozen generator stores as
+`exponent_upper`. Both sides of `frozen ≥ env` carry that same `exp(s(b−c))`, it
+cancels, and the comparison reduces to the untilted `A ≤ 1/ζ`, uniform in slope.
+Proved: `tilted_cell_le`, `tilt_cancels`, `untilted_cell_le_hq`. All 137 inner
+windows, low included, lie in `(0,ζ)` — max top 0.993372 = 0.9452·ζ
+(`num/window_scan.py` from SourceData182's `pieces`; pinned
+`inner_window_inside_period`). Qualifier: the density actually consumed at the
+window is the d=38 one (D2's 0.2959); R1 supplies the exactness and the
+per-coordinate layer.
 
-## 1. Radial windows: R1 SERVES THE LOW ROWS — no exp-sandwich
+**Convention: PER-CELL STANDS, no recomputation.** The contract
+(SourceBounds182:142) is `∀ j, innerMass j ≤ faceUpper j` — a whole-set integral,
+no window probability on either side. Its discharge is a run-table sum, so
+per-run measure is the primitive and the whole-window statement is its sum
+(`window_measure_le_cells`). `source_mass = log(q_high/q_low)`
+(`LargestFragmentBin.mass`), 68/68 at 1e-16 — a factor, not a probability; G3's
+400× spread is `log(hi/lo)` over 15 count bins sharing one cover window. The
+0.0449 figure is withdrawn: it measures a set no obligation uses.
 
-The `.low` kernel is an untilted fragment mass times
-`exp(slope · (affine in the mass))` (SourceKernels182:41-45). Monotone, so its cell
-supremum sits at the right edge — exactly the frozen `exponent_upper`. Both sides
-of `frozen ≥ env` carry the same `exp(s(b−c))`; it cancels and the comparison
-reduces to `A ≤ 1/zeta`, uniform in `slope`. Proved: `tilted_cell_le`,
-`tilt_cancels`, `untilted_cell_le_hq`.
+**Map.** 262 = 5 cap + 120 outer + 137 inner; in covers, 60 outer (28 rankTwo +
+30 low + 2 high) and 137 inner (68 rankTwo + 5 high + 64 low); 94 low = 64 inner
++ 30 outer, the 30 outer low being D1-independent. Matches D1's 5/56/4/60/73/64
+obligation split exactly.
 
-All 64 low windows lie inside `(0, zeta)` — max top `0.993372` = 0.9452·zeta
-(`num/window_scan.py`, from SourceData182; pinned `inner_window_inside_period`).
-The 73 rank/high rows hit the same maximum.
-
-## 2. Convention: PER-CELL STANDS, no recomputation
-
-The contract (SourceBounds182:142) is `∀ j : Fin 137, innerMass j ≤ faceUpper j` —
-a whole-set integral with no window probability on either side. Its discharge is a
-run-table sum, so per-run measure is the primitive and the whole-window reading is
-its sum with an explicit factor (`window_measure_le_cells`).
-
-`source_mass = log(q_high/q_low)` (`LargestFragmentBin.mass`), verified 68/68 to
-1.0e-16 — a multiplicative factor, not a window probability. G3's 400× spread is
-`log(hi/lo)` over 15 distinct count bins sharing one cover window. The 0.0449
-figure is withdrawn: it measures a set no obligation uses.
-
-## 3. Final map
-
-262 = 5 cap + 120 outer + 137 inner. In covers (SourceData182): 60 outer = 28
-rankTwo + 30 low + 2 high (each with a root *and* a face), 137 inner = 68 rankTwo
-+ 5 high + 64 low. 94 low covers = 64 inner + 30 outer; the 30 outer low are
-D1-independent. See `OBLIGATION_MAP.md`.
-
-## 4. Axcheck
-
-All nine theorems on `[propext, Classical.choice, Quot.sound]`
-(`receipt/axcheck_lowrows.txt`). Remaining named input: `HasLocalBound` d=38.
-
-Files: `Pg182D2/LowRows.lean`, `CONVENTION.md`, `OBLIGATION_MAP.md`,
-`num/{window_scan,low_scan,reconcile}.py`.
+**Axcheck:** nine theorems, `[propext, Classical.choice, Quot.sound]` only. One
+named input remains: `HasLocalBound` d=38.
