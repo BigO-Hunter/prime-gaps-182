@@ -173,8 +173,13 @@ makes.
 * The composition consumes the frame theorem; a reader who does not accept the frame's `Deduction182`
   transport is not helped by this lane. That transport is `Pg182Frame/Frame.lean:54-61`, cited to
   `formal/PrimeGaps182Analytic.lean:67-74`.
-* `Pg182D2/InfinitePiProduct.lean` is still the Mathlib-PR candidate from N3/N3b; the
-  "reviewed by a human Lean expert" box remains unchecked (`PR_BODY.md`).
+* `Pg182D2/InfinitePiProduct.lean` went upstream as **mathlib4 PR #45771** from this lane's
+  *earlier* attempt (before the outage). It is verified green upstream (`receipt/pr_infinitepi_*`:
+  build with the Mathlib linter set, `lint-style` rc=0, `#print axioms` clean, `mk_all` byte-exact).
+  **This session published nothing new and did not modify the PR.** The "reviewed by a human Lean
+  expert" box is still unchecked, and that review is the maintainers' call.
+* `wip/JOIN_WIP.lean` (the killed attempt's draft) is left in place, untracked and superseded: it does
+  not compile and its content is subsumed by `Pg182D2/BandAssembly.lean`.
 
 ## 7. Where the next mind starts
 

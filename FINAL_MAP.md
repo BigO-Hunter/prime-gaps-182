@@ -173,6 +173,9 @@ and `COMPOSITION.lean` are warning-free.
   cell. This is exactly the split `OBLIGATION_MAP.md` §2 records as "envelope layer closed".
 * `envSup j * hq ≤ C.innerFaceUpper j` (`hmargin`) is arithmetic over the frozen rationals; it is
   checkable by `num/` but not transcribed into Lean here.
-* Nothing in this lane was made public: no PR, no issue, no post. `Pg182D2/InfinitePiProduct.lean`
-  remains the Mathlib-PR candidate from N3/N3b (checklist in `PR_BODY.md`, "reviewed by a human Lean
-  expert" still unchecked).
+* `Pg182D2/InfinitePiProduct.lean` (the N3/N3b lemma) is upstream as
+  **leanprover-community/mathlib4 PR #45771**, opened by this lane's *earlier* attempt before the
+  zai connectivity outage killed it. The PR is verified green upstream (build with the Mathlib linter
+  set, `lint-style` rc=0, `#print axioms` clean) — see `receipt/pr_infinitepi_verdict.md` and its
+  logs. **This session published nothing new and did not touch the PR**; its "reviewed by a human
+  Lean expert" box is still unchecked, and the human-expert call is not mine to make.
