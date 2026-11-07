@@ -140,6 +140,22 @@ mixture + `poisson_integral_pow`), band product (the gap, plus `HasSum.exp`), an
 So the campaign's final statement is **"182 certified given N1's band assembly + Katz + FKM +
 Type III"** — the analytic-support half is empty: no smoothing lemma, no integral estimate,
 no modulus computation, no `Cin` bound left as an assumption.
+
+> **Update 2026-11-07 (Lane: Weil axiom gate + Kloosterman sheaf packaging).** The Katz and FKM
+> line items collapse: both are now **instantiate from AxiomMath/Weil + Stacks**, not invent. The
+> FK IV.4 estimate engine (`isAlgebraic_and_norm_eq_of_forall_isCharpolyPureOfWeight`) is
+> axiom-clean, measured `[propext, Classical.choice, Quot.sound]`; the last mile
+> `rank ≤ 3 + weight-2 purity ⇒ |Kl_3| ≤ 3p` is a **proved** theorem (`KloostermanTraceBound.lean`);
+> the Kl_3 sheaf's lisseness is already in the dependency (`isLisse_laumonFourierFamilySheaf`), and
+> the three remaining obligations are stated positively in `KLOOSTERMAN_SHEAF.lean` (packaging:
+> weeks, not years). **PENDING**: the `#print axioms` gate on `LAdicSheaf.weightBound` and
+> `Weil.satisfiesWeilEstimate` — those oleans do not exist and their closure is 19.4k unbuilt
+> Stacks modules (≈6.8 days at the measured 2 oleans/min); source-level scan is clean (0 code-level
+> `sorry`, 0 `axiom` decls, 0 `native_decide` across 63k Stacks + 980 Weil files). Updated statement:
+> **"182 certified given N1's band assembly + Type III + Kl_3 packaging"**, conditioned on that
+> gate. Evidence: `~/bigo-campaign/weil-verify/AXIOM_GATE.md`,
+> `~/bigo-campaign/kloosterman-sheaf/PRICE_LIST_UPDATE.md`.
+
 The `d = 1` level remains out of scope as a smoothing input: `∫_0^∞ ‖φ_1‖ = ∞` there
 (`e^{-Cin} → e^{-γ}/(t ζ)`), the measured 5.724 hq, and R1's exact-convolution density
 constancy is what covers it.
