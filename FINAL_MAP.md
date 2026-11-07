@@ -13,6 +13,15 @@ Lane: THE FINAL-3 + JOIN, work dir `~/bigo-campaign/pg182-d2/`, continuing D1 �
 (the composition theorem), `receipt/axcheck_bandassembly.txt`,
 `receipt/axcheck_composition.txt`.
 
+Lane after it: **THE 182 TABLE TRANSCRIPTION** — `Pg182D2/TableData.lean` (546 rational literals:
+the 197 certificate rows + the 5 cap rationals + the shared constants), `num/emit_table.py`,
+`num/margin_audit.py`, `receipt/axcheck_tabledata.txt`, `receipt/transcription_fidelity.txt`.
+**The frozen numeric table is no longer a hypothesis**: it is Lean data with a kernel proof of
+fidelity to the frozen upstream module (12 `decide +kernel` equalities), the 73 `rankTwo`/`high`
+inner rows' Layer-I margin is a proved `norm_num` fact, and `hmargin` is absorbed outright by
+`h1_182_of_certEnvelope`. `TABLE_TRANSCRIPTION_REPORT.md` is the account, including the measured
+reason the remaining 64 `.low` rows cannot close from the table.
+
 ## 0. The claim, in one line each
 
 | statement | status |
@@ -23,7 +32,10 @@ Lane: THE FINAL-3 + JOIN, work dir `~/bigo-campaign/pg182-d2/`, continuing D1 �
 | the join `Σ'_k ∫_{band k} = ∫_0^ζ` | **PROVED** — `tsum_integral_band_exp` |
 | `HasSum.exp` | **one application of Mathlib's `HasSum.cexp`** (`Complex.exp` is `NormedSpace.exp`) |
 | the composition `h1_182_of` | **PROVED**, axiom-clean; `hobs` built from the data side |
-| Katz, FKM, rank-four, Type III, the deduction, the frozen numeric table | **named inputs** (campaign-level / offline) |
+| the frozen numeric/certificate table (197 rows + 5 caps + shared constants) | **INTERNAL** — `Pg182D2/TableData.lean`, kernel-proved equal to the frozen module |
+| the Layer-I margin `hmargin` | **PROVED** (73 rows as `norm_num` table facts) / **ABSORBED** for all 137 (`h1_182_of_certEnvelope`) |
+| Katz, FKM, rank-four, Type III, the deduction | **named inputs** (campaign-level) |
+| the 262 *source* inequalities (source integral ≤ certified rational) | **named input** — the physical direction, certified offline by the romyar1 kernel |
 
 ## 1. The chain, end to end
 
@@ -86,18 +98,22 @@ assembly **cannot** quantify over all `k : ℤ`. Both directions are now proved:
 
 | family | n | status |
 |---|---:|---|
-| Cap (denominator l/u, J0, Jplus, tail) | 5 | D1-independent frozen data; carried by `hcap` in `h1_182_of` |
-| Outer root **and** face | 120 | D1-independent frozen data; carried by `hroot`/`hface` |
-| Inner mass | 137 | **envelope layer PROVED** (`cell_measure_le_hq_final`); the row itself is `hrow` (frozen Layer I envelope × the proved cell bound) + `hmargin` (frozen certificate margin) |
-| **total** | **262** | no analytic input anywhere |
+| Cap (denominator l/u, J0, Jplus, tail) | 5 | certificate side **internal** (`TableData.cap*`); the source inequality `CapBounds182 S` remains |
+| Outer root **and** face | 120 | certificate side **internal** (`certTable`); `hroot`/`hface` are against the transcribed rationals |
+| Inner mass | 137 | **envelope layer PROVED** (`cell_measure_le_hq_final`); **Layer-I margin proved on the 73 `rankTwo`/`high` rows** (`TableData.witness_margin`), **absorbed for all 137** (`h1_182_of_certEnvelope`); what remains is `hrow` alone |
+| **total** | **262** | no analytic input anywhere; the numeric table is no longer a hypothesis |
 
 Layers, as in `OBLIGATION_MAP.md` §2:
 
 * **Layer M (cell masses).** `HasLocalBound μ D` with `D ≤ 1/ζ` — proved for the `d = 38` sum law
   of the fragment mass law, unconditionally (`cell_measure_le_hq_final`).
 * **Layer I (integrand suprema).** The frozen affine-prefix / retained-maximum data (D3, audit item
-  3). Unchanged by this lane; it is a *table*, and it enters `h1_182_of` as `envSup`/`cellOf` plus
-  the two inequalities `hrow`, `hmargin`.
+  3). The certificate half is now transcribed and proved (`TableData`, plus the margin on the 73
+  `rankTwo`/`high` rows, where the cover's `witnessUpper` *is* the envelope); it enters
+  `h1_182_of` as `envSup`/`cellOf` plus the single inequality `hrow`. For the 64 `.low` rows the
+  envelope is **not** a recorded table value — measured (`num/margin_audit.py`: `witnessUpper`
+  overshoots those certificates by 4.6e7× to 1.8e26×), so `hrow` is where their Layer-I content
+  necessarily lives. `TABLE_TRANSCRIPTION_REPORT.md` §4, §7.
 
 ## 5. The composition theorem
 
@@ -112,26 +128,34 @@ theorem cell_measure_le_hq_final (n : ℕ) :
 
 theorem h1_182_of (h1 : Kloosterman3Bound) (h2 : Kloosterman2CorrelationBound)
     (hK4 : IncidenceRankFourBounds182) (h3 : TypeIIILocalFourier) (hd : Deduction182)
-    (S : TrialSource182) (C : TrialCerts182)
+    (S : TrialSource182)
     (hcap : CapBounds182 S)
-    (hroot : ∀ j : Fin 60, S.outerRoot j ≤ C.rootUpper j)
-    (hface : ∀ j : Fin 60, S.outerFace j ≤ C.faceUpper j)
+    (hroot : ∀ j : Fin 60, S.outerRoot j ≤ (TableData.outerRootUpper j : ℝ))
+    (hface : ∀ j : Fin 60, S.outerFace j ≤ (TableData.outerFaceUpper j : ℝ))
     (cellOf : Fin 137 → ℕ) (envSup : Fin 137 → ℝ) (henv : ∀ j, 0 ≤ envSup j)
     (hrow : ∀ j, S.innerMass j ≤ envSup j * (convPow fragmentMassLaw 38 (cell (cellOf j))).toReal)
-    (hmargin : ∀ j, envSup j * hq ≤ C.innerFaceUpper j) :
+    (hmargin : ∀ j, envSup j * hq ≤ (TableData.innerFaceUpper j : ℝ)) :
+    BigOSpeedrun.PrimeGaps.Bound 182
+
+theorem h1_182_of_certEnvelope (… same without hmargin, hrow against certEnvelope) :
     BigOSpeedrun.PrimeGaps.Bound 182
 ```
 
-The 137 inner rows are the composition `hrow ∘ (proved cell bound) ∘ hmargin`; the proved bound is
-*used*, not restated. `Pg182Frame.h1_182_of` (frame theorem, `Pg182Frame/Frame.lean:131`) does the
-rest. `pg182-frame` is now a lake path-require of this project, on the same prebuilt Mathlib — the
-require cost **zero** rebuild jobs.
+`C : TrialCerts182` is no longer a hypothesis: `certTable` reads the certificate side off
+`TableData`, so the frame's 197 abstract reals are kernel-checked data. The 137 inner rows are the
+composition `hrow ∘ (proved cell bound) ∘ hmargin`; the proved bound is *used*, not restated.
+`h1_182_of_certEnvelope` then discharges `hmargin` by taking the certificate-implied envelope — the
+weakest sufficient one — so the row inequality is the single Layer-I input left.
+`Pg182Frame.h1_182_of` (frame theorem, `Pg182Frame/Frame.lean:131`) does the rest. `pg182-frame` is
+now a lake path-require of this project, on the same prebuilt Mathlib — the require cost **zero**
+rebuild jobs.
 
-**Axcheck** (`receipt/axcheck_composition.txt`):
+**Axcheck** (`receipt/axcheck_composition.txt`, `receipt/axcheck_tabledata.txt`):
 
 ```
 'PrimeGap182D2.cell_measure_le_hq_final' depends on axioms: [propext, Classical.choice, Quot.sound]
 'PrimeGap182D2.h1_182_of'                depends on axioms: [propext, Classical.choice, Quot.sound]
+'PrimeGap182D2.h1_182_of_certEnvelope'   depends on axioms: [propext, Classical.choice, Quot.sound]
 ```
 
 No `sorryAx`: the frame's 262 `sorry` stubs are **not** in the proof term, because `hobs` is taken
@@ -146,10 +170,13 @@ directly as a hypothesis and assembled from `hcap`/`hroot`/`hface`/`hrow`/`hmarg
 | 3 | **Type III** — `TypeIII.LocalFourierHypothesis` | deep analytic | no closed proof exists anywhere |
 | 4 | rank-four companion `IncidenceRankFourBounds182` | deep analytic | not derivable from 1–2 (`PREMISE_MAP.md` P2 item 3) |
 | 5 | the deduction `Deduction182` | kernel-checked elsewhere | romyar1 `formal/PrimeGaps182Analytic.lean:67-74`, transported by the frame |
-| 6 | the frozen numeric table: 5 cap + 120 outer rows, the Layer I envelope `envSup`/`cellOf`, the certificate margins `hmargin` | offline data | `formal/SourceData182.lean` + `num/window_scan.py`; arithmetic, not mathematics |
+| 6 | the 262 **source** inequalities: source integral ≤ certified rational (5 cap + 120 outer + 137 inner) | frozen physical data | the direction that no table transcription can produce; certified offline by the romyar1 kernel (`formal/SourceBounds182.lean:138-142`) |
+| — | ~~the frozen numeric table~~ | **GONE** | `Pg182D2/TableData.lean` — 197 rows + 5 caps + shared constants, kernel-proved equal to the frozen module (`receipt/transcription_fidelity.txt`) |
+| — | ~~the Layer-I margin `hmargin`~~ | **GONE** | 73 rows proved as `norm_num` table facts (`TableData.witness_margin`); all 137 absorbed by `h1_182_of_certEnvelope` |
 
-**Zero analytic inputs on the data side.** Items 1–4 are the campaign's deep inputs; 5 is a
-transported kernel theorem; 6 is a table. Nothing else.
+**Zero analytic inputs on the data side, and zero numeric-table inputs.** Items 1–4 are the
+campaign's deep inputs; 5 is a transported kernel theorem; 6 is the source direction of the frozen
+rows — an inequality about integrals, not arithmetic about the table.
 
 ## 7. Receipts
 
@@ -157,24 +184,37 @@ transported kernel theorem; 6 is a table. Nothing else.
 |---|---|
 | `receipt/axcheck_bandassembly.txt` | 17 declarations of `Pg182D2/BandAssembly.lean`, all `[propext, Classical.choice, Quot.sound]` |
 | `receipt/axcheck_composition.txt` | `cell_measure_le_hq_final`, `h1_182_of` — same three axioms |
+| `receipt/axcheck_tabledata.txt` | 15 declarations of `Pg182D2/TableData.lean` + `COMPOSITION.lean` (incl. `h1_182_of_certEnvelope`, `witness_margin_real`) — same three axioms |
+| `receipt/transcription_fidelity.txt` | 12 `decide +kernel` equalities against the frozen upstream module, with the two sha256 digests and the reproduction recipe |
 | `receipt/axcheck_headtail.txt`, `axcheck_charfunbridge.txt`, `axcheck_charfunmod.txt`, `axcheck_integralbound.txt`, `axcheck_haslocalbound.txt`, `axcheck_bandstep1.txt`, `axcheck_infinitepiproduct.txt`, `axcheck_lowrows.txt` | the earlier lanes |
 
-Lane aggregate (measured, not asserted): **12 receipt files, 120 `#print axioms` declarations,
+Lane aggregate (measured, not asserted): **14 receipt files, 147 `#print axioms` declarations,
 every one on `[propext, Classical.choice, Quot.sound]`; zero `sorryAx`, zero `native_decide`.**
-Per file: bandassembly 17, haslocalbound 23, headtail 15, cinbounds 14, charfunmod 9, lowrows 9,
-charfunbridge 7, integralbound 6, infinitepiproduct 5, bandstep1 4, composition 2, D2 aggregate 9.
+Per file: bandassembly 17, haslocalbound 23, tabledata 15, headtail 15, cinbounds 14,
+transcription_fidelity 12, charfunmod 9, lowrows 9, charfunbridge 7, integralbound 6,
+infinitepiproduct 5, bandstep1 4, composition 2, D2 aggregate 9.
 
 Build: `LAKE_JOBS=1 LEAN_NUM_THREADS=1 lake build Pg182D2` — green, and `Pg182D2/BandAssembly.lean`
 and `COMPOSITION.lean` are warning-free.
 
 ## 8. Honest limits
 
-* The 137 inner rows are *not* each individually proved: their Layer I half (`hrow`) is frozen table
-  data whose content (the affine-prefix supremum and the row-to-cell identification) lives in the
-  romyar1 kernel, not in this tree. What is proved is the analytic half — the cell bound — for every
-  cell. This is exactly the split `OBLIGATION_MAP.md` §2 records as "envelope layer closed".
-* `envSup j * hq ≤ C.innerFaceUpper j` (`hmargin`) is arithmetic over the frozen rationals; it is
-  checkable by `num/` but not transcribed into Lean here.
+* The 137 inner rows are *not* each individually proved: their Layer I half (`hrow`) is frozen
+  source data whose content (the affine-prefix supremum and the row-to-cell identification) lives in
+  the romyar1 kernel, not in this tree. What is proved is the analytic half — the cell bound — for
+  every cell. This is exactly the split `OBLIGATION_MAP.md` §2 records as "envelope layer closed".
+  The transcription lane closed everything on the *certificate* side of that split and **measured**
+  why the rest is not arithmetic: on the 73 `rankTwo`/`high` rows the cover's `witnessUpper` is the
+  envelope and the margin is a proved `norm_num` fact; on the 64 `.low` rows it overshoots the
+  certificate by 4.6e7× to 1.8e26× (`num/margin_audit.py`), so their envelope is not a recorded
+  table value. Details and the precise next step: `TABLE_TRANSCRIPTION_REPORT.md` §4, §7.
+* `hmargin` is no longer an assumption: it is a `norm_num` theorem on the 73 rows and absorbed for
+  all 137 by `h1_182_of_certEnvelope` (the certificate-implied envelope is chosen — the weakest
+  sufficient one, `certEnvelope_margin`). What remains is `hrow`, in its weakest form.
+* The certificate table itself is not an assumption any more, but its *fidelity* rests on the
+  vendored upstream modules being the release named in `receipt/transcription_fidelity.txt`; that
+  receipt carries the two sha256 digests and the reproduction recipe. Those two `.lean` modules are
+  not committed (`wip/vendor/`, gitignored) — only the cross-check file and its output are.
 * `Pg182D2/InfinitePiProduct.lean` (the N3/N3b lemma) is upstream as
   **leanprover-community/mathlib4 PR #45771**, opened by this lane's *earlier* attempt before the
   zai connectivity outage killed it. The PR is verified green upstream (build with the Mathlib linter

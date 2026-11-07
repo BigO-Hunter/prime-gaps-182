@@ -188,9 +188,12 @@ makes.
 
 Nothing mechanical is left on the data side. The open work is, in order of cost:
 
-1. Transcribe the frozen table (items 6) into Lean and discharge `hmargin` by `norm_num` — a
+1. ~~Transcribe the frozen table (items 6) into Lean and discharge `hmargin` by `norm_num` — a
    mechanical transcription job over `formal/SourceData182.lean`, would make `h1_182_of`'s inner rows
-   fully Lean.
+   fully Lean.~~ **DONE in the table-transcription lane** — `Pg182D2/TableData.lean` +
+   `receipt/transcription_fidelity.txt` (197 rows kernel-proved equal to the frozen module, the
+   margin proved on the 73 `rankTwo`/`high` rows and absorbed for all 137). See
+   `TABLE_TRANSCRIPTION_REPORT.md`.
 2. Transcribe the Layer I envelope (`envSup`, `cellOf`) — same job, but it needs the romyar1 kernel's
    affine-prefix definitions, which are not vendored here.
 3. Items 1–4 of §5 are out of scope by construction: they are the campaign's deep inputs.

@@ -306,5 +306,29 @@ This document is the working history. **The final map is `FINAL_MAP.md`**: the t
 discharged data side, axiom-clean.
 
 **The final claim: `182 certified given Katz + FKM + Type III`** (plus the rank-four companion, the
-kernel-checked deduction, and the frozen numeric/certificate table). The analytic-support half of
-the data side is empty. Per-obligation verdicts: `FINALSET_REPORT.md`.
+kernel-checked deduction, and the *source direction* of the frozen rows). The analytic-support half
+of the data side is empty. Per-obligation verdicts: `FINALSET_REPORT.md`.
+
+## 9. The table transcription ledger (lane after N3b/FINAL-3)
+
+The last non-analytic handle of §4 was "the frozen numeric/certificate table". It is now closed as
+far as a table can be closed.
+
+| object | was | now |
+|---|---|---|
+| 137 inner certificate rows (`faceUpper`, `coefficientUpper`, `normalizedB`, `witnessUpper`, `kind`, `family`) | abstract reals in `TrialCerts182` | `TableData.inner*` — literal `ℚ`, kernel-proved equal to `trialInnerCertificates` (`innerFaceUpper_eq` … `isLow_eq`) |
+| 60 outer certificate rows (`rootUpper`, `faceUpper`) | same | `TableData.outer*` — `outerRootUpper_eq`, `outerFaceUpper_eq` |
+| 5 cap rationals + `rhoStar`/`denominatorLower`/`innerTotalUpper` | cited from `TrialData182.lean` | `TableData.*Q` — `cap_caps_eq`, `rhoStarQ_eq`, `denominatorLowerQ_eq`, `innerTotalUpperQ_eq` |
+| the table's internal coherence | upstream `SourceDataChecks182.lean` (`decide +kernel`) | re-derived from the transcription: `innerData_normalization` (137 rows), `innerData_total` |
+| the Layer-I margin `hmargin` | frozen hypothesis over 137 rows | **proved** `norm_num` on the 73 `rankTwo`/`high` rows (`witness_margin`), **absorbed** for all 137 (`h1_182_of_certEnvelope`) |
+| `hrow` (Layer I envelope × cell mass) | frozen hypothesis | **still frozen** — and now measured: the 64 `.low` rows' envelope is not a recorded table value (`num/margin_audit.py`: `witnessUpper` overshoots them by 4.6e7×–1.8e26×) |
+
+Cost, measured: emit 0.5 s; `Pg182D2/TableData.lean` first build 102 s; `norm_num` ≈ 60–145 ms per
+row (73 rows, no chunking, literals up to 224 digits); the three aggregate `decide +kernel` checks
+≈ 65 s. Axcheck: `receipt/axcheck_tabledata.txt` (15 declarations) + `receipt/transcription_fidelity.txt`
+(12 kernel equalities), all on `[propext, Classical.choice, Quot.sound]`.
+
+The next step is **not** arithmetic: it is the row-to-bin map of
+`experiments/variational_routes/fine_coarse_inner_low_v3_g3g5g6_n393216_b48.json` (36 bins of
+`relative_inner_upper` against 64 low certificates) plus the tilt cancellation already in
+`Pg182D2/LowRows.lean`. Full account: `TABLE_TRANSCRIPTION_REPORT.md`.
