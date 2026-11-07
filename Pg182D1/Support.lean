@@ -201,4 +201,109 @@ theorem fragmentLaw_isProbabilityMeasure (ζ : ℝ) : IsProbabilityMeasure (frag
   unfold fragmentLaw
   infer_instance
 
+--
+-- ## Vendored EReal MGF machinery (PrimeGaps186.lean, commit b77bf175bded,
+-- verbatim; namespace already ours)
+
+theorem exp_neg_ennreal_sum {ι : Type*} (s : Finset ι) (f : ι → ℝ≥0∞) :
+    EReal.exp (-((∑ i ∈ s, f i : ℝ≥0∞) : EReal)) =
+      ∏ i ∈ s, EReal.exp (-((f i : ℝ≥0∞) : EReal)) := by
+  classical
+  induction s using Finset.induction_on with
+  | empty => simp
+  | @insert i s hi ih =>
+    rw [Finset.sum_insert hi, EReal.coe_ennreal_add,
+      EReal.neg_add (.inl (EReal.coe_ennreal_ne_bot _))
+        (.inr (EReal.coe_ennreal_ne_bot _)),
+      sub_eq_add_neg, EReal.exp_add, ih, Finset.prod_insert hi]
+
+theorem lintegral_exp_neg_finitePoissonLaw
+
+    (μ : FiniteMeasure ℝ) (h : ℝ → ℝ≥0∞) (hh : Measurable h) :
+    (∫⁻ c, EReal.exp (-((∫⁻ u, h u ∂(c : Measure ℝ)) : EReal))
+      ∂(finitePoissonLaw μ)) =
+      EReal.exp (-((∫⁻ u,
+        1 - EReal.exp (-((ENNReal.ofReal u * h u : ℝ≥0∞) : EReal))
+        ∂(μ : Measure ℝ)) : EReal)) := by
+  let g : ℝ → ℝ≥0∞ := fun u =>
+    EReal.exp (-((ENNReal.ofReal u * h u : ℝ≥0∞) : EReal))
+  have hg : Measurable g :=
+    (measurable_id.ennreal_ofReal.mul hh).coe_ereal_ennreal.neg.ereal_exp
+  have hg_one (u : ℝ) : g u ≤ 1 :=
+    EReal.exp_le_one_iff.2
+      (EReal.neg_le_zero.2 (EReal.coe_ennreal_nonneg _))
+  let q : ℝ≥0∞ := ∫⁻ u, g u ∂(μ.normalize : Measure ℝ)
+  have hq_one : q ≤ 1 :=
+    lintegral_le_const (Filter.Eventually.of_forall hg_one)
+  have hq : q ≠ ∞ := ne_top_of_le_ne_top ENNReal.one_ne_top hq_one
+  have hF : Measurable (fun c : FiniteMeasure ℝ =>
+      EReal.exp (-((∫⁻ u, h u ∂(c : Measure ℝ)) : EReal))) :=
+    ((Measure.measurable_lintegral hh).comp
+      measurable_subtype_coe).coe_ereal_ennreal.neg.ereal_exp
+  have hpoint (n : ℕ) (x : Fin n → ℝ) :
+      EReal.exp (-((∫⁻ u, h u ∂(weightedEmpirical n x : Measure ℝ)) : EReal)) =
+        ∏ i : Fin n, g (x i) := by
+    simp_rw [coe_weightedEmpirical, lintegral_finsetSum_measure, lintegral_smul_measure,
+      lintegral_dirac, smul_eq_mul]
+    exact exp_neg_ennreal_sum Finset.univ _
+  have htuple (n : ℕ) :
+      (∫⁻ x : Fin n → ℝ,
+        EReal.exp (-((∫⁻ u, h u ∂(weightedEmpirical n x : Measure ℝ)) : EReal))
+        ∂(Measure.pi (fun _ : Fin n => (μ.normalize : Measure ℝ)))) = q ^ n := by
+    simp_rw [hpoint]
+    rw [ProbabilityTheory.lintegral_prod_eq_prod_lintegral_of_indepFun
+      Finset.univ (fun i (x : Fin n → ℝ) => g (x i))
+      (ProbabilityTheory.iIndepFun_pi (fun _ => hg.aemeasurable))
+      (fun i => hg.comp (measurable_pi_apply i))]
+    simpa using Finset.prod_eq_pow_card (s := Finset.univ) (fun i _ =>
+      (measurePreserving_eval
+        (fun _ : Fin n => (μ.normalize : Measure ℝ)) i).lintegral_comp hg)
+  have hseries :
+      HasSum (fun n : ℕ =>
+        Real.exp (-(μ.mass : ℝ)) * ((μ.mass : ℝ) * q.toReal) ^ n / n.factorial)
+        (Real.exp (-(μ.mass : ℝ)) * Real.exp ((μ.mass : ℝ) * q.toReal)) := by
+    simpa only [← Real.exp_eq_exp_ℝ, mul_div_assoc] using
+      (NormedSpace.expSeries_div_hasSum_exp
+        ((μ.mass : ℝ) * q.toReal)).mul_left (Real.exp (-(μ.mass : ℝ)))
+  have hpoisson :
+      (∫⁻ n : ℕ, q ^ n ∂(ProbabilityTheory.poissonMeasure μ.mass)) =
+        ENNReal.ofReal
+          (Real.exp (-(μ.mass : ℝ)) * Real.exp ((μ.mass : ℝ) * q.toReal)) := by
+    calc
+      _ = ∑' n : ℕ, ENNReal.ofReal
+          (Real.exp (-(μ.mass : ℝ)) * ((μ.mass : ℝ) * q.toReal) ^ n / n.factorial) := by
+        rw [lintegral_countable']
+        apply tsum_congr
+        intro n
+        have hpow : q ^ n = ENNReal.ofReal (q.toReal ^ n) := by
+          rw [ENNReal.ofReal_pow ENNReal.toReal_nonneg, ENNReal.ofReal_toReal hq]
+        rw [ProbabilityTheory.poissonMeasure_singleton, hpow,
+          ← ENNReal.ofReal_mul (pow_nonneg ENNReal.toReal_nonneg n)]
+        congr 1
+        rw [mul_pow]
+        ring
+      _ = _ := by
+        rw [← ENNReal.ofReal_tsum_of_nonneg (fun n => by positivity)
+          hseries.summable, hseries.tsum_eq]
+  have hI : (∫⁻ u, 1 - g u ∂(μ : Measure ℝ)) =
+      (μ.mass : ℝ≥0∞) * (1 - q) := by
+    rw [coe_eq_mass_smul_normalize μ, lintegral_smul_measure,
+      lintegral_sub hg hq (Filter.Eventually.of_forall hg_one)]
+    simp [q, smul_eq_mul]
+  have hfinite : (μ.mass : ℝ≥0∞) * (1 - q) ≠ ∞ :=
+    ENNReal.mul_ne_top ENNReal.coe_ne_top
+      (ne_top_of_le_ne_top ENNReal.one_ne_top tsub_le_self)
+  rw [lintegral_finitePoissonLaw_normalized μ _ hF]
+  simp_rw [htuple]
+  rw [hpoisson]
+  change ENNReal.ofReal
+      (Real.exp (-(μ.mass : ℝ)) * Real.exp ((μ.mass : ℝ) * q.toReal)) =
+    EReal.exp (-((∫⁻ u, 1 - g u ∂(μ : Measure ℝ)) : EReal))
+  rw [hI, ← EReal.coe_ennreal_toReal hfinite, ← EReal.coe_neg, EReal.exp_coe,
+    ENNReal.toReal_mul, ENNReal.coe_toReal,
+    ENNReal.toReal_sub_of_le hq_one ENNReal.one_ne_top, ENNReal.toReal_one]
+  rw [← Real.exp_add]
+  congr 2
+  ring
+
 end PrimeGap182D1
