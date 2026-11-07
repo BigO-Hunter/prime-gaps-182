@@ -13,7 +13,7 @@ Lane D3, work dir `~/bigo-campaign/pg182-d2/`.  Deliverable: `Pg182D2/HasLocalBo
 | the `d = 38` product structure (`charFun_convPow`), and the instance at the convolution power (`cell_measure_le_hq_convPow`) | **PROVED** |
 | `HasLocalBound` for the exact `d = 38` fragment law | **exact-partial** — see §5: two *computational* inputs, no analytic wall |
 
-All 24 theorems: `[propext, Classical.choice, Quot.sound]` only. No `sorryAx`, no
+All 23 theorems: `[propext, Classical.choice, Quot.sound]` only. No `sorryAx`, no
 `native_decide`, no new axioms.
 
 **Named analytic input count: 1 → 0.**  The item D2 named ("Mathlib has no smoothing lemma")
