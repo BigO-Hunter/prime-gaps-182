@@ -1,0 +1,4 @@
+'MeasureTheory.integral_finset_prod_infinitePi' depends on axioms: [propext, Classical.choice, Quot.sound]
+'MeasureTheory.ae_summable_norm_sub_one_infinitePi' depends on axioms: [propext, Classical.choice, Quot.sound]
+'MeasureTheory.hasProd_integral_tprod_infinitePi' depends on axioms: [propext, Classical.choice, Quot.sound]
+'MeasureTheory.integral_tprod_infinitePi' depends on axioms: [propext, Classical.choice, Quot.sound]
