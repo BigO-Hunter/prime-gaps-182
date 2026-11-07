@@ -103,7 +103,7 @@ Neither is analytic; both are now stated in Lean, and everything between them an
 | **the truncation chain** | **PROVED** (D4) | `integral_norm_charFun_pow_le`, `hasLocalBound_convPow_of_certified`, `cell_measure_le_hq_of_certified_integral` |
 | **the margin** `0.39446770 ≤ 4/π` | **PROVED** (D4, `norm_num`) | `certifiedIntegralBound_le_four_div_pi` (3.23×) |
 | (N1) the Poisson bridge `charFun (fragment mass law) t = exp(-charExponent t ζ)` | **named** | the hypothesis of `hasLocalBound_convPow_of_certified`; ℂ/Bochner version of `Pg182D1/Support.lean:220` |
-| **the structural `Cin` bounds** (monotone, `Cin π ≥ 1`, `Cin ≥ x²/π²` on `[0,π]`, `Cin (2x) ≥ Cin x + 1/4`, `Cin (4·2^k) ≥ 1 + k/4`) | **PROVED** (D4) | `Pg182D2/CinBounds.lean`, 10 theorems |
+| **the structural `Cin` bounds** (monotone, `Cin π ≥ 1`, `Cin ≥ x²/π²` on `[0,π]`, `Cin (2x) ≥ Cin x + 1/4`, `Cin (4·2^k) ≥ 1 + k/4`) | **PROVED** (D4) | `Pg182D2/CinBounds.lean`, 14 theorems |
 | (N2) `∀ R, ∫_0^R e^{-38 Cin} ≤ B` with `B ≤ 4/π` | **named** (structural half proved) | likewise; `hasLocalBound_convPow_of_integral_le` takes ANY such `B` |
 
 So the ledger at `d = 38` reads: `(N1) ∧ (N2) ⇒ HasLocalBound (μ^{*38}) (1/ζ) ⇒ cell mass ≤ hq`,

@@ -10,7 +10,7 @@ Lane D4, work dir `~/bigo-campaign/pg182-d2/`.  Deliverables: `Pg182D2/CharFunMo
 | **(i) the modulus identity** `‖φ_ζ(t)‖ = exp (-Cin (t ζ))` | **PROVED** — the whole modulus computation: `re_charExponent`, `norm_exp_neg_charExponent`, `norm_charFun_exp_exponent` |
 | (i) the *Poisson bridge* `charFun (mass law) t = exp (-Ein (-I t ζ))` | **named** (N1), stated exactly as the hypothesis of `hasLocalBound_convPow_of_certified` |
 | **(ii) the certified integral → layer M** | **PROVED** — `hasLocalBound_convPow_of_certified_integral`, `cell_measure_le_hq_of_certified_integral`, plus the margin `certifiedIntegralBound_le_four_div_pi` |
-| **(ii) the structural `Cin` bounds** (monotonicity, `Cin π ≥ 1`, `Cin ≥ x²/π²` on `[0,π]`, the dyadic doubling gain) | **PROVED** — `Pg182D2/CinBounds.lean`, 10 theorems |
+| **(ii) the structural `Cin` bounds** (monotonicity, `Cin π ≥ 1`, `Cin ≥ x²/π²` on `[0,π]`, the dyadic doubling gain) | **PROVED** — `Pg182D2/CinBounds.lean`, 14 theorems |
 | (ii) the integral bound itself `∫_0^∞ e^{-38 Cin} ≤ 0.39446770` | **named** (N2), in the hypothesis form `∀ R, ∫_0^R e^{-38 Cin} ≤ B`; its *structural half* is now proved (§5a) and only the tail/head assembly remains (§5b) |
 
 **Named-input count: 2** (was 2).  What changed is that both are now *stated in Lean*, the
@@ -122,7 +122,7 @@ Cin_dyadic      : 1 + k/4 ≤ Cin (4 * 2^k)                -- induction from Cin
 ```
 plus the integrability of the `Cin` integrand (`integrableOn_cinIntegrand`,
 `intervalIntegrable_cinIntegrand`, bounded by `|u|/2` via `one_sub_cos_le_half_sq`).
-All 10 on `[propext, Classical.choice, Quot.sound]`.
+All 14 on `[propext, Classical.choice, Quot.sound]` (axcheck: `receipt/axcheck_cinbounds.txt`).
 
 ## 5b. What remains for (N2): the head/tail assembly
 
