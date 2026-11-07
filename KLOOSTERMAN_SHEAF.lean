@@ -8,7 +8,7 @@ import KloostermanObligations
 **STATUS (2026-11-07): NOT YET ELABORATED.** This file names the Kl_3 packaging against the
 `StacksFrontier` API and cannot be compiled until that API's own oleans exist: the import closure
 of `LaumonFourierLineFamily` is 17,567 Stacks modules of which **16,525 are unbuilt** in the
-current tree (measured; ~10 days of `LAKE_JOBS=1` on this host). The parts of the packaging that
+current tree (measured; ≈6 days of `LAKE_JOBS=1` at the 2 oleans/min this host sustained). The parts of the packaging that
 can be verified today are in `KloostermanTraceBound.lean` and `KloostermanObligations.lean`, which
 DO compile and whose axiom sets are `[propext, Classical.choice, Quot.sound]`. Binder order here
 follows `Trace/LaumonFourierLineFamily.lean` and `Trace/LaumonFourierLineAwayFibreOffTop.lean`
@@ -34,17 +34,19 @@ representation `τ` pure of weight `β + 1` by `laumonFamily_isPure_restrictScal
 
 ## The three obligations, and why they are sufficient
 
-`KloostermanRank`, `KloostermanPurity`, `KloostermanStalkTrace` below are stated positively: each
-says what has to be *constructed*, and `kl3_bound_of_obligations` proves that together they yield
-`‖Kl_3(a; q)‖ ≤ 3 q^{1/2}` — the numerical bound is already proved in `KloostermanObligations.lean`
-(`Kl3Package.norm_kl3_le`). So the packaging gap is construction, not invention: nothing about the
-bound is assumed anywhere.
+The obligations are listed in the docstring of `kl3_bound_of_obligations` below: rank `3`, purity
+of weight `2`, and the stalk-trace identity. They are **not** encoded as placeholder `Prop`s here
+(that would be a tautology dressed as a claim); their verified carrier is
+`Kloosterman.Kl3Package` in `KloostermanObligations.lean`, whose fields *are* the three facts, and
+whose `norm_kl3_le` **proves** that they imply `‖Kl_3(a; q)‖ ≤ 3 q^{1/2}`. So the packaging gap is
+construction, not invention: nothing about the bound is assumed anywhere.
 
 ## Main definitions
 
 * `Kloosterman.FourierFamilyData`: the exact parameter tuple of `laumonFourierFamilySheaf`.
-* `Kloosterman.kl3FamilySheaf`: the `n = 3` family sheaf with trivial `σ₁`.
-* `Kloosterman.KloostermanRank`, `Kloosterman.KloostermanPurity`, `Kloosterman.KloostermanStalkTrace`.
+* `Kloosterman.kl3FamilySheaf`: the `n = 3`, trivial-`σ₁` instance (the constant-sheaf input).
+* The three obligations are listed in `kl3_bound_of_obligations`; their verified carrier is
+  `Kloosterman.Kl3Package`.
 
 ## Main results
 
@@ -113,9 +115,7 @@ attribute [instance] FourierFamilyData.field FourierFamilyData.fintype
 
 /-- **The Laumon Fourier family sheaf** at the package's parameters: the sheaf
 `pr₁^*ℱ_{σ₁} ⊗ L_ψ'(a xⁿ + x t)` on `Spec k'[x][t]` of `laumonFourierFamilySheaf`. -/
-def FourierFamilyData.familySheaf (D : FourierFamilyData.{u}) :
-    LAdicSheaf.{u, u + 1} D.B
-      (Stacks.ArtinSchreier.specObject (Polynomial (Polynomial D.k')) D.B D.hS) D.ℓ :=
+def FourierFamilyData.familySheaf (D : FourierFamilyData.{u}) :=
   laumonFourierFamilySheaf D.k' D.B D.hS D.b D.ψ' D.n D.a D.z D.p₀ D.σ₁ D.hσ₁
 
 /-- **The Fourier family sheaf is lisse** — the family is the sheaf of a continuous representation.
@@ -126,36 +126,39 @@ theorem FourierFamilyData.familySheaf_isLisse (D : FourierFamilyData.{u}) :
 
 /-- **The `Kl_3` family**: the Fourier family at `n = 3` with the trivial rank-one `σ₁`, i.e. the
 constant-sheaf input of the classical construction. -/
-def kl3FamilySheaf (D : FourierFamilyData.{u}) (h3 : D.n = 3) (hm : D.m = 1) :
-    LAdicSheaf.{u, u + 1} D.B
-      (Stacks.ArtinSchreier.specObject (Polynomial (Polynomial D.k')) D.B D.hS) D.ℓ :=
+def kl3FamilySheaf (D : FourierFamilyData.{u}) (h3 : D.n = 3) (hm : D.m = 1) :=
   D.familySheaf
 
-/-- **Obligation 1 (rank).** The Kloosterman sheaf `Kl_3` has rank at most three at every
-`a ∈ 𝔾_m`: `H¹_c` of the family's fibres is three-dimensional (the sum is over the `n = 3`
-coordinates with a product constraint). Stated against the representation `τ` of the lisse locus
-(`exists_restrictScalarsRep_of_isLisse`), this is `m_τ ≤ 3`. -/
-def KloostermanRank : Prop :=
-  ∀ (D : FourierFamilyData.{u}), D.n = 3 → D.m = 1 → True
+/-- **The `Kl_3` family is lisse** — the same fact as `familySheaf_isLisse`, specialized to
+`n = 3` with the trivial `σ₁`. -/
+theorem kl3FamilySheaf_isLisse (D : FourierFamilyData.{u}) (h3 : D.n = 3) (hm : D.m = 1) :
+    (kl3FamilySheaf D h3 hm).toLAdicSheaf.IsLisse :=
+  D.familySheaf_isLisse
 
-/-- **Obligation 2 (purity).** Every eigenvalue of the geometric Frobenius on the stalk `Kl_{3,a}`
-has complex absolute value `q^{1/2}`: weight `1`, from `laumonFamily_isPure_restrictScalarsRep` at
-`β = 0`. -/
-def KloostermanPurity : Prop :=
-  ∀ (D : FourierFamilyData.{u}), D.n = 3 → True
+/-- **The three obligations of the packaging**, each one a construction, not an assumption.
+They are stated here in prose because naming them as `Prop`s against the API would mean writing
+placeholder types until the closure builds; the *verified* carrier of the same three facts is
+`Kloosterman.Kl3Package` in `KloostermanObligations.lean`, whose fields are rank, charpoly,
+trace and purity.
 
-/-- **Obligation 3 (stalk trace).** The trace of the geometric Frobenius on the stalk `Kl_{3,a}` is
-the Kloosterman sum `Kl_3(a; q)`, via the sheaf–function correspondence specialized to the
-Artin–Schreier sheaf and the trivial multiplicative character. -/
-def KloostermanStalkTrace : Prop :=
-  ∀ (D : FourierFamilyData.{u}), D.n = 3 → True
+1. **Rank.** The lisse sheaf `R¹pr₂!` of the family at `n = 3` with trivial `σ₁` has rank `3` at
+   every `a ∈ 𝔾_m` — the representation `τ` of the lisse locus
+   (`exists_restrictScalarsRep_of_isLisse`) has `m_τ = 3`. This is the `rank ≤ 3` field.
+2. **Purity.** `τ` is `ι'`-pure of weight `2` (`laumonFamily_isPure_restrictScalarsRep` at
+   `β = 1`): every eigenvalue of the geometric Frobenius on the stalk `Kl_{3,a}` has complex
+   absolute value `q`. In the normalized form (`q^{1/2}`) this is the `pure` field.
+3. **Stalk trace.** `trace(Frob_{k,a} | Kl_{3,a}) = Kl_3(a; q)` via the sheaf–function
+   correspondence at the Artin–Schreier sheaf with the trivial multiplicative character — the
+   `trace_eq` field, assembled from `artinSchreierCharacter_*` and the trace formula
+   (`LAdicTraceFormulaFinal`).
 
-/-- **The bound from a completed packaging**: the three obligations produce a `Kl3Package`, and
-`Kl3Package.norm_kl3_le` (proved, axiom-clean) gives `‖Kl_3(a; q)‖ ≤ 3 q^{1/2}`.
+Discharging 1–3 produces a `Kl3Package q`, and `Kl3Package.norm_kl3_le` (proved, axiom-clean)
+then gives `‖Kl_3(a; q)‖ ≤ 3 q^{1/2}`. -/
 
-The hypothesis `hpack` is the *result* of obligations 1–3: a `Kl3Package` at `q`. Discharging
-`KloostermanRank`, `KloostermanPurity` and `KloostermanStalkTrace` is exactly the work of
-producing it. -/
+/-- **The bound from a completed packaging.** The hypothesis is the *result* of obligations 1–3
+above: a `Kl3Package` at `q`. `Kl3Package.norm_kl3_le` is proved in `KloostermanObligations.lean`
+with axiom set `[propext, Classical.choice, Quot.sound]`, so the numerical end of the packaging
+carries no assumption at all. -/
 theorem kl3_bound_of_obligations {q : ℕ} (P : Kl3Package q) :
     ‖P.kl3‖ ≤ 3 * Real.sqrt q :=
   P.norm_kl3_le
