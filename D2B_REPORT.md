@@ -29,8 +29,9 @@ figure is withdrawn: it measures a set no obligation uses.
 
 ## 3. Final map
 
-262 = 5 cap + 60 outer (28 rankTwo + 30 low + 2 high) + 137 inner (68 rankTwo +
-5 high + 64 low). 94 low = 64 inner + 30 outer; the 30 outer low are
+262 = 5 cap + 120 outer + 137 inner. In covers (SourceData182): 60 outer = 28
+rankTwo + 30 low + 2 high (each with a root *and* a face), 137 inner = 68 rankTwo
++ 5 high + 64 low. 94 low covers = 64 inner + 30 outer; the 30 outer low are
 D1-independent. See `OBLIGATION_MAP.md`.
 
 ## 4. Axcheck

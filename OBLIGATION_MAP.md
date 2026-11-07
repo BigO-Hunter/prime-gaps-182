@@ -16,19 +16,25 @@ structure TrialCerts182 where          -- formal/SourceData182.lean
 plus the 5 cap inequalities of `CapBounds182`. Contract:
 `pg182-frame/Pg182Frame/Obligations.lean`, `PhysicalSourceBounds182Mirror`.
 
-| family | count | kind split (from SourceData182.lean) | D1-data status |
+| family | obligations | covers (from SourceData182.lean) | D1-data status |
 |---|---:|---|---|
 | Cap (denominator l/u, J0, Jplus, tail) | 5 | — | **D1-independent** |
-| Outer root + face | 60 | **28 rankTwo + 30 low + 2 high** | **D1-independent** |
-| Inner mass | 137 | **68 rankTwo + 5 high + 64 low** | **D1-data consumers** |
+| Outer root **and** face | **120** | 60 covers: **28 rankTwo + 30 low + 2 high** | **D1-independent** |
+| Inner mass | **137** | 137 covers: **68 rankTwo + 5 high + 64 low** | **D1-data consumers** |
 | **total** | **262** | **96 rankTwo + 94 low + 7 high = 197 covers** | |
 
-Reconciliation of the "94 `.low` rows": **94 = 64 inner low + 30 outer low.** The
-30 outer low rows lie in the outer root/face family, which consumes no per-cell
-law mass (B1/B3 + D3 chain only), so they are not an envelope-class problem at
-all. The 197-cover split `96/94/7` reproduces `pg182-r2/ARCHITECTURE.md:22`
-exactly; the 137-inner split `68/5/64` reproduces D1c's map (73 rank/high + 64
-low).
+Each outer cover carries both a `rootUpper` and a `faceUpper`, so 60 outer covers
+= 120 outer obligations (28 rankTwo covers → 56, 30 low → 60, 2 high → 4); this
+reproduces `pg182-d1/OBLIGATION_MAP.md`'s outer rows (56 rank/high roots+faces,
+60 outer low roots+faces) exactly. Each inner cover carries one `faceUpper`, so
+137 inner covers = 137 obligations.
+
+Reconciliation of the "94 `.low` rows": **94 covers = 64 inner low + 30 outer
+low.** The 30 outer low covers sit in the outer root/face family, which consumes
+no per-cell law mass (B1/B3 + D3 chain only), so they are not an envelope-class
+problem at all. The 197-cover split `96/94/7` reproduces
+`pg182-r2/ARCHITECTURE.md:22`; the 137-inner split `68/5/64` reproduces D1c's map
+(73 rank/high + 64 low).
 
 ## 2. Per-class verdicts after D2 and D2b
 
