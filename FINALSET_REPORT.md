@@ -142,3 +142,19 @@ Total `≈ 0.4517 ≤ 1`.  The only non-elementary step is packaging the dyadic 
 `receipt/axcheck_charfunmod.txt` (9 theorems) and `receipt/axcheck_integralbound.txt`
 (6 theorems): **`[propext, Classical.choice, Quot.sound]` only.**  No `sorryAx`, no
 `native_decide`, no new axioms, in either file.
+
+## 8. Numeric verification (the two named inputs are about the SAME objects)
+
+Checked in `python3` against `quad` and the receipt's series (2026-11-07):
+
+| quantity | value | check |
+|---|---|---|
+| `Cin 1` by my integral definition | `0.2398117420` | = the series `Σ (-1)^{m+1} x^{2m}/((2m)(2m)!)` to `1e-10` |
+| `Cin π`, `Cin 4`, `Cin 20` | `1.6482776387`, `2.1044917239`, `3.5285281176` | integral = series at each |
+| `∫_0^∞ e^{-38 Cin}` (true) | `0.2884887…` | `< 0.39446770` (the receipt's certified upper bound) |
+| the margin `4/π ÷ 0.39446770` | `3.2277×` | matches `certifiedIntegralBound_le_four_div_pi` |
+| the §5 crude chain | `0.4517 + 3e-17 + 2.5e-16` | `< 1 < 4/π` |
+
+The first row matters: the `Cin` of `CharFunMod.lean` (interval integral) and the `Cin` the
+receipt bounds (alternating series) are the same function, so (N2) is a statement about the
+object that appears in the modulus identity, not merely a lookalike.
