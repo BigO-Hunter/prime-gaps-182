@@ -1,0 +1,11 @@
+name = "pg182-frame"
+version = "0.1.0"
+defaultTargets = ["Pg182Frame"]
+
+[[require]]
+name = "mathlib"
+path = "/Users/dmitri.arkhipov/bigo-campaign/staircase-port/.lake/packages/mathlib"
+
+[[lean_lib]]
+name = "Pg182Frame"
+globs = ["Pg182Frame"]
