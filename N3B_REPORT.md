@@ -158,3 +158,32 @@ turns "the nonzero bands satisfy the hypothesis" from a documented case split in
     for f in receipt/axcheck*.lean; do lake env lean "$f"; done             # 116 decls, all stdlib
 
 No `sorry`, no `native_decide`, no new axioms anywhere in the lane.
+
+## 7. Lit-anneal delta: PR #45771 vs `iIndepFun.integral_prod_eq_prod_integral` (2026-11-07)
+
+The lit-anneal flagged `ProbabilityTheory.iIndepFun.integral_prod_eq_prod_integral`
+(`Mathlib/Probability/Independence/Integration.lean`, verified at master) as a potential duplicate.
+Verdict: **not a duplicate; delta real; PR repositioned** (body edited, title unchanged, file
+untouched — no rebuild needed).
+
+The delta, exactly:
+
+* **Index.** Theirs is `[Fintype ι]` — a finite product, where no convergence question is even
+  statable. Ours is `[Countable ι]` with genuinely infinite `∏'`, and the conclusion is a `HasProd`
+  convergence statement; the a.e. summability of `∑ i, ‖f i (x i) - 1‖` (Tonelli) and
+  `multipliable_one_add_of_summable` have no finite-index counterpart.
+* **Framing.** Theirs needs random variables `X : (i : ι) → Ω → 𝓧 i` on a common probability space
+  with `iIndepFun X μ` (their `iIndepFun.map_fun_eq_pi_map` reduces independence to the pi product
+  measure, then applies `integral_fintype_prod_eq_prod`). Ours works directly over
+  `Measure.infinitePi μ` — the product-measure form their reduction *arrives at*; no random-variable
+  layer required by the consumer (the char-function campaign).
+* **Bounds.** Theirs: measurability only, nothing needed at finite index. Ours: the
+  `‖f i x‖ ≤ C i` family with `∑ i, ‖C i - 1‖` summable plus the `∑' ∫⁻ ‖f i x - 1‖₊ ≠ ⊤`
+  condition — the hypothesis shape that makes infinite Bochner products converge, and the piece the
+  campaign actually consumes.
+
+Neither statement subsumes the other. Repositioning action: the PR body's "Why it is not already
+there" now credits the independence family explicitly and a new "Relation to
+`iIndepFun.integral_prod_eq_prod_integral`" section states the delta above; claims were **not**
+narrowed (the body already claimed only what is proven). Updated body:
+`receipt/pr_infinitepi_body_v2.md`; live at PR #45771 as of 2026-11-07.
