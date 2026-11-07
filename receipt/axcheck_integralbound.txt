@@ -1,0 +1,6 @@
+'PrimeGap182D2.certifiedIntegralBound_nonneg' depends on axioms: [propext, Classical.choice, Quot.sound]
+'PrimeGap182D2.certifiedIntegralBound_le_four_div_pi' depends on axioms: [propext, Classical.choice, Quot.sound]
+'PrimeGap182D2.certifiedIntegralBound_div_zeta_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+'PrimeGap182D2.hasLocalBound_convPow_of_integral_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+'PrimeGap182D2.hasLocalBound_convPow_of_certified_integral' depends on axioms: [propext, Classical.choice, Quot.sound]
+'PrimeGap182D2.cell_measure_le_hq_of_certified_integral' depends on axioms: [propext, Classical.choice, Quot.sound]

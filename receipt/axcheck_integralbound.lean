@@ -1,0 +1,8 @@
+import Pg182D2.IntegralBound
+open PrimeGap182D2
+#print axioms certifiedIntegralBound_nonneg
+#print axioms certifiedIntegralBound_le_four_div_pi
+#print axioms certifiedIntegralBound_div_zeta_le
+#print axioms hasLocalBound_convPow_of_integral_le
+#print axioms hasLocalBound_convPow_of_certified_integral
+#print axioms cell_measure_le_hq_of_certified_integral
