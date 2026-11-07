@@ -100,6 +100,21 @@ the map is not the identity).
 `TableData.isLow : Fin 137 → Bool` marks those rows, kernel-proved to be the frozen `kind = .low`
 (`isLow_eq`), so the boundary is a Lean object rather than a footnote.
 
+### 4.1 Why this is not a gap in effort — the equivalence
+
+`envSup` is a free parameter of the composition, so the question "can `hrow` be closed
+arithmetically?" is not vague. With the proved cell bound (`cell mass ≤ hq`) and `envSup ≥ 0`:
+
+* `hrow ∧ hmargin` **implies** `innerMass j ≤ envSup j * cell mass ≤ envSup j * hq ≤ faceUpper j` —
+  that *is* the composition's `calc` in `h1_182_of`;
+* conversely, any `envSup` satisfying both must have `envSup j ≥ innerMass j / cell mass` and
+  `envSup j ≤ faceUpper j / hq`, so a pair exists **iff** `innerMass j ≤ faceUpper j * (cell mass / hq)`,
+  i.e. (as `cell mass ≤ hq`) iff the row's source inequality holds for the cell actually used.
+
+So closing `hrow` from the table is not a stronger arithmetic task that was left undone — it is
+**equivalent to proving the row's source inequality**. `hrow` is the precise location of the frozen
+physical content of the 137 inner rows, and the transcription moved everything else out of it.
+
 ## 5. Wiring — `COMPOSITION.lean`
 
 * **`C : TrialCerts182` is gone from the statement.** `certTable : TrialCerts182` reads the
