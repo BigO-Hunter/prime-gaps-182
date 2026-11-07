@@ -145,4 +145,103 @@ theorem cappedDyadicIntensity_ne_zero_of_lt {ζ : ℝ} {k : ℤ} (_hζ : 0 < ζ)
     exact absurd hpos (lt_irrefl _)
   exact (FiniteMeasure.mass_nonzero_iff _).mp hmass
 
+/-- The `ℝ≥0∞`-norm of a complex number is the `ofReal` of its norm (the two coercion routes). -/
+theorem coe_nnnorm_eq_ofReal_norm (z : ℂ) : (‖z‖₊ : ℝ≥0∞) = ENNReal.ofReal ‖z‖ := by
+  rw [← ENNReal.ofReal_coe_nnreal]
+  norm_cast
+
+/-! ### 3. The first moment of the intensity -/
+
+/-- **The per-band first moment.**  `lintegral_weighted_finitePoissonLaw` with `h ≡ 1`: the
+`∫⁻`-moment of the mass of a Poisson fragment law is the intensity's first moment.  Careful — this
+is the *intensity's* first moment, not `μ.mass`; for a dyadic band the two coincide because the
+density is `1/u` (so `∫⁻ u, u ∂ν_k = ν_k.mass`), which is `lintegral_firstMoment_cappedDyadic`. -/
+theorem lintegral_mass_finitePoissonLaw (μ : FiniteMeasure ℝ) :
+    ∫⁻ c, ENNReal.ofReal ((c.mass : ℝ)) ∂(PrimeGap182D1.finitePoissonLaw μ)
+      = ∫⁻ u, ENNReal.ofReal u ∂(μ : Measure ℝ) := by
+  have h := PrimeGap182D1.lintegral_weighted_finitePoissonLaw μ (fun _ => 1) measurable_const
+  simp only [lintegral_one, mul_one] at h
+  rw [← h]
+  refine lintegral_congr fun c => ?_
+  rw [ENNReal.ofReal_coe_nnreal, FiniteMeasure.ennreal_mass]
+
+/-- **The band sum of the first moments is `ζ`.**  Both the `hsum` discharge and the join consume
+this: the `1/u` density makes the first moment of each band its mass, and the masses sum to the
+period length. -/
+theorem lintegral_firstMoment_cappedDyadic {ζ : ℝ} (_hζ : 0 < ζ) :
+    ∑' k : ℤ, ∫⁻ u, ENNReal.ofReal u
+      ∂(PrimeGap182D1.cappedDyadicIntensity ζ k : Measure ℝ) = ENNReal.ofReal ζ := by
+  rw [← lintegral_sum_measure (fun u : ℝ => ENNReal.ofReal u)
+    (fun k : ℤ => (PrimeGap182D1.cappedDyadicIntensity ζ k : Measure ℝ))]
+  rw [PrimeGap182D1.sum_cappedDyadicIntensity]
+  rw [lintegral_withDensity_eq_lintegral_mul _ (by fun_prop) (by fun_prop)]
+  simp only [Pi.mul_apply]
+  have hpt : ∀ᵐ u ∂(volume.restrict (Set.Ioc (0 : ℝ) ζ)),
+      ENNReal.ofReal (1 / u) * ENNReal.ofReal u = 1 := by
+    filter_upwards [ae_restrict_mem measurableSet_Ioc] with u hu
+    rw [← ENNReal.ofReal_mul (le_of_lt (one_div_pos.mpr hu.1)),
+      one_div_mul_cancel hu.1.ne', ENNReal.ofReal_one]
+  rw [lintegral_congr_ae hpt, lintegral_one, Measure.restrict_apply_univ, Real.volume_Ioc,
+    sub_zero]
+
+/-! ### 4. The bounded estimate (the `hsum` hypothesis of the product lemma) -/
+
+/-- The pointwise chord bound in the form the measures consume: for `u > 0`,
+`‖e^{I u t} − 1‖ ≤ 2|t| u`. -/
+theorem band_norm_le (t : ℝ) {u : ℝ} (hu : 0 ≤ u) :
+    ‖Complex.exp (↑(u * t) * Complex.I) - 1‖ ≤ 2 * |t| * u := by
+  have h := norm_exp_imag_sub_one_le (u * t)
+  have harg : Complex.I * ((u * t : ℝ) : ℂ) = ↑(u * t) * Complex.I := by
+    push_cast; ring
+  rw [harg] at h
+  calc ‖Complex.exp (↑(u * t) * Complex.I) - 1‖ ≤ 2 * |u * t| := h
+    _ = 2 * |t| * u := by rw [abs_mul, abs_of_nonneg hu]; ring
+
+/-- **The `hsum` discharge.**  The bound the product lemma needs,
+`Σ'_k ∫⁻ X, ‖e^{I (X.mass t)} − 1‖ ∂Poisson(ν_k) ≠ ⊤`: each band is bounded by `2|t|` times the
+band's first moment, and the band first moments sum to `ζ`. -/
+theorem tsum_band_charFun_lintegral_ne_top {ζ : ℝ} (hζ : 0 < ζ) (t : ℝ) :
+    (∑' k : ℤ, ∫⁻ X, (‖Complex.exp (↑((X.mass : ℝ) * t) * Complex.I) - 1‖₊ : ℝ≥0∞)
+        ∂(PrimeGap182D1.finitePoissonLaw (PrimeGap182D1.cappedDyadicIntensity ζ k))) ≠ ⊤ := by
+  have hstep : ∀ k : ℤ,
+      (∫⁻ X, (‖Complex.exp (↑((X.mass : ℝ) * t) * Complex.I) - 1‖₊ : ℝ≥0∞)
+          ∂(PrimeGap182D1.finitePoissonLaw (PrimeGap182D1.cappedDyadicIntensity ζ k)))
+        ≤ ENNReal.ofReal (2 * |t|) * ∫⁻ u, ENNReal.ofReal u
+            ∂(PrimeGap182D1.cappedDyadicIntensity ζ k : Measure ℝ) := by
+    intro k
+    set ν := PrimeGap182D1.cappedDyadicIntensity ζ k with hν
+    calc ∫⁻ X, (‖Complex.exp (↑((X.mass : ℝ) * t) * Complex.I) - 1‖₊ : ℝ≥0∞)
+          ∂(PrimeGap182D1.finitePoissonLaw ν)
+        = ∫⁻ X, ENNReal.ofReal ‖Complex.exp (↑((X.mass : ℝ) * t) * Complex.I) - 1‖
+            ∂(PrimeGap182D1.finitePoissonLaw ν) := by
+          refine lintegral_congr fun X => ?_
+          exact coe_nnnorm_eq_ofReal_norm _
+      _ ≤ ∫⁻ X, ENNReal.ofReal (2 * |t| * (X.mass : ℝ))
+            ∂(PrimeGap182D1.finitePoissonLaw ν) := by
+          refine lintegral_mono fun X => ?_
+          refine ENNReal.ofReal_le_ofReal ?_
+          calc ‖Complex.exp (↑((X.mass : ℝ) * t) * Complex.I) - 1‖
+              ≤ 2 * |t| * (X.mass : ℝ) := band_norm_le t X.mass.coe_nonneg
+            _ = 2 * |t| * (X.mass : ℝ) := rfl
+      _ = ENNReal.ofReal (2 * |t|) * ∫⁻ X, ENNReal.ofReal ((X.mass : ℝ))
+            ∂(PrimeGap182D1.finitePoissonLaw ν) := by
+          rw [← lintegral_const_mul' (ENNReal.ofReal (2 * |t|))
+            (fun X : FiniteMeasure ℝ => ENNReal.ofReal ((X.mass : ℝ))) ENNReal.ofReal_ne_top]
+          refine lintegral_congr fun X => ?_
+          rw [← ENNReal.ofReal_mul (by positivity)]
+      _ = ENNReal.ofReal (2 * |t|) * ∫⁻ u, ENNReal.ofReal u ∂((ν : FiniteMeasure ℝ) : Measure ℝ) := by
+          rw [lintegral_mass_finitePoissonLaw]
+  have hsum_le : (∑' k : ℤ, ∫⁻ X, (‖Complex.exp (↑((X.mass : ℝ) * t) * Complex.I) - 1‖₊ : ℝ≥0∞)
+        ∂(PrimeGap182D1.finitePoissonLaw (PrimeGap182D1.cappedDyadicIntensity ζ k)))
+      ≤ ENNReal.ofReal (2 * |t| * ζ) := by
+    calc _ ≤ ∑' k : ℤ, ENNReal.ofReal (2 * |t|) * ∫⁻ u, ENNReal.ofReal u
+          ∂(PrimeGap182D1.cappedDyadicIntensity ζ k : Measure ℝ) := ENNReal.tsum_le_tsum hstep
+      _ = ENNReal.ofReal (2 * |t|) * ∑' k : ℤ, ∫⁻ u, ENNReal.ofReal u
+            ∂(PrimeGap182D1.cappedDyadicIntensity ζ k : Measure ℝ) := ENNReal.tsum_mul_left
+      _ = ENNReal.ofReal (2 * |t|) * ENNReal.ofReal ζ := by
+          rw [lintegral_firstMoment_cappedDyadic hζ]
+      _ = ENNReal.ofReal (2 * |t| * ζ) := by
+          rw [← ENNReal.ofReal_mul (by positivity)]
+  exact ne_top_of_le_ne_top ENNReal.ofReal_ne_top hsum_le
+
 end PrimeGap182D2
