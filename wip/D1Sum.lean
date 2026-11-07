@@ -24,14 +24,6 @@ namespace PrimeGap182D1
 
 variable {d : ℕ}
 
-/-- The ℝ-coercion commutes with finite sums in ℝ≥0. -/
-theorem nnreal_sum_coe {ι : Type*} [DecidableEq ι] (f : ι → ℝ≥0) (s : Finset ι) :
-    ((∑ i ∈ s, f i : ℝ≥0) : ℝ) = ∑ i ∈ s, ((f i : ℝ≥0) : ℝ) := by
-  induction s using Finset.induction_on with
-  | empty => simp
-  | @insert i s hi ih =>
-      rw [Finset.sum_insert hi, Finset.sum_insert hi, NNReal.coe_add, ih]
-
 /-- The sum of the coordinate cell indices (the coarse-run index). -/
 def sumCell (Y : Fin d → FiniteMeasure ℝ) : ℕ := ∑ j, trialCellIndex (Y j)
 
@@ -75,24 +67,20 @@ theorem mass_lt_of_sumCell {Y : Fin d → FiniteMeasure ℝ} {c : ℕ} (hd : 0 <
   have hrhs : (∑ j : Fin d, ((trialCellIndex (Y j) : ℝ) + 1) * (trialMesh : ℝ))
       = (((c : ℝ) + d) * (trialMesh : ℝ)) := by
     have hsc : (∑ j : Fin d, trialCellIndex (Y j)) = c := h
-    rw [Finset.sum_mul]
-    rw [show (∑ j : Fin d, ((trialCellIndex (Y j) : ℝ) + 1))
-        = (((∑ j : Fin d, trialCellIndex (Y j) : ℕ) : ℝ) + (d : ℝ)) from by
-      rw [Finset.sum_add_distrib, map_sum (Nat.cast : ℕ →+* ℝ) _ Finset.univ,
-        Finset.card_univ, hsc]]
-    ring
+    have h1 : (∑ j : Fin d, ((trialCellIndex (Y j) : ℝ) + 1))
+        = (((∑ j : Fin d, trialCellIndex (Y j) : ℕ) : ℝ) + (d : ℝ)) := by
+      rw [Finset.sum_add_distrib, Finset.sum_const, Finset.card_univ,
+        Fintype.card_fin, nsmul_eq_mul, mul_one, Nat.cast_sum]
+    rw [← Finset.sum_mul, h1, hsc]
   rw [hrhs] at hsum
   exact hsum
 
 theorem massExp_pi (s : ℝ) (Y : Fin d → FiniteMeasure ℝ) :
     ENNReal.ofReal (Real.exp (-s * ((∑ j, (Y j).mass : ℝ))))
       = ∏ j, massExp s (Y j) := by
-  rw [show ((∑ j, (Y j).mass : ℝ≥0) : ℝ) = ∑ j, ((Y j).mass : ℝ) from
-    nnreal_sum_coe (fun j => (Y j).mass) Finset.univ,
-    ENNReal.ofReal_prod_of_nonneg (fun j _ => Real.exp_nonneg _), ← Real.exp_sum]
-  congr 1
-  rw [← Finset.sum_mul]
-  simp [mul_comm]
+  rw [Finset.mul_sum, Real.exp_sum,
+    ENNReal.ofReal_prod_of_nonneg (fun j _ => Real.exp_nonneg _)]
+  exact Finset.prod_congr rfl (fun j _ => rfl)
 
 theorem measurable_piMassExp (s : ℝ) :
     Measurable (fun Y : Fin d → FiniteMeasure ℝ =>
@@ -123,8 +111,8 @@ of the per-coordinate MGF. -/
 theorem lintegral_massExp_pi (μ : Measure (FiniteMeasure ℝ))
     [IsProbabilityMeasure μ] (s : ℝ) :
     (∫⁻ Y : Fin d → FiniteMeasure ℝ,
-        ENNReal.ofReal (Real.exp (-s * ((∑ j, (Y j).mass : ℝ)))))
-        ∂(Measure.pi fun _ : Fin d => μ)
+        ENNReal.ofReal (Real.exp (-s * ((∑ j, (Y j).mass : ℝ))))
+        ∂(Measure.pi fun _ : Fin d => μ))
       = (∫⁻ X, massExp s X ∂μ) ^ d := by
   have hEq : (fun Y : Fin d → FiniteMeasure ℝ =>
       ENNReal.ofReal (Real.exp (-s * ((∑ j, (Y j).mass : ℝ)))))
@@ -134,6 +122,11 @@ theorem lintegral_massExp_pi (μ : Measure (FiniteMeasure ℝ))
     (fun i (x : Fin d → FiniteMeasure ℝ) => massExp s (x i))
     (ProbabilityTheory.iIndepFun_pi (fun _ => (measurable_massExp s).aemeasurable))
     (fun i => (measurable_massExp s).comp (measurable_pi_apply i))]
+  have hfac : ∀ i : Fin d, (∫⁻ ω : Fin d → FiniteMeasure ℝ, massExp s (ω i)
+      ∂(Measure.pi fun _ : Fin d => μ)) = ∫⁻ X, massExp s X ∂μ :=
+    fun i => (measurePreserving_eval (fun _ : Fin d => μ) i).lintegral_comp
+      (measurable_massExp s)
+  simp only [hfac]
   rw [Finset.prod_const, Finset.card_univ, Fintype.card_fin]
 
 /-- D1-SUM: the probability that the `d`-tuple lands in coarse run `c` is at
@@ -148,11 +141,12 @@ theorem sum_cell_probability_le (μ : Measure (FiniteMeasure ℝ))
   set ν : Measure (Fin d → FiniteMeasure ℝ) := Measure.pi fun _ : Fin d => μ with hν
   set A : Set (Fin d → FiniteMeasure ℝ) := {Y : Fin d → FiniteMeasure ℝ | sumCell Y = c} with hA
   set b : ℝ := ((c : ℝ) + d) * (trialMesh : ℝ) with hb
+  have hmr : (0 : ℝ) < (trialMesh : ℝ) := by exact_mod_cast trialMesh_pos
   have hb0 : (0 : ℝ) ≤ b := by
     have h1 : (0 : ℝ) ≤ ((c : ℝ) + d) := by positivity
-    nlinarith [trialMesh_pos]
-  set g : Fin d → FiniteMeasure ℝ → ℝ≥0∞ :=
-    fun Y => ENNReal.ofReal (Real.exp (-s * ((∑ j, (Y j).mass : ℝ))))) with hg
+    exact mul_nonneg h1 (le_of_lt hmr)
+  set g : (Fin d → FiniteMeasure ℝ) → ℝ≥0∞ :=
+    fun Y => ENNReal.ofReal (Real.exp (-s * ((∑ j, (Y j).mass : ℝ)))) with hg
   have hAmeas : MeasurableSet A := measurableSet_sumCell c
   have hge : ∀ Y ∈ A, ENNReal.ofReal (Real.exp (-s * b)) ≤ g Y := by
     intro Y hY
@@ -200,27 +194,23 @@ theorem sum_cell_probability_le (μ : Measure (FiniteMeasure ℝ))
         exact mul_nonpos_of_nonpos_of_nonneg (neg_nonpos.mpr hs) hpos)
     rw [lintegral_one, hprob.measure_univ] at h1
     exact h1
-  have hcfin : ENNReal.ofReal (Real.exp (-s * b)) ≠ ⊤ :=
-    ne_top_of_le_ne_top ENNReal.one_ne_top hc1
   have hmul : ENNReal.ofReal (Real.exp (-s * b)) * ν A ≠ ⊤ :=
-    ENNReal.mul_ne_top hcfin (ne_top_of_le_ne_top ENNReal.one_ne_top hAle)
-  have hstep := (ENNReal.toReal_le_toReal hmul hIfin).mp hkey
+    ENNReal.mul_ne_top (ne_top_of_le_ne_top ENNReal.one_ne_top hc1)
+      (ne_top_of_le_ne_top ENNReal.one_ne_top hAle)
+  have hstep := (ENNReal.toReal_le_toReal hmul hIfin).mpr hkey
   rw [ENNReal.toReal_mul, ENNReal.toReal_ofReal (Real.exp_nonneg (-s * b))] at hstep
   have hInt : (∫⁻ Y, g Y ∂ν) = (∫⁻ X, massExp s X ∂μ) ^ d := by
-    have hEq : g = fun Y => ENNReal.ofReal (Real.exp (-s * ((∑ j, (Y j).mass : ℝ))))) := rfl
+    have hEq : g = fun Y => ENNReal.ofReal (Real.exp (-s * ((∑ j, (Y j).mass : ℝ)))) := rfl
     rw [hEq, lintegral_massExp_pi]
   have hbpos : 0 < Real.exp (-s * b) := Real.exp_pos _
-  have hstep' : ((∫⁻ X, massExp s X ∂μ) ^ d).toReal
-      ≤ ((ν A : ℝ≥0∞).toReal) * Real.exp (-s * b) := by
-    have hcomm := mul_comm (Real.exp (-s * b)) ((ν A : ℝ≥0∞).toReal)
-    rw [hInt]
-    linarith [hstep, hcomm]
+  have hmassreal : ν.real A = ((ν A : ℝ≥0∞)).toReal := rfl
   have hfin2 : Real.exp (s * b) * ((∫⁻ X, massExp s X ∂μ) ^ d).toReal
       = ((∫⁻ X, massExp s X ∂μ) ^ d).toReal / Real.exp (-s * b) := by
     rw [neg_mul, Real.exp_neg, div_eq_inv_mul, inv_inv]
-    ring
-  have hmassreal : ν.real A = ((ν A : ℝ≥0∞)).toReal := rfl
   rw [hmassreal, hfin2]
-  exact (le_div_iff₀ hbpos).mpr hstep'
+  exact (le_div_iff₀ hbpos).mpr (by
+    rw [hInt] at hstep
+    have hcomm := mul_comm (Real.exp (-s * b)) ((ν A : ℝ≥0∞).toReal)
+    linarith [hstep, hcomm])
 
 end PrimeGap182D1

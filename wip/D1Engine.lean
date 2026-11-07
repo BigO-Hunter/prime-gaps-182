@@ -1,4 +1,4 @@
-import Pg182D1.D1Cell
+import Pg182D1.D1Sum
 
 /-!
 # D1ENGINE.lean — the coarse-run partition engine (the C0 interface)
@@ -25,48 +25,25 @@ namespace PrimeGap182D1
 
 variable {d : ℕ}
 
-/-- The sum of the coordinate cell indices (the coarse-run index). -/
-def sumCell (Y : Fin d → FiniteMeasure ℝ) : ℕ := ∑ j, trialCellIndex (Y j)
-
-theorem measurable_sumCell :
-    Measurable (fun Y : Fin d → FiniteMeasure ℝ => sumCell Y) := by
-  induction d with
-  | zero => simpa [sumCell] using measurable_const
-  | succ n ih =>
-      have h : (fun Y : Fin (n + 1) → FiniteMeasure ℝ => sumCell Y)
-          = fun Y => sumCell (fun i : Fin n => Y i.castSucc)
-            + trialCellIndex (Y (Fin.last n)) := by
-        funext Y
-        show ∑ i : Fin (n + 1), trialCellIndex (Y i) = _
-        unfold sumCell
-        rw [Fin.sum_univ_castSucc]
-      rw [h]
-      have hres : Measurable
-          (fun (Y : Fin (n + 1) → FiniteMeasure ℝ) (i : Fin n) => Y i.castSucc) :=
-        measurable_pi_iff.mpr (fun i => measurable_pi_apply (i.castSucc))
-      exact (ih.comp hres).add
-        ((measurable_cellIndex).comp (measurable_pi_apply (Fin.last n)))
-
-theorem measurableSet_sumCell (c : ℕ) :
-    MeasurableSet {Y : Fin d → FiniteMeasure ℝ | sumCell Y = c} :=
-  measurable_sumCell (measurableSet_singleton c)
-
 /-- Measurability of a finite σ-weighted sum of class indicators. -/
 theorem measurable_runEnvelope (σ : ℕ → ℝ) (K : Finset ℕ) :
     Measurable fun Y : Fin d → FiniteMeasure ℝ =>
-      ∑ c ∈ K, σ c * Set.indicator
-        {Y' : Fin d → FiniteMeasure ℝ | sumCell Y' = c} (fun _ => (1 : ℝ)) Y := by
+      ∑ c ∈ K, {Y' : Fin d → FiniteMeasure ℝ | sumCell Y' = c}.indicator
+        (fun _ => σ c) Y := by
   classical
   induction K using Finset.induction_on with
   | empty => simpa using measurable_const
   | @insert c K hc ih =>
-      have h1 : Measurable (fun _ : Fin d → FiniteMeasure ℝ => (σ c : ℝ)) :=
-        measurable_const
-      have h2 : Measurable (fun Y : Fin d → FiniteMeasure ℝ =>
-          {Y' : Fin d → FiniteMeasure ℝ | sumCell Y' = c}.indicator
-            (fun _ => (1 : ℝ)) Y) :=
-        (measurable_const).indicator (measurableSet_sumCell c)
-      exact (h1.mul h2).add ih
+      have h : (fun Y : Fin d → FiniteMeasure ℝ =>
+          ∑ c' ∈ insert c K, {Y' : Fin d → FiniteMeasure ℝ | sumCell Y' = c'}.indicator
+            (fun _ => σ c') Y)
+        = fun Y => {Y' : Fin d → FiniteMeasure ℝ | sumCell Y' = c}.indicator
+            (fun _ => σ c) Y + ∑ c' ∈ K, {Y' : Fin d → FiniteMeasure ℝ |
+              sumCell Y' = c'}.indicator (fun _ => σ c') Y := by
+        funext Y
+        rw [Finset.sum_insert hc]
+      rw [h]
+      exact (measurable_const.indicator (measurableSet_sumCell c)).add ih
 
 /-- D1-ENGINE: the coarse-run partition bound (see module docstring). -/
 theorem integral_le_discrete {μ : Measure (FiniteMeasure ℝ)}
@@ -82,98 +59,83 @@ theorem integral_le_discrete {μ : Measure (FiniteMeasure ℝ)}
     (∫ Y, f Y ∂(Measure.pi fun _ : Fin d => μ)) ≤ ∑ c ∈ K, σ c * env c := by
   classical
   set S : (Fin d → FiniteMeasure ℝ) → ℝ := fun Y =>
-    ∑ c ∈ K, σ c * Set.indicator
-      {Y' : Fin d → FiniteMeasure ℝ | sumCell Y' = c} (fun _ => (1 : ℝ)) Y with hS
-  -- S is measurable and integrable on the probability measure
+    ∑ c ∈ K, {Y' : Fin d → FiniteMeasure ℝ | sumCell Y' = c}.indicator
+      (fun _ => σ c) Y with hS
+  -- termwise facts
+  have hterm0 : ∀ (Y : Fin d → FiniteMeasure ℝ) (c : ℕ), c ∈ K →
+      0 ≤ {Y' : Fin d → FiniteMeasure ℝ | sumCell Y' = c}.indicator (fun _ => σ c) Y := by
+    intro Y c hc
+    by_cases hYc : sumCell Y = c
+    · have hmem : Y ∈ ({Y' : Fin d → FiniteMeasure ℝ | sumCell Y' = c} : Set _) := hYc
+      rw [Set.indicator_of_mem hmem]
+      exact hσ_nn c hc
+    · have hmem : Y ∉ ({Y' : Fin d → FiniteMeasure ℝ | sumCell Y' = c} : Set _) :=
+        fun h => hYc h
+      rw [Set.indicator_of_notMem hmem]
+  have htermle : ∀ (Y : Fin d → FiniteMeasure ℝ) (c : ℕ), c ∈ K →
+      {Y' : Fin d → FiniteMeasure ℝ | sumCell Y' = c}.indicator (fun _ => σ c) Y ≤ σ c := by
+    intro Y c hc
+    by_cases hYc : sumCell Y = c
+    · have hmem : Y ∈ ({Y' : Fin d → FiniteMeasure ℝ | sumCell Y' = c} : Set _) := hYc
+      rw [Set.indicator_of_mem hmem]
+    · have hmem : Y ∉ ({Y' : Fin d → FiniteMeasure ℝ | sumCell Y' = c} : Set _) :=
+        fun h => hYc h
+      rw [Set.indicator_of_notMem hmem]
+      exact hσ_nn c hc
+  -- S is measurable, integrable, and dominates f
   have hSmeas : Measurable S := measurable_runEnvelope σ K
+  have hS0 : ∀ Y, 0 ≤ S Y := fun Y =>
+    Finset.sum_nonneg (fun c hc => hterm0 Y c hc)
   have hSint : Integrable S (Measure.pi fun _ : Fin d => μ) := by
-    have hsumnn : (0 : ℝ) ≤ ∑ c ∈ K, σ c := Finset.sum_nonneg hσ_nn
-    refine (integrable_const (∑ c ∈ K, σ c)).mono' hSmeas.aestronglyMeasurable ?_
-    refine Filter.Eventually.of_forall (fun Y => ?_)
-    have hS0 : (0 : ℝ) ≤ S Y := by
-      rw [hS]
-      refine Finset.sum_nonneg (fun c hc => ?_)
-      by_cases hc' : c = sumCell Y
-      · subst hc'
-        simp [Set.indicator_of_mem]
-        exact hσ_nn c hc
-      · simp [Set.indicator_of_notMem hc']
-    have hSle : S Y ≤ ∑ c ∈ K, σ c := by
-      rw [hS]
-      refine Finset.sum_le_sum (fun c hc => ?_)
-      by_cases hc' : c = sumCell Y
-      · subst hc'
-        simp [Set.indicator_of_mem]
-        exact hσ_nn c hc
-      · simp [Set.indicator_of_notMem hc']
-        linarith [hσ_nn c hc]
-    exact abs_le.2 ⟨by linarith [hS0], by linarith [hSle]⟩
-  -- pointwise domination f ≤ S
+    refine (integrable_const (∑ c ∈ K, σ c)).mono' hSmeas.aestronglyMeasurable
+      (Filter.Eventually.of_forall (fun Y => by
+        rw [Real.norm_eq_abs, abs_of_nonneg (hS0 Y)]
+        exact Finset.sum_le_sum (fun c hc => htermle Y c hc)))
   have hpt : ∀ Y, f Y ≤ S Y := by
     intro Y
     by_cases hY : sumCell Y ∈ K
-    · calc f Y ≤ σ (sumCell Y) := hσ Y
+    · have hmem : Y ∈ ({Y' : Fin d → FiniteMeasure ℝ | sumCell Y' = sumCell Y} :
+        Set (Fin d → FiniteMeasure ℝ)) := rfl
+      calc f Y ≤ σ (sumCell Y) := hσ Y
+        _ = {Y' : Fin d → FiniteMeasure ℝ | sumCell Y' = sumCell Y}.indicator
+              (fun _ => σ (sumCell Y)) Y :=
+              (Set.indicator_of_mem (f := fun _ => σ (sumCell Y)) hmem).symm
         _ ≤ S Y := by
-            rw [hS]
-            refine Finset.single_le_sum (f := fun c =>
-              σ c * Set.indicator
-                {Y' : Fin d → FiniteMeasure ℝ | sumCell Y' = c}
-                (fun _ => (1 : ℝ)) Y) ?_ ?_
-            · intro c hc
-              by_cases hc' : c = sumCell Y
-              · subst hc'
-                simp [Set.indicator_of_mem]
-              · simp [Set.indicator_of_notMem hc']
-                exact hσ_nn c hc
-            · exact Finset.mem_union_left _ (Finset.mem_univ _)
-    · have hf0 : f Y = 0 := hzero Y hY
-      rw [hf0]
-      refine Finset.sum_nonneg (fun c hc => ?_)
-      by_cases hc' : c = sumCell Y
-      · exact absurd hY (hc' ▸ hc)
-      · simp [Set.indicator_of_notMem hc']
-  -- the monotone step
+            refine Finset.single_le_sum (f := fun c : ℕ =>
+              {Y' : Fin d → FiniteMeasure ℝ | sumCell Y' = c}.indicator
+                (fun _ => σ c) Y) ?_ hY
+            intro c hc
+            exact hterm0 Y c hc
+    · rw [hzero Y hY]
+      exact hS0 Y
   have hstep : (∫ Y, f Y ∂(Measure.pi fun _ : Fin d => μ))
       ≤ (∫ Y, S Y ∂(Measure.pi fun _ : Fin d => μ)) :=
-    integral_mono_of_nonneg (fun Y => hnn Y)
-      (fun Y => hpt Y) hSint
-  -- per-class integrals and the mass majorization
-  have hclass : ∀ c ∈ K,
-      (∫ Y : Fin d → FiniteMeasure ℝ, σ c * Set.indicator
-          {Y' : Fin d → FiniteMeasure ℝ | sumCell Y' = c} (fun _ => (1 : ℝ)) Y
+    integral_mono_of_nonneg (Filter.Eventually.of_forall hnn)
+      hSint (Filter.Eventually.of_forall hpt)
+  -- per-class integrals
+  have hintc : ∀ c ∈ K,
+      (∫ Y : Fin d → FiniteMeasure ℝ, {Y' : Fin d → FiniteMeasure ℝ |
+          sumCell Y' = c}.indicator (fun _ => σ c) Y
         ∂(Measure.pi fun _ : Fin d => μ))
-        ≤ σ c * env c := by
+        = σ c * (Measure.pi fun _ : Fin d => μ).real
+          {Y : Fin d → FiniteMeasure ℝ | sumCell Y = c} := by
     intro c hc
-    have hmeasc : MeasurableSet {Y : Fin d → FiniteMeasure ℝ | sumCell Y = c} :=
-      measurableSet_sumCell c
-    have heq : (fun Y : Fin d → FiniteMeasure ℝ =>
-        σ c * Set.indicator {Y' : Fin d → FiniteMeasure ℝ | sumCell Y' = c}
-          (fun _ => (1 : ℝ)) Y)
-      = fun Y => Set.indicator {Y' : Fin d → FiniteMeasure ℝ | sumCell Y' = c}
-          (fun _ => (σ c : ℝ)) Y := by
-      funext Y
-      by_cases hY : sumCell Y = c
-      · simp [hY, Set.indicator_of_mem]
-      · simp [Set.indicator_of_notMem hY]
-    have hintc : (∫ Y : Fin d → FiniteMeasure ℝ, σ c * Set.indicator
-        {Y' : Fin d → FiniteMeasure ℝ | sumCell Y' = c} (fun _ => (1 : ℝ)) Y
-      ∂(Measure.pi fun _ : Fin d => μ))
-      = σ c * (Measure.pi fun _ : Fin d => μ).real
-        {Y : Fin d → FiniteMeasure ℝ | sumCell Y = c} := by
-      rw [heq, integral_indicator hmeasc, set_integral_const]
-      simp [Measure.real, mul_comm]
-    rw [hintc]
-    exact mul_le_mul_of_nonneg_left (hcell c hc) (hσ_nn c hc)
+    have hmeasc : MeasurableSet ({Y' : Fin d → FiniteMeasure ℝ | sumCell Y' = c} :
+      Set (Fin d → FiniteMeasure ℝ)) := measurableSet_sumCell c
+    rw [integral_indicator_const (σ c) hmeasc]
+    simp [mul_comm]
   -- the envelope integral splits over K
   have hSsplit : (∫ Y, S Y ∂(Measure.pi fun _ : Fin d => μ))
-      = ∑ c ∈ K, (∫ Y : Fin d → FiniteMeasure ℝ, σ c * Set.indicator
-          {Y' : Fin d → FiniteMeasure ℝ | sumCell Y' = c} (fun _ => (1 : ℝ)) Y
+      = ∑ c ∈ K, (∫ Y : Fin d → FiniteMeasure ℝ, {Y' : Fin d → FiniteMeasure ℝ |
+          sumCell Y' = c}.indicator (fun _ => σ c) Y
         ∂(Measure.pi fun _ : Fin d => μ)) := by
-    rw [hS]
-    refine integral_finsetSum K (fun c hc => ?_)
-    exact ((integrable_const (σ c)).indicator (measurableSet_sumCell c))
+    simp only [hS]
+    exact integral_finsetSum K (fun c _ =>
+      ((integrable_const (σ c)).indicator (measurableSet_sumCell c)))
   refine le_trans hstep ?_
   rw [hSsplit]
-  exact Finset.sum_le_sum (fun c hc => hclass c hc)
+  exact Finset.sum_le_sum (fun c hc => by
+    rw [hintc c hc]
+    exact mul_le_mul_of_nonneg_left (hcell c hc) (hσ_nn c hc))
 
 end PrimeGap182D1
