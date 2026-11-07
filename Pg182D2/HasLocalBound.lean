@@ -519,4 +519,73 @@ theorem cell_measure_le_hq_of_charFun (ν : Measure ℝ) [IsFiniteMeasure ν] {B
     ν (Set.Ioc ((n : ℝ) * mesh) ((n : ℝ) * mesh + mesh)) ≤ ENNReal.ofReal hq :=
   cell_measure_le_hq ν (hasLocalBound_one_div_zeta ν hB hBz) n
 
+/-! ### 4. The `d = 38` product structure, as a convolution power
+
+The sum coordinate `r = Σ_i cellIndex (X i)` is the sum of `38` independent copies of the
+fragment law, so its law is the `38`-fold convolution power.  Formally:
+
+    ‖charFun (μ^{*d}) t‖ = ‖charFun μ t‖ ^ d,
+
+which is exactly the `|φ|^38 = e^{-38 Cin}` product structure ROUTE2.md measured.  With this,
+the remaining hypothesis of the smoothing lemma is a statement about the *single band* only —
+the place where the `Cin` computation lives.
+-/
+
+/-- The `d`-fold convolution power of a measure (`δ_0` for `d = 0`). -/
+def convPow (μ : Measure ℝ) : ℕ → Measure ℝ
+  | 0 => Measure.dirac 0
+  | n + 1 => convPow μ n ∗ μ
+
+instance instIsFiniteMeasureConvPow (μ : Measure ℝ) [IsFiniteMeasure μ] (d : ℕ) :
+    IsFiniteMeasure (convPow μ d) := by
+  induction d with
+  | zero => show IsFiniteMeasure (Measure.dirac (0 : ℝ)); infer_instance
+  | succ n ih =>
+      haveI := ih
+      show IsFiniteMeasure (Measure.map (fun x : ℝ × ℝ => x.1 + x.2) ((convPow μ n).prod μ))
+      constructor
+      rw [Measure.map_apply (by fun_prop) MeasurableSet.univ, Set.preimage_univ,
+        ← Set.univ_prod_univ, Measure.prod_prod]
+      exact ENNReal.mul_lt_top (measure_lt_top _ _) (measure_lt_top _ _)
+
+theorem charFun_convPow (μ : Measure ℝ) [IsFiniteMeasure μ] (d : ℕ) (t : ℝ) :
+    charFun (convPow μ d) t = (charFun μ t) ^ d := by
+  induction d with
+  | zero => simp [convPow, charFun_dirac]
+  | succ n ih =>
+      rw [convPow, charFun_conv, ih, pow_succ]
+
+/-- The sum-level `d`-fold law has the same smoothing instance as the single band, with the
+characteristic function raised to the `d`-th power. -/
+theorem hasLocalBound_convPow (μ : Measure ℝ) [IsProbabilityMeasure μ] (d : ℕ) {B : ℝ}
+    (hB : ∀ R : ℝ, ∫ t in (0)..R, ‖charFun μ t‖ ^ d ≤ B) :
+    HasLocalBound (convPow μ d) (Real.pi / 4 * B) := by
+  refine hasLocalBound_of_charFun_bound (convPow μ d) (fun R => ?_)
+  have hfun : (fun t : ℝ => ‖charFun (convPow μ d) t‖) = fun t : ℝ => ‖charFun μ t‖ ^ d := by
+    funext t
+    rw [charFun_convPow μ d t, norm_pow]
+  rw [hfun]
+  exact hB R
+
+/-- **The `d = 38` instance**: one band's Fejér integral to the power `d`, and the arithmetic
+margin `B ≤ 4/(π ζ)`, give `HasLocalBound` at `D = 1/ζ` for the `d`-fold sum law. -/
+theorem hasLocalBound_convPow_one_div_zeta (μ : Measure ℝ) [IsProbabilityMeasure μ] (d : ℕ)
+    {B : ℝ} (hB : ∀ R : ℝ, ∫ t in (0)..R, ‖charFun μ t‖ ^ d ≤ B)
+    (hBz : B ≤ 4 / (Real.pi * zeta)) :
+    HasLocalBound (convPow μ d) (1 / zeta) :=
+  hasLocalBound_one_div_zeta (convPow μ d) (by
+    intro R
+    have hfun : (fun t : ℝ => ‖charFun (convPow μ d) t‖) = fun t : ℝ => ‖charFun μ t‖ ^ d := by
+      funext t
+      rw [charFun_convPow μ d t, norm_pow]
+    rw [hfun]
+    exact hB R) hBz
+
+/-- The payload at the `d`-fold level: every frozen cell gets at most the uniform mass `hq`. -/
+theorem cell_measure_le_hq_convPow (μ : Measure ℝ) [IsProbabilityMeasure μ] (d : ℕ) {B : ℝ}
+    (hB : ∀ R : ℝ, ∫ t in (0)..R, ‖charFun μ t‖ ^ d ≤ B)
+    (hBz : B ≤ 4 / (Real.pi * zeta)) (n : ℕ) :
+    convPow μ d (Set.Ioc ((n : ℝ) * mesh) ((n : ℝ) * mesh + mesh)) ≤ ENNReal.ofReal hq :=
+  cell_measure_le_hq (convPow μ d) (hasLocalBound_convPow_one_div_zeta μ d hB hBz) n
+
 end PrimeGap182D2

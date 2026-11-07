@@ -10,9 +10,10 @@ Lane D3, work dir `~/bigo-campaign/pg182-d2/`.  Deliverable: `Pg182D2/HasLocalBo
 | **the Fejér/Esseen smoothing lemma** (`hasLocalBound_of_charFun_bound`) | **PROVED** |
 | `HasLocalBound ν (1/ζ)` from `B ≤ 4/(πζ)` (`hasLocalBound_one_div_zeta`) | **PROVED** |
 | the payload, per-cell mass `≤ hq` (`cell_measure_le_hq_of_charFun`) | **PROVED** |
+| the `d = 38` product structure (`charFun_convPow`), and the instance at the convolution power (`cell_measure_le_hq_convPow`) | **PROVED** |
 | `HasLocalBound` for the exact `d = 38` fragment law | **exact-partial** — see §5: two *computational* inputs, no analytic wall |
 
-All 20 theorems: `[propext, Classical.choice, Quot.sound]` only. No `sorryAx`, no
+All 24 theorems: `[propext, Classical.choice, Quot.sound]` only. No `sorryAx`, no
 `native_decide`, no new axioms.
 
 **Named analytic input count: 1 → 0.**  The item D2 named ("Mathlib has no smoothing lemma")
@@ -55,6 +56,12 @@ not needed.  The `θ = π` member is taken because it needs no trigonometric opt
 5. Bound the `r`-integrand pointwise by `∫_{-R}^{R}‖charFun ν‖ ≤ 2B` and integrate.  The
    `π/4` constant is `2R B / (4R²/π²) · (1/(Rh))` with `R = 2π/h`.
 
+6. **The `d = 38` product structure, formalised** (`convPow`, `charFun_convPow`,
+   `hasLocalBound_convPow`, `cell_measure_le_hq_convPow`): the sum coordinate is the sum of 38
+   independent copies, i.e. the 38-fold convolution power, and
+   `‖charFun (μ^{*d}) t‖ = ‖charFun μ t‖ ^ d`.  So the `|φ|^38` of ROUTE2 is a theorem about
+   convolution powers, and the lemma's hypothesis becomes a statement about the **single band**.
+
 Design note worth keeping: the standard Fejér proof derives the kernel identity by a *triangle*
 Fubini over `{(r,t) : |t| ≤ r ≤ R}`.  That is avoided here — only an *upper bound* is needed, so
 `|∫_{-r}^{r}| ≤ ∫_{-R}^{R}` gives the same conclusion with one rectangle Fubini.  This is why
@@ -84,8 +91,10 @@ arithmetic in `receipt/receipt.py` (Darboux sums + `Cin` lower bounds + `e^{38}`
 yet a Lean theorem.  Feeding `B = 0.39446770` into `hasLocalBound_one_div_zeta` needs
 `B ≤ 4/(πζ) = 1.21150648`: **margin 3.07×**, so a far cruder formalised bound would do.
 
-With those two, `HasLocalBound ν (1/ζ)` is immediate and the D2 ledger's `cell_measure_le_hq`
-fires unchanged.  Even the `π/4` form is `0.30981421` in `hq` units against `1/ζ = 0.95151497`.
+With those two, `HasLocalBound ν (1/ζ)` is immediate (`hasLocalBound_convPow_one_div_zeta`, whose
+hypothesis is about the single band's `φ` to the 38th power) and the D2 ledger's
+`cell_measure_le_hq` fires unchanged.  Concretely: `D = (π/4)·B = 0.30981421` against the
+required `D ≤ 1/ζ = 0.95151497`, and the hypothesis needs only `B ≤ 4/(πζ) = 1.21150648`.
 
 Also unchanged by this lane: the **fine-level** (`d = 1`) input is not smoothing at all — it is
 D2 route 1's density-constancy (`cell_integral_eq_const`'s `hconst : f = e^{-γ}/ζ` on `(0,ζ)`),

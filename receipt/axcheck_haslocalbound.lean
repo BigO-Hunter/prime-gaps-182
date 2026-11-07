@@ -27,3 +27,7 @@ open PrimeGap182D2
 #print axioms hasLocalBound_of_integrable_charFun
 #print axioms hasLocalBound_one_div_zeta
 #print axioms cell_measure_le_hq_of_charFun
+#print axioms charFun_convPow
+#print axioms hasLocalBound_convPow
+#print axioms hasLocalBound_convPow_one_div_zeta
+#print axioms cell_measure_le_hq_convPow

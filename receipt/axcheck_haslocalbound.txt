@@ -17,3 +17,7 @@
 'PrimeGap182D2.hasLocalBound_of_integrable_charFun' depends on axioms: [propext, Classical.choice, Quot.sound]
 'PrimeGap182D2.hasLocalBound_one_div_zeta' depends on axioms: [propext, Classical.choice, Quot.sound]
 'PrimeGap182D2.cell_measure_le_hq_of_charFun' depends on axioms: [propext, Classical.choice, Quot.sound]
+'PrimeGap182D2.charFun_convPow' depends on axioms: [propext, Classical.choice, Quot.sound]
+'PrimeGap182D2.hasLocalBound_convPow' depends on axioms: [propext, Classical.choice, Quot.sound]
+'PrimeGap182D2.hasLocalBound_convPow_one_div_zeta' depends on axioms: [propext, Classical.choice, Quot.sound]
+'PrimeGap182D2.cell_measure_le_hq_convPow' depends on axioms: [propext, Classical.choice, Quot.sound]
