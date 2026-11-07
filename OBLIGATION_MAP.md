@@ -94,14 +94,30 @@ So the item D2 named ("Mathlib has no smoothing lemma") no longer exists, and
 integrable characteristic function — the `d = 38` case, not the `d = 1` case,
 where the hypothesis provably fails (`∫‖φ_1‖ = ∞`, the measured 5.724 hq).
 
-**Two computational inputs remain** for the exact `d = 38` law (neither analytic):
-(i) `‖charFun ν t‖ = exp(-38 Cin(t*zeta))` for the 38-fold convolution of the
-fragment mass law — a ℂ-valued version of the vendored Poisson MGF computation
-(`Pg182D1/Support.lean:220`), not a missing theorem; (ii) transcribing
-`∫_0^∞ e^{-38 Cin} ≤ 0.39446770` (`receipt/receipt.py`, exact rationals) into Lean.
-The margin is 3.07×: `0.39446770 ≤ 4/(π ζ) = 1.21150648`.
+**The two computational inputs, after D4 (`Pg182D2/CharFunMod.lean`, `Pg182D2/IntegralBound.lean`).**
+Neither is analytic; both are now stated in Lean, and everything between them and `hq` is proved:
+
+| input | status | Lean |
+|---|---|---|
+| **the modulus identity** `‖φ_ζ(t)‖ = exp(-Cin (t ζ))` | **PROVED** (D4) | `re_charExponent`, `norm_exp_neg_charExponent`, `norm_charFun_exp_exponent`, `integral_norm_charFun_pow` |
+| **the truncation chain** | **PROVED** (D4) | `integral_norm_charFun_pow_le`, `hasLocalBound_convPow_of_certified`, `cell_measure_le_hq_of_certified_integral` |
+| **the margin** `0.39446770 ≤ 4/π` | **PROVED** (D4, `norm_num`) | `certifiedIntegralBound_le_four_div_pi` (3.23×) |
+| (N1) the Poisson bridge `charFun (fragment mass law) t = exp(-charExponent t ζ)` | **named** | the hypothesis of `hasLocalBound_convPow_of_certified`; ℂ/Bochner version of `Pg182D1/Support.lean:220` |
+| (N2) `∀ R, ∫_0^R e^{-38 Cin} ≤ B` with `B ≤ 4/π` | **named** | likewise; `hasLocalBound_convPow_of_integral_le` takes ANY such `B` |
+
+So the ledger at `d = 38` reads: `(N1) ∧ (N2) ⇒ HasLocalBound (μ^{*38}) (1/ζ) ⇒ cell mass ≤ hq`,
+with `hq` reached by proved theorems only.  `FINALSET_REPORT.md` §3 gives the exact remaining
+proof obligations (the ℂ Poisson series with Bochner integrals; the integral bound by
+transcription of the receipt's rationals or, since the margin is `4/π = 1.27324`, by the
+elementary Jordan + Gaussian + dyadic-doubling chain with `≈ 0.4517 ≤ 1 ≤ 4/π`).
+The `d = 1` level remains out of scope as a smoothing input: `∫_0^∞ ‖φ_1‖ = ∞` there
+(`e^{-Cin} → e^{-γ}/(t ζ)`), the measured 5.724 hq, and R1's exact-convolution density
+constancy is what covers it.
 
 ## 5. Axcheck
+
+`receipt/axcheck_charfunmod.txt` (D4, 9 theorems) and `receipt/axcheck_integralbound.txt`
+(D4, 6 theorems): `[propext, Classical.choice, Quot.sound]` only.
 
 `receipt/axcheck_haslocalbound.txt` (D3) — all 20 theorems of `Pg182D2/HasLocalBound.lean`
 including `hasLocalBound_of_charFun_bound`, `hasLocalBound_one_div_zeta`,
