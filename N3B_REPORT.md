@@ -118,8 +118,9 @@ reviewers' call.
 
 ## 5. The exact remaining steps of the 182 data side
 
-With step 1 landed, `(N1)` is one mechanical assembly. Four obligations, all consuming existing
-theorems; the only non-elementary ingredient (`HasSum.exp`) is in Mathlib.
+With step 1 landed, `(N1)` is one mechanical assembly: three obligations plus the join, **every
+ingredient either in Mathlib or already in `Pg182D1/Support.lean` / `Pg182D2/CharFunBridge.lean`.**
+The only lemma that has to be written from scratch is the two-case norm bound of item 3.
 
 1. **Product form of the fragment charFun.** `fragmentLaw ζ = Measure.infinitePi (fun k : ℤ =>
    finitePoissonLaw (cappedDyadicIntensity ζ k))` (`Pg182D1/Law.lean:85`, definitional), then
@@ -127,14 +128,18 @@ theorems; the only non-elementary ingredient (`HasSum.exp`) is in Mathlib.
    (`‖f k X‖ = 1` exactly).
 2. **`HasSum.exp`** on the band exponents `E k = ∫ u, (e^{I t u} - 1) ∂(band k)`:
    `HasSum E a ⟹ HasProd (fun k => exp (E k)) (exp a)`.
-3. **The bounded estimate** (the only real work): discharge
-   `∑' k, ∫⁻ X, ‖exp (I (X.mass * t)) - 1‖ ∂(finitePoissonLaw ν_k) ≠ ⊤` via
-   `‖e^{i a} - 1‖ ≤ |a|`, the mass integral (4) giving `∫ X, X.mass ∂Po(ν_k) = ν_k.mass`, and
-   `∑ k, ν_k.mass = ζ < ∞` (`sum_cappedDyadicIntensity`, `Pg182D1/Support.lean:146`).
-4. **The mass integral**: `∫ X, X.mass ∂(finitePoissonLaw μ) = μ.mass` — from
-   `integral_finitePoissonLaw_normalized` with `F = mass`, `∫ x : Fin n, ∑ i, x i ∂π(μ.normalize)
-   = n * ∫ u, u ∂μ.normalize`, then the first Poisson moment.
-
+3. **The bounded estimate**: discharge
+   `∑' k, ∫⁻ X, ‖exp (I (X.mass * t)) - 1‖ ∂(finitePoissonLaw ν_k) ≠ ⊤`. The one new lemma is a
+   norm bound: Mathlib's `Complex.norm_exp_sub_one_le` needs `‖x‖ ≤ 1`, so the sharp
+   `‖e^{i a} - 1‖ ≤ |a|` is replaced by the uniform `≤ 2|a|` (two cases), enough for summability.
+   The rest exists: `PrimeGap182D1.lintegral_weighted_finitePoissonLaw` (`Support.lean:96`) with
+   `h ≡ 1` gives the Poisson **first moment**
+   `∫⁻ X, ofReal X.mass ∂(finitePoissonLaw μ) = ∫⁻ u, ofReal u ∂μ` — which is the *intensity's first
+   moment*, **not** `μ.mass` (a trap worth naming: they coincide for the dyadic bands only because
+   the density is `1/u`), and `PrimeGap182D1.lintegral_fragment_sum` (`Support.lean:159`) with
+   `h ≡ 1` gives `∑' k, ofReal (ν_k.mass) = ofReal ζ < ∞`.
+4. ~~The mass integral~~ — not a separate obligation: the first-moment computation above is the `∫⁻`
+   form the discharge consumes (and the Bochner form follows from it with `h ≡ 1`).
 Plus **step 3 of the assembly** (the join, previously named): `∑'_k ∫_{band k} = ∫_0^ζ` for
 `(e^{I t u} - 1)`, via `integral_iUnion_ae` + `dyadic_bands_disjoint` +
 `sum_cappedDyadicIntensity` + `integrable_charExponent_integrand`.

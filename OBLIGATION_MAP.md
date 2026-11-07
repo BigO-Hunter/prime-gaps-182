@@ -251,23 +251,33 @@ non-elementary ingredient is `HasSum.exp`, which is in Mathlib.
    with `f k := fun X => exp (I (X.mass * t))` and `C ≡ 1` (`‖f k X‖ = 1` exactly).
 2. `HasSum.exp` on the exponent family `E k = ∫ u, (e^{I t u} - 1) ∂(band k)`:
    `HasSum E a ⟹ HasProd (fun k => exp (E k)) (exp a)` — one application, lemma exists.
-3. **the bounded estimate** (the only real work): discharge the product lemma's hypothesis
-   `∑' k, ∫⁻ X, ‖exp (I (X.mass * t)) - 1‖ ∂(finitePoissonLaw ν_k) ≠ ⊤`.
-   Route: `‖e^{i a} - 1‖ ≤ |a|`, so the `∫⁻` is `≤ |t| * ∫⁻ X, X.mass ∂(Poisson ν_k)`; the Poisson
-   first moment is the **mass integral** (4) giving `= |t| * ν_k.mass`; then
-   `∑ k, ν_k.mass = ζ < ∞` is `sum_cappedDyadicIntensity` (`Pg182D1/Support.lean:146`).
-4. **the mass integral**: `∫ X, X.mass ∂(finitePoissonLaw μ) = μ.mass` — mechanical from
-   `integral_finitePoissonLaw_normalized` with `F = mass`, `∫ x : Fin n, ∑ i, x i ∂π(μ.normalize) =
-   n * ∫ u, u ∂μ.normalize` (`integral_fintype_prod_eq_prod`), and `poisson_integral_pow`-style
-   first-moment summation (`∑' n, n * m^n/n! * e^{-m} = m`).
+3. **the bounded estimate**: discharge the product lemma's hypothesis
+   `∑' k, ∫⁻ X, ‖exp (I (X.mass * t)) - 1‖ ∂(finitePoissonLaw ν_k) ≠ ⊤`. Three ingredients:
+   * a norm bound on the imaginary axis. Mathlib has `Complex.norm_exp_sub_one_le`
+     (`‖x‖ ≤ 1 ⟹ ‖exp x - 1‖ ≤ 2‖x‖`), not the sharp `‖e^{i a} - 1‖ ≤ |a|`; the uniform
+     `‖e^{i a} - 1‖ ≤ 2|a|` follows by a two-case split (`|a| ≤ 1` ⟹ the lemma with `x = I a`;
+     `|a| ≥ 1` ⟹ `‖·‖ ≤ 2 ≤ 2|a|`). **The only lemma here that has to be written from scratch.**
+   * the Poisson **first moment**: `PrimeGap182D1.lintegral_weighted_finitePoissonLaw`
+     (`Pg182D1/Support.lean:96`) with `h ≡ 1` gives
+     `∫⁻ X, ofReal X.mass ∂(finitePoissonLaw μ) = ∫⁻ u, ofReal u ∂μ`.  Careful — this is the
+     *intensity's first moment*, **not** `μ.mass`; for a dyadic band the two coincide because the
+     density is `1/u` (`u * 1/u = 1`), i.e. `∫⁻ u, ofReal u ∂ν_k = ofReal (ν_k.mass)`.
+   * the band sum: `∑' k, ofReal (ν_k.mass) = ofReal ζ` from
+     `PrimeGap182D1.lintegral_fragment_sum` (`Pg182D1/Support.lean:159`) with `h ≡ 1`
+     (`lintegral_sum_measure` + `sum_cappedDyadicIntensity` + `iUnion_dyadic_bands`).
+4. ~~the mass integral~~ — **not a separate obligation**; the first-moment computation above is the
+   `∫⁻` form, which is what the `hsum` discharge consumes.
 
 **Step 3 — the join** `∑'_k ∫_{band k} = ∫_0^ζ` for `(e^{I t u} - 1)`:
 
-5. `∫ u, (e^{I t u} - 1) ∂(fragment intensity)` is a `tsum` over the bands:
+5. `∫ u, (e^{I t u} - 1) ∂(fragment intensity)` is the `tsum` over the bands:
    `integral_iUnion_ae` + `dyadic_bands_disjoint` + `sum_cappedDyadicIntensity`
    (`Pg182D1/Support.lean:131,146`) + `integrable_charExponent_integrand`
-   (`Pg182D2/CharFunMod.lean:92`), then `charExponent` unfolds to `∫_0^ζ`.
+   (`Pg182D2/CharFunMod.lean:92`), then `charExponent` unfolds to `∫_0^ζ`. (The `∫⁻` twin of
+   exactly this argument is already written: `Pg182D1.lintegral_fragment_sum`.)
 
-That is the whole remainder: **4 mechanical obligations, no named analytic input.** With them, the
+That is the whole remainder: **3 obligations (product form, `HasSum.exp`, the bounded estimate) plus
+the join**, no named analytic input, and no missing Mathlib lemma — the one from-scratch lemma is the
+elementary two-case norm bound of item 3. With them, the
 `(N1)` row of §1 becomes a theorem and the data side's named-input count is **zero** (Katz, FKM and
 Type III are campaign-level deep inputs, not data-side obligations — §3 of `N1N2_REPORT.md`).
