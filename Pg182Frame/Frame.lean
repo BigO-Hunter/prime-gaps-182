@@ -93,18 +93,20 @@ theorem frequently_gap182_of_infinite_consecutive_pairs
   have himg : (fun p => Nat.count Nat.Prime p) '' ConsecutivePairs182 ⊆
       {m | Nat.nth Nat.Prime (m + 1) - Nat.nth Nat.Prime m ≤ 182} := by
     rintro m ⟨p, hp, rfl⟩
-    obtain ⟨hqprime, hlt, hgap, hconsec⟩ := hp.2
-    have hpq : Nat.nth Nat.Prime (Nat.count Nat.Prime p) = p := hcount p hp.1
+    show Nat.nth Nat.Prime (Nat.count Nat.Prime p + 1) -
+      Nat.nth Nat.Prime (Nat.count Nat.Prime p) ≤ 182
+    obtain ⟨hpP, q, hlt, hqP, hgap, hconsec⟩ := hp
+    have hpq : Nat.nth Nat.Prime (Nat.count Nat.Prime p) = p := hcount p hpP
     have hup : Nat.count Nat.Prime p + 1 ≤ Nat.count Nat.Prime q :=
-      hstrict p q hp.1 hqprime hlt
+      hstrict p q hpP hqP hlt
     have hdown : Nat.count Nat.Prime q ≤ Nat.count Nat.Prime p + 1 := by
       by_contra hc
       have hlt2 : Nat.count Nat.Prime p + 1 < Nat.count Nat.Prime q := by omega
       have hle : Nat.nth Nat.Prime (Nat.count Nat.Prime p + 1) ≤
           Nat.nth Nat.Prime (Nat.count Nat.Prime q) := hmono hlt2.le
-      rw [hcount q hqprime] at hle
+      rw [hcount q hqP] at hle
       have hne : Nat.nth Nat.Prime (Nat.count Nat.Prime p + 1) ≠ q :=
-        fun he => hlt2.ne (hnthinj (he.trans (hcount q hqprime).symm))
+        fun he => hlt2.ne (hnthinj (he.trans (hcount q hqP).symm))
       have hpm : Nat.Prime (Nat.nth Nat.Prime (Nat.count Nat.Prime p + 1)) :=
         Nat.nth_mem_of_infinite (p := Nat.Prime) hpinf _
       have hgt : p < Nat.nth Nat.Prime (Nat.count Nat.Prime p + 1) := by
@@ -112,16 +114,16 @@ theorem frequently_gap182_of_infinite_consecutive_pairs
             Nat.nth Nat.Prime (Nat.count Nat.Prime p + 1) := hmono (Nat.le_succ _)
         have hne2 : Nat.nth Nat.Prime (Nat.count Nat.Prime p) ≠
             Nat.nth Nat.Prime (Nat.count Nat.Prime p + 1) :=
-          fun he2 => (Nat.succ_ne_self (Nat.count Nat.Prime p)) (hnthinj he2)
+          fun he2 => (Nat.succ_ne_self (Nat.count Nat.Prime p)) (hnthinj he2).symm
         rw [hpq] at hle2 hne2
         exact lt_of_le_of_ne hle2 hne2
-      exact hconsec _ hpm hgt (lt_of_le_of_ne hle hne)
+      exact (hconsec _ hgt (lt_of_le_of_ne hle hne)) hpm
     have hcountq : Nat.count Nat.Prime q = Nat.count Nat.Prime p + 1 := by omega
     have hq : Nat.nth Nat.Prime (Nat.count Nat.Prime p + 1) = q := by
-      rw [← hcountq]; exact hcount q hqprime
-    rw [hq, ← hpq]
+      rw [← hcountq]; exact hcount q hqP
+    rw [hq, hpq]
     exact hgap
-  exact Set.Infinite.mono himg (h.image_of_injOn hinj)
+  exact Set.Infinite.mono himg (Set.Infinite.image hinj h)
 
 /-- THE FRAME THEOREM. Given the three named inputs, the rank-4 companion
 estimate, the kernel-checked deduction, and the 262 discharged obligations:

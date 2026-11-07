@@ -1,0 +1,6 @@
+# AXCHECK RECEIPT — pg182-frame @ 245a72e
+# project: pg182-frame (leanprover/lean4:v4.34.1, Mathlib d13f23b723b8a846827a245b89c10fc7d3f11612 via staircase-port)
+# captured: 2026-11-07T02:32:15Z, lake build log: LAKE_JOBS=1 LEAN_NUM_THREADS=1
+
+info: Pg182Frame/Frame.lean:138:0: 'Pg182Frame.h1_182_of' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: Pg182Frame/Frame.lean:139:0: 'Pg182Frame.frequently_gap182_of_infinite_consecutive_pairs' depends on axioms: [propext, Classical.choice, Quot.sound]

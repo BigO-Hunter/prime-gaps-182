@@ -145,6 +145,7 @@ def FiniteExceptionalFourierBound (p : ℕ) [Fact p.Prime] (C : ℝ) (D : ℕ)
         C * (p : ℝ) ^ 3 *
           (1 + Real.sqrt (p : ℝ) * if (h, k) ∈ Z then 1 else 0)
 
+open Classical in
 /-- Mirror of `CurveExceptionalFourierBound`
 (formal/TypeIIILocal.lean:122-129, the repeated-index inequality with an
 algebraic exceptional curve; origin contribution `C*p^4`). -/
