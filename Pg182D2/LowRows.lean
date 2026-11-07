@@ -35,6 +35,26 @@ carries exactly the same factor — the low generator
 `exp` of it — so the tilt CANCELS from the ledger comparison `frozen ≥ env`,
 and what remains is `A ≤ 1/zeta` (`D2B-CANCEL`), uniform in `slope`.
 
+## If the exp-sandwich HAD been needed (recorded, not spent)
+
+The D1 plan for this class was: bound the tilt by the MGF,
+
+    E[e^{-s*M}] = exp (-∫_{(0,zeta]} (1 - e^{-s*u})/u du)          (vendor identity)
+    E_k          = exp (-b_k),  b_k = ∫_{band_k ∩ (0,zeta]} (1 - e^{-s*u})/u du
+    ∏_{k∈S} E_k                                                     (band product)
+
+and the `.low` kernel's own constant factor
+`exp (s*((order-1)*witnessUpper - threshold))` outside.  That machinery WOULD
+generalize: the tilt is a multiplicative weight on the *integrand*, not on the
+measure, so the `iIndepFun_infinitePi` product argument of
+`mgf_fragmentLaw_le_finset` applies verbatim and the per-band closed form is
+unchanged.  It is nonetheless strictly WORSE than the exact integral here: an MGF
+is a bound over a whole band, so it cannot see the width of the cell being
+summed, which is precisely the `mesh` factor whose absence voided D1.  With the
+density exactly constant the cell integral is available in closed form, so the
+sandwich buys nothing and is not used.  It remains the fallback if the
+constant-density fact is ever lost (e.g. if a row's window leaves `(0, zeta)`).
+
 Measured window placement (`num/low_scan.py`, 64/64 rows): every low row's
 source window lies inside the single period `(0, zeta]` — the largest window top
 is `2405/10000 = 0.2405 < zeta = 1.05096`. That is `D2B-WINDOW` below, and it is

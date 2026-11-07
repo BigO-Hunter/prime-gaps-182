@@ -1,6 +1,6 @@
 # D2B_REPORT.md — Lane D2b: the low rows + the window convention
 
-Work dir `~/bigo-campaign/pg182-d2/` (continues D2 at `da1af69`); 8925 jobs green.
+Work dir `~/bigo-campaign/pg182-d2/` (continues D2 at `da1af69`); 8927 jobs green.
 
 ## 1. Radial windows: R1 SERVES THE LOW ROWS — no exp-sandwich
 
