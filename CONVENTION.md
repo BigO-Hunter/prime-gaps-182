@@ -139,3 +139,13 @@ One honest limit remains, and it is the same one D2 named: the run-table rewrite
 per row (B1) needs the run set and the integrand suprema (D3 data), and the density
 `D` for `d = 38` is the named analytic input `HasLocalBound`. Nothing in this
 document adds a new input or removes that one.
+
+## 5. Superseded note (Lane D3)
+
+The last paragraph's "named analytic input `HasLocalBound`" no longer stands: `Pg182D2/HasLocalBound.lean`
+proves the Fejér smoothing lemma, hence `HasLocalBound nu (pi/4 * B)` for any law whose
+characteristic function is integrable to the first power, and `HasLocalBound nu (1/zeta)` when
+`B <= 4/(pi zeta)` — including at the 38-fold convolution power (`hasLocalBound_convPow_one_div_zeta`,
+`cell_measure_le_hq_convPow`).  See `LOCALBOUND_REPORT.md`.  What remains is two *computations*
+(the single band's `|phi| = exp(-Cin)` and transcribing the certified integral bound), not a
+missing theorem; and the fine-level (`d = 1`) density-constancy input is untouched by D3.
