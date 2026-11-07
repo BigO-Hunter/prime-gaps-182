@@ -1,0 +1,5 @@
+# build artifacts and tool scratch
+build/
+*.olean
+*.ilean
+*.trace
