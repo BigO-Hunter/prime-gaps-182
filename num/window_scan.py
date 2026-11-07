@@ -56,3 +56,26 @@ print(f"inner rank/high n={len(topsr)} max window top={float(max(topsr)):.6f} "
       f"= {float(max(topsr)/ZETA):.4f}*zeta  headroom {float(ZETA/max(topsr)):.3f}x")
 print(f"zeta={float(ZETA):.6f}  hq={float(HQ):.6e}")
 print(f"top low window exact: {max(topsl)}")
+
+# ---- group structure: distinct source-cover windows per (block, family, kind) ----
+fam_re = re.compile(r"family := (\d+)")
+head_re2 = re.compile(r"^def (trialOuterCertificates|trialInnerCertificates)")
+from collections import defaultdict
+g = defaultdict(list)
+blk = None
+for line in SRC.read_text().splitlines():
+    m = head_re2.match(line)
+    if m:
+        blk = "outer" if "Outer" in m.group(1) else "inner"
+        continue
+    if blk is None:
+        continue
+    k = kind_re.search(line)
+    f = fam_re.search(line)
+    ps = [(int(a), int(b)) for a, b in piece_re.findall(line)]
+    if not (k and f and ps):
+        continue
+    g[(blk, f.group(1), k.group(1))].append((min(a for a, _ in ps), max(b for _, b in ps)))
+print("\nblock/family/kind -> n, distinct windows")
+for key, v in sorted(g.items()):
+    print(f"  {key[0]:5s} family {key[1]} {key[2]:8s} n={len(v):2d} distinct={len(set(v))}: {sorted(set(v))[:2]}")

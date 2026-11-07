@@ -91,13 +91,20 @@ Measured, all 68 inner `rank_two` components of
 | `source_mass == log(q_high/q_low)` | **68 / 68**, worst relative error **1.0e-16** (double-precision exact) |
 | spread inside group G3 | `7.886e-05 … 1.000` — the 15 components have **15 distinct count bins** `[q_low,q_high]` |
 
-And from the certificate source itself, the 15 G3 components **share one
-source-cover window** (`pieces := [⟨334254, 343163⟩, ⟨343164, 343201⟩]` for bins
-1-7; `[⟨338077, 343163⟩, ⟨343164, 343201⟩]` for bin 0) and differ only in
-`low`/`high`/`slope`. So the 400× spread is precisely the spread of
-`log(high/low)` across distinct count bins over a common window. It is expected,
-it is not an inconsistency, and the frozen data is not an under-estimate of
-anything it claims to bound.
+And from the certificate source itself, the 15 **rank/high** components of group
+G3 **share one source-cover window** — all 14 `rankTwo` entries and the `high`
+entry carry `pieces := [⟨334254, 343163, …⟩, ⟨343164, 343201, …⟩]` — while their
+count bins differ: **14 distinct `(low, high)` pairs** among the 14 `rankTwo`
+components. The group's own `low` bins (8 of them) sit on that same window or a
+narrower one (`[334254, 343201]` or `[338077, 343201]`). So the 400× spread is
+precisely the spread of `log(high/low)` across distinct count bins over a common
+window. It is expected, it is not an inconsistency, and the frozen data is not an
+under-estimate of anything it claims to bound.
+
+(Across the whole inner block the same structure repeats: the rank/high group of
+each family has exactly 1 distinct window (68 `rankTwo` + 5 `high` → 5 windows),
+while the low bins of G4 and G6 spread over 14 distinct windows each — a fact that
+matters only for D3's per-run bookkeeping, not for the envelope class.)
 
 ## 3. The 0.0449 figure is withdrawn
 
