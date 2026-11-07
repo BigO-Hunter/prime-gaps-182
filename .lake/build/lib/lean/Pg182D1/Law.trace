@@ -1,0 +1,33 @@
+{"synthetic": false,
+ "schemaVersion": "2025-09-10",
+ "outputs":
+ {"o": ["111e710bbd4c1b8e.olean"],
+  "m": false,
+  "i": "275da9fa7efb480b.ilean",
+  "c": "9a893509226ade3c.c"},
+ "log":
+ [{"message":
+   ".> LEAN_PATH=/Users/dmitri.arkhipov/bigo-campaign/pg182-c0/.lake/packages/Cli/.lake/build/lib/lean:/Users/dmitri.arkhipov/bigo-campaign/pg182-c0/.lake/packages/batteries/.lake/build/lib/lean:/Users/dmitri.arkhipov/bigo-campaign/pg182-c0/.lake/packages/Qq/.lake/build/lib/lean:/Users/dmitri.arkhipov/bigo-campaign/pg182-c0/.lake/packages/aesop/.lake/build/lib/lean:/Users/dmitri.arkhipov/bigo-campaign/pg182-c0/.lake/packages/proofwidgets/.lake/build/lib/lean:/Users/dmitri.arkhipov/bigo-campaign/pg182-c0/.lake/packages/importGraph/.lake/build/lib/lean:/Users/dmitri.arkhipov/bigo-campaign/pg182-c0/.lake/packages/LeanSearchClient/.lake/build/lib/lean:/Users/dmitri.arkhipov/bigo-campaign/pg182-c0/.lake/packages/plausible/.lake/build/lib/lean:/Users/dmitri.arkhipov/bigo-campaign/staircase-port/.lake/packages/mathlib/.lake/build/lib/lean:/Users/dmitri.arkhipov/bigo-campaign/pg182-d1/.lake/build/lib/lean /Users/dmitri.arkhipov/.elan/toolchains/leanprover--lean4---v4.34.1/bin/lean /Users/dmitri.arkhipov/bigo-campaign/pg182-d1/Pg182D1/Law.lean -o /Users/dmitri.arkhipov/bigo-campaign/pg182-d1/.lake/build/lib/lean/Pg182D1/Law.olean -i /Users/dmitri.arkhipov/bigo-campaign/pg182-d1/.lake/build/lib/lean/Pg182D1/Law.ilean -c /Users/dmitri.arkhipov/bigo-campaign/pg182-d1/.lake/build/ir/Pg182D1/Law.c --setup /Users/dmitri.arkhipov/bigo-campaign/pg182-d1/.lake/build/ir/Pg182D1/Law.setup.json --json",
+   "level": "trace"}],
+ "inputs":
+ [["deps",
+   [["«pg182-d1»/Pg182D1:extraDep",
+     [["@«pg182-d1»:extraDep", "00000000000006bb"]]],
+    ["imports",
+     [["Mathlib transitive imports (legacy)", "038f1252b72fc0bc"],
+      ["Mathlib:importAllArts", "f26e275ec3461866"]]]]],
+  ["libs",
+   [["import dynlibs", "00000000000006bb"],
+    ["package external libraries", "00000000000006bb"],
+    ["module dynlibs", "00000000000006bb"],
+    ["module plugins", "00000000000006bb"]]],
+  ["Lean 4.34.1, commit 5045d0056413266e57c625dcd7c365b10e377c52",
+   "e9f3658beb070375"],
+  ["/Users/dmitri.arkhipov/bigo-campaign/pg182-d1/Pg182D1/Law.lean",
+   "a68da0aec83c0644"],
+  ["options", "00000000000006bb"],
+  ["isModule: false", "feefd2a0d3a1847e"],
+  ["Module.name: Pg182D1.Law", "a630f0b2dfd35be6"],
+  ["Package.id?: (some pg182-d1)", "4a3575f5799295a8"],
+  ["Module.leanArgs: #[]", "00000000000006bb"]],
+ "depHash": "6d0119c1310050fb"}
