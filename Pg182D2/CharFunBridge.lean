@@ -27,6 +27,13 @@ has no ℂ analogue there, so the ℂ version has to be redone with **Bochner** 
   the Poisson law on finite measures is a Poisson-weighted mixture of the *normalized*
   `n`-point empirical laws (`integral_map` + Fubini + the `infinitePi → pi` marginal on `Fin n`).
 
+## LANDED in `Pg182D2/BandStep1.lean` (lane N3b)
+
+`n1ResidualBand_of_nonneg` — step 1 of the band assembly, with the a.e.-nonnegativity hypothesis
+that the statement genuinely needs (see `N1ResidualBand` below), and `n1ResidualBand_holds`, a
+proof of the corrected `N1ResidualBand` proposition.  Also `ae_nonneg_normalize_of_ne_zero` and
+`ae_nonneg_cappedDyadicIntensity`, which discharge the hypothesis for a dyadic band.
+
 ## NAMED: what is left of (N1), exactly
 
 The single band is `map`ped through `exp` + `poisson_integral_pow` into
@@ -207,10 +214,19 @@ def N1Residual : Prop :=
     charFun ((PrimeGap182D1.fragmentLaw ζ).map (fun X : FiniteMeasure ℝ => (X.mass : ℝ))) t
       = Complex.exp (-(charExponent t ζ))
 
-/-- The **single band** half of `N1Residual`, which §2–§4 of this file reduce to the two
-remaining elementary steps (`q` extraction, and `∫ u, (e^{I t u} - 1) ∂μ = μ.mass (q - 1)`). -/
+/-- The **single band** half of `N1Residual` — **with the a.e.-nonnegativity hypothesis that is
+not removable**.
+
+Without `hμ` the statement is FALSE: `weightedEmpirical` truncates its atoms to
+`(x i).toNNReal • δ (x i)`, so a negative sample contributes mass `0` but keeps its position, and
+for `μ = δ_{-1}` the left side is `charFun δ_0 t = 1` while the right side is
+`exp (exp (-I t) - 1) ≠ 1`.  Every dyadic band `cappedDyadicIntensity ζ k` lives on `(0, ∞)`
+(`ae_nonneg_cappedDyadicIntensity`), so the hypothesis is exactly what the campaign's bands supply.
+
+**This proposition is now PROVED**, not an input: `PrimeGap182D2.n1ResidualBand_holds`
+(`Pg182D2/BandStep1.lean`) is a proof term of it.  The name is kept as the assembly's handle. -/
 def N1ResidualBand : Prop :=
-  ∀ (μ : FiniteMeasure ℝ) (t : ℝ),
+  ∀ (μ : FiniteMeasure ℝ) (t : ℝ), (∀ᵐ u ∂((μ.normalize : Measure ℝ)), 0 ≤ u) →
     charFun ((PrimeGap182D1.finitePoissonLaw μ).map (fun X => (X.mass : ℝ))) t
       = Complex.exp (∫ u, (Complex.exp (↑(u * t) * Complex.I) - 1) ∂(μ : Measure ℝ))
 
