@@ -2,7 +2,11 @@
 Copyright (c) 2026 ...
 Released under Apache 2.0 license as described in the file LICENSE.
 -/
-import Mathlib
+import Mathlib.Analysis.SpecialFunctions.Log.Summable
+import Mathlib.MeasureTheory.Integral.DominatedConvergence
+import Mathlib.MeasureTheory.Integral.Lebesgue.Map
+import Mathlib.MeasureTheory.Integral.Pi
+import Mathlib.Probability.ProductMeasure
 
 /-!
 # Integration of product families over `Measure.infinitePi`
@@ -28,6 +32,8 @@ Tonelli's theorem over the product measure.
 * `MeasureTheory.hasProd_integral_tprod_infinitePi` — the convergence form of the main theorem.
 * `MeasureTheory.integral_tprod_infinitePi` — the equation form.
 -/
+
+set_option autoImplicit false
 
 noncomputable section
 
