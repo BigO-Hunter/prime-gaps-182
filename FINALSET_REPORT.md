@@ -10,7 +10,8 @@ Lane D4, work dir `~/bigo-campaign/pg182-d2/`.  Deliverables: `Pg182D2/CharFunMo
 | **(i) the modulus identity** `‖φ_ζ(t)‖ = exp (-Cin (t ζ))` | **PROVED** — the whole modulus computation: `re_charExponent`, `norm_exp_neg_charExponent`, `norm_charFun_exp_exponent` |
 | (i) the *Poisson bridge* `charFun (mass law) t = exp (-Ein (-I t ζ))` | **named** (N1), stated exactly as the hypothesis of `hasLocalBound_convPow_of_certified` |
 | **(ii) the certified integral → layer M** | **PROVED** — `hasLocalBound_convPow_of_certified_integral`, `cell_measure_le_hq_of_certified_integral`, plus the margin `certifiedIntegralBound_le_four_div_pi` |
-| (ii) the integral bound itself `∫_0^∞ e^{-38 Cin} ≤ 0.39446770` | **named** (N2), in the hypothesis form `∀ R, ∫_0^R e^{-38 Cin} ≤ B`; §5 gives the elementary Lean chain with its measured margin |
+| **(ii) the structural `Cin` bounds** (monotonicity, `Cin π ≥ 1`, `Cin ≥ x²/π²` on `[0,π]`, the dyadic doubling gain) | **PROVED** — `Pg182D2/CinBounds.lean`, 10 theorems |
+| (ii) the integral bound itself `∫_0^∞ e^{-38 Cin} ≤ 0.39446770` | **named** (N2), in the hypothesis form `∀ R, ∫_0^R e^{-38 Cin} ≤ B`; its *structural half* is now proved (§5a) and only the tail/head assembly remains (§5b) |
 
 **Named-input count: 2** (was 2).  What changed is that both are now *stated in Lean*, the
 data side is a single theorem away from closed, and everything between them and `hq` is proved.
@@ -109,20 +110,21 @@ generated data; no risk, no insight.
 smoothing input at all.  The `d = 38` level is, by four orders of magnitude.  That asymmetry
 is a theorem in `Pg182D2/HasLocalBound.lean` §4, not a defect of this lane.
 
-## 5. §5 — the elementary chain that replaces the certified integral (for the next mind)
-
-Target `∀ R, ∫_0^R e^{-38 Cin} ≤ 1` (and `1 ≤ 4/π`).  All ingredients are Mathlib-level:
+## 5a. The structural half — PROVED (`Pg182D2/CinBounds.lean`)
 
 ```lean
-Cin_mono        : 0 ≤ a → a ≤ b → Cin a ≤ Cin b        -- integrand ≥ 0 (Needs: IntervalIntegrable)
-Cin_ge_sq       : 0 ≤ x → x ≤ π → x^2/π^2 ≤ Cin x       -- Jordan: 1 - cos u ≥ 2u²/π²
-                                                       --  (Real.cos_le_one_sub_mul_cos_sq)
-Cin_pi_ge_one   : 1 ≤ Cin π                            -- weight 1/u ≥ 1/π on (0,π], ∫(1-cos) = π
-Cin_ge_one      : π ≤ x → 1 ≤ Cin x                    -- monotone
-Cin_double      : 4 ≤ x → Cin x + 1/4 ≤ Cin (2*x)      -- weight ≥ 1/(2x) on [x,2x],
-                                                       --  ∫_x^{2x}(1-cos) = x - (sin 2x - sin x) ≥ x - 2 ≥ x/2
-Cin_dyadic      : 1 + k/4 ≤ Cin (4 * 2^k)              -- induction from Cin 4 ≥ Cin π ≥ 1
+Cin_mono        : 0 ≤ a → a ≤ b → Cin a ≤ Cin b
+Cin_ge_sq       : 0 ≤ x → x ≤ π → x^2/π^2 ≤ Cin x        -- Jordan, 1 - cos u ≥ 2u²/π²
+Cin_pi_ge_one   : 1 ≤ Cin π                              -- weight 1/u ≥ 1/π on (0,π], ∫(1-cos) = π
+Cin_ge_one      : π ≤ x → 1 ≤ Cin x
+Cin_double      : 4 ≤ x → Cin x + 1/4 ≤ Cin (2*x)        -- weight ≥ 1/(2x), |sin| ≤ 1
+Cin_dyadic      : 1 + k/4 ≤ Cin (4 * 2^k)                -- induction from Cin 4 ≥ Cin π ≥ 1
 ```
+plus the integrability of the `Cin` integrand (`integrableOn_cinIntegrand`,
+`intervalIntegrable_cinIntegrand`, bounded by `|u|/2` via `one_sub_cos_le_half_sq`).
+All 10 on `[propext, Classical.choice, Quot.sound]`.
+
+## 5b. What remains for (N2): the head/tail assembly
 
 Numerics: head `∫_0^π e^{-38Cin} ≤ ∫_0^∞ e^{-38x²/π²} = (1/2)√(π³/38) = 0.4516`
 (`integral_gaussian_Ioi`, `b = 38/π²`); `∫_π^4 ≤ (4-π) e^{-38} ≈ 3e-17`; tail
