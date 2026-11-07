@@ -19,6 +19,9 @@ Writing `env = c·hq` is the useful normalisation because the D1c ledger asks
 | `f_38(34.4) / f_38(34.8) / f_38(35.5)` | 0.044091 / 0.048925 / 0.057433 | `vi.f_d` (inversion) |
 | row-77 fine window | mass ∈ [0.893369, 0.917282] ⊂ (0, zeta) | cells 334254…343201 |
 | row-77 sum window | mass ∈ [33.95, 34.87], `P = 0.0449` | 38 × the fine window |
+| `E[M] / Var M` | 1.050961 / 0.552201 | sim 2e6; exact 1.050956 / 0.552254 |
+| `P(M<ζ) / P(M<1)` | 0.561446 / 0.534347 | sim; exact `e^{-γ}=0.561459` / `A=0.534237` |
+| density in 6 equal slices of `(0,ζ)` | .5326 .5353 .5364 .5344 .5337 .5343 | sim; predicted 0.534237 in every slice |
 
 The single most important measurement: **the density is flat over the entire
 first period `(0, zeta)`**, which contains every window the 137 rows touch. That
