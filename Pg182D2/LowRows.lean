@@ -138,31 +138,41 @@ theorem window_measure_le_cells (mu : Measure ℝ) (D m : ℝ) (N : ℕ)
         rw [nsmul_eq_mul, ← ENNReal.ofReal_natCast,
           ← ENNReal.ofReal_mul (Nat.cast_nonneg N)]
 
-/-! ### D2B-WINDOW: the low rows live inside the constant-density period
+/-! ### D2B-WINDOW: every inner window lives inside the constant-density period
 
-`num/low_scan.py` measured, over all 64 inner `.low` covers, the top of the
-source window `high_index * hq`; the maximum is `2405/10000`.  Inside `(0, zeta)`
-the density is exactly constant, so every low cell inherits `A ≤ 1/zeta`
+`num/window_scan.py` reads the certificate source itself
+(`target/SourceData182.lean`): each inner record's `pieces` give the source-cover
+window on the cell-sum coordinate `Σ i, trialCellIndex (X i)`.  Over all 64 inner
+`.low` covers the largest window top is `512673115853357/516093837312000`, and
+over all 137 inner covers it is the same value.  Inside `(0, zeta)` the density is
+exactly constant, so every cell inherits `A ≤ 1/zeta`
 (`cell_mass_le_fine_env`) and the tilt cancels (`tilt_cancels`).
 -/
 
-/-- The measured maximum low-row window top (all 64 inner `.low` rows). -/
-def lowWindowTop : ℝ := 2405 / 10000
+/-- The measured maximum inner-window top, as an exact rational: the largest
+`pieces.last` over all 64 inner `.low` covers of `SourceData182.lean`, divided by
+the cell count (`num/window_scan.py`).  The *same* value bounds the 73 inner
+rank/high rows, so it is the inner family's global window top. -/
+def innerWindowTop : ℝ := 512673115853357 / 516093837312000
 
-/-- **D2B-WINDOW.** The largest low-row window top is strictly inside the
-constant-density period, with 4.4x of headroom. -/
-theorem low_window_inside_period : lowWindowTop < zeta := by
-  unfold lowWindowTop zeta; norm_num
+/-- **D2B-WINDOW.** The largest inner window top is strictly inside the
+constant-density period `(0, zeta)` — 0.9452·zeta, headroom 1.058x.  Every cell
+of every one of the 137 inner rows therefore lies where the fragment density is
+exactly constant, which is what makes the R1 envelope applicable to them all. -/
+theorem inner_window_inside_period : innerWindowTop < zeta := by
+  unfold innerWindowTop zeta
+  norm_num
 
-/-- The low rows also stay inside the frozen cell grid: `cellCount * mesh = zeta`,
-so the window top is below the last cell's upper edge. -/
+/-- `cellCount * mesh = zeta`: the frozen grid tiles the period exactly. -/
 theorem cellCount_mul_mesh : (cellCount : ℝ) * mesh = zeta := by
   have h : (cellCount : ℝ) ≠ 0 := by unfold cellCount; norm_num
   unfold mesh
   field_simp
 
-theorem low_window_lt_cellCount : lowWindowTop < (cellCount : ℝ) * mesh := by
+/-- The window top in the frozen cell grid: same statement, `hq` units. -/
+theorem inner_window_top_lt_cellCount_mul_mesh :
+    innerWindowTop < (cellCount : ℝ) * mesh := by
   rw [cellCount_mul_mesh]
-  exact low_window_inside_period
+  exact inner_window_inside_period
 
 end PrimeGap182D2
