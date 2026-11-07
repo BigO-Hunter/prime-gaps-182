@@ -48,7 +48,7 @@ Two layers, and only two, are needed by all 137 inner rows:
 
 | class | n | layer M | layer I | status |
 |---|---:|---|---|---|
-| inner rankTwo | 68 | **closed** (`cell_measure_le_hq`, `HasLocalBound` d=38) | D3 data | envelope layer closed |
+| inner rankTwo | 68 | **closed** (`cell_measure_le_hq`; the `HasLocalBound` d=38 hypothesis is now the *proved* `hasLocalBound_of_charFun_bound` plus two computations) | D3 data | envelope layer closed |
 | inner high | 5 | **closed** | D3 data | envelope layer closed |
 | **inner low** | **64** | **closed — tilt cancels** (`tilted_cell_le`, `tilt_cancels`, `untilted_cell_le_hq`) | D3 data | **envelope layer closed; no exp-sandwich owed** |
 | outer low | 30 | not consumed | not consumed | D1-independent |
@@ -77,15 +77,35 @@ period `(0, zeta)` where the density is exactly constant — so no inner row tou
 the dyadic tail, and R1's per-cell statement applies to every cell of every row.
 Pinned in Lean as `inner_window_inside_period`.
 
-## 4. The one remaining named input
+## 4. The named inputs: analytic count now ZERO (Lane D3)
 
-`HasLocalBound` for `d = 38` at `D = 0.29586259` (the Fejér computation of
-`ROUTE2.md` §Route 4). It serves the per-cell layer at the cell-sum coordinate,
-is uniform in `(a, h)`, and is the only analytic debt in the D2/D2b envelope
-class. It is *not* a data question: `D` is proved arithmetic
-(`receipt/receipt.py`, all-rational) and consumed by `cell_measure_lt_hq`.
+**Closed (D3).** `Pg182D2/HasLocalBound.lean` proves the Fejér/Esseen smoothing lemma:
+for a finite measure `ν` and any `B` bounding every truncation `∫_0^R ‖charFun ν‖`,
+
+```lean
+hasLocalBound_of_charFun_bound : (∀ R, ∫ t in (0)..R, ‖charFun ν t‖ ≤ B) →
+    HasLocalBound ν (Real.pi / 4 * B)
+hasLocalBound_one_div_zeta :     B ≤ 4/(π*zeta) → HasLocalBound ν (1/zeta)
+cell_measure_le_hq_of_charFun :  the payload, per-cell mass ≤ hq
+```
+
+So the item D2 named ("Mathlib has no smoothing lemma") no longer exists, and
+`D2-LEDGER`'s `D ≤ 1/zeta` obligation becomes a theorem for any law with an
+integrable characteristic function — the `d = 38` case, not the `d = 1` case,
+where the hypothesis provably fails (`∫‖φ_1‖ = ∞`, the measured 5.724 hq).
+
+**Two computational inputs remain** for the exact `d = 38` law (neither analytic):
+(i) `‖charFun ν t‖ = exp(-38 Cin(t*zeta))` for the 38-fold convolution of the
+fragment mass law — a ℂ-valued version of the vendored Poisson MGF computation
+(`Pg182D1/Support.lean:220`), not a missing theorem; (ii) transcribing
+`∫_0^∞ e^{-38 Cin} ≤ 0.39446770` (`receipt/receipt.py`, exact rationals) into Lean.
+The margin is 3.07×: `0.39446770 ≤ 4/(π ζ) = 1.21150648`.
 
 ## 5. Axcheck
+
+`receipt/axcheck_haslocalbound.txt` (D3) — all 20 theorems of `Pg182D2/HasLocalBound.lean`
+including `hasLocalBound_of_charFun_bound`, `hasLocalBound_one_div_zeta`,
+`cell_measure_le_hq_of_charFun`: `[propext, Classical.choice, Quot.sound]` only.
 
 `receipt/axcheck_lowrows.txt` — `tilted_cell_le`, `tilt_cancels`,
 `untilted_cell_le_hq`, `window_measure_le_cells`, `inner_window_inside_period`,
