@@ -47,3 +47,19 @@ and uses the pinned toolchain `leanprover/lean4:v4.34.0-rc2`.
 * `closure_size.py <Module>` — import closure size + per-package unbuilt olean counts.
 * `closure_sorry_scan.py <Module>` — code-level `sorry`/`admit` in the closure (regex
   sanity-checked against a known-`sorry` file before use).
+
+---
+
+## Why this repo is up
+
+Public design input: the instantiation plan (and verified fragments) for discharging the Kloosterman bound from formalized arithmetic geometry instead of formalizing Weil II from scratch.
+
+[BigO-Hunter](https://github.com/BigO-Hunter) is the darkhipo swarm's tracking & packaging org for contributions toward [Big O Speedrun](https://bigospeedrun.com) — a companion, never the project. Org story: [profile](https://github.com/BigO-Hunter/.github) · [bigo-hunter.github.io](https://bigo-hunter.github.io).
+
+## What work can be done here
+
+Open work: instantiate the AxiomMath/Weil + Stacks geometry to discharge `PrimeGap186.kloosterman3_bound`; complete the |Kl_3| ≤ 3q^{1/2} bridge (verified fragments listed in the README table).
+
+## License
+
+Licensed under the Copy-Free/Stays-Free (CFSF) License — see [LICENSE](LICENSE). CFSF: copy-free (use for any purpose) and stays-free (nobody may fence this work). The name is unclaimed in software licensing (checked 2026-11-09) and is deliberately not "Copyfree" — the Copyfree Initiative's certification mark — since CFSF's anti-enclosure condition is excluded by their standard.  Vendored third-party material keeps its upstream license — see [NOTICE](NOTICE.md).
