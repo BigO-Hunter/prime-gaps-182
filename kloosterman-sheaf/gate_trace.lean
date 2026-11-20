@@ -1,0 +1,8 @@
+import KloostermanTraceBound
+import KloostermanObligations
+#print axioms Kloosterman.norm_multiset_sum_le_card_mul
+#print axioms Kloosterman.norm_trace_le_of_monic_charpoly_pure
+#print axioms Kloosterman.kloosterman_bound
+#print axioms Kloosterman.Kl3Package.norm_kl3_le
+#print axioms Kloosterman.Kl3Package.norm_kl3_div_sqrt_le
+#print axioms Kloosterman.kloosterman_bound_unnormalized
