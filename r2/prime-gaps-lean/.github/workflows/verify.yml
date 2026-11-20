@@ -1,0 +1,54 @@
+name: Verify Lean
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    # The ARM image has fewer preinstalled SDKs. Disk headroom is checked below.
+    runs-on: ubuntu-24.04-arm
+    timeout-minutes: 240
+    env:
+      # Lake's worker pool; the package weakLeanArgs caps each Lean frontend.
+      LEAN_NUM_THREADS: "1"
+      PRIME_GAPS_LIVE_LOGS: "1"
+    steps:
+      - name: Check out sources
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Install pinned Lean and fetch dependency cache
+        uses: leanprover/lean-action@50fcf42d2e460296f1a34b402e990d1b24f8b596 # v1.6.0
+        with:
+          auto-config: "false"
+          build: "false"
+          test: "false"
+          lint: "false"
+          use-mathlib-cache: "true"
+          use-github-cache: "false"
+
+      - name: Provide memory headroom for the public baseline
+        run: bash scripts/ci_prepare_memory.sh
+
+      - name: Check runtime and unchanged dependency pins
+        run: |
+          python3 -c 'import sys; assert sys.version_info >= (3, 11)'
+          git diff --exit-code -- lean-toolchain lakefile.toml lake-manifest.json
+          python3 -B -m unittest discover -s scripts -p 'test_*.py'
+
+      - name: Rebuild project proofs and audit declarations
+        run: bash scripts/ci_verify.sh
+
+      - name: Upload verification receipts and logs
+        if: ${{ always() }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: lean-verification-${{ github.run_id }}-${{ github.run_attempt }}
+          path: verification/
+          if-no-files-found: warn
