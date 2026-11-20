@@ -1,0 +1,5 @@
+'PrimeGap182D1.row77_data_gap_is_false' depends on axioms: [propext, Classical.choice, Quot.sound]
+'PrimeGap182D1.sigma77_mul_p77_eq' depends on axioms: [propext, Classical.choice, Quot.sound]
+'PrimeGap182D1.row77_integral_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+'PrimeGap182D1.hEnv77_discharge' depends on axioms: [propext, Classical.choice, Quot.sound]
+'PrimeGap182D1.hEnv77_discharge_of_frozen' depends on axioms: [propext, Classical.choice, Quot.sound]
