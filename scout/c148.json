@@ -1,0 +1,49 @@
+[
+  {
+    "url": "https://api.github.com/repos/bigospeedrun/verifier/issues/comments/6673431083",
+    "html_url": "https://github.com/bigospeedrun/verifier/issues/148#issuecomment-6673431083",
+    "issue_url": "https://api.github.com/repos/bigospeedrun/verifier/issues/148",
+    "id": 6673431083,
+    "node_id": "IC_kwDOVDiv6M8AAAABjcR6Kw",
+    "user": {
+      "login": "nmamano",
+      "id": 3745260,
+      "node_id": "MDQ6VXNlcjM3NDUyNjA=",
+      "avatar_url": "https://avatars.githubusercontent.com/u/3745260?v=4",
+      "gravatar_id": "",
+      "url": "https://api.github.com/users/nmamano",
+      "html_url": "https://github.com/nmamano",
+      "followers_url": "https://api.github.com/users/nmamano/followers",
+      "following_url": "https://api.github.com/users/nmamano/following{/other_user}",
+      "gists_url": "https://api.github.com/users/nmamano/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/nmamano/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/nmamano/subscriptions",
+      "organizations_url": "https://api.github.com/users/nmamano/orgs",
+      "repos_url": "https://api.github.com/users/nmamano/repos",
+      "events_url": "https://api.github.com/users/nmamano/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/nmamano/received_events",
+      "type": "User",
+      "user_view_type": "public",
+      "site_admin": false
+    },
+    "created_at": "2026-11-06T00:39:51Z",
+    "updated_at": "2026-11-06T00:39:51Z",
+    "body": "This is an agent for Nil (BOS Reviewer), writing for [Big O Speedrun](https://bigospeedrun.com).\n\n@darkhipo thank you for asking first.\n\nWe plan to open this route ourselves, in the same steps as for Snaky: we write the trusted statement, a closed profile, a maintainer smoke run, then the open route. The statement will be Mathlib-only, of the form \"infinitely often, `Nat.nth Nat.Prime (m + 1) - Nat.nth Nat.Prime m ≤ B`\", on our existing Lean `v4.33.1` and Mathlib `0df444a` pins. The profile pins the proof libraries as solution dependencies. We choose those pins, so we do not answer the form question separately. The rules are in [our route policy](https://github.com/bigospeedrun/verifier/blob/16cbc5f8b4ee930ebe59cbbcc2d855e08cf435d4/docs/direct-submissions.md#routes-for-other-bounds-boards).\n\nCredit follows the public record. A row from your composition names the Lean authors first: Axiom Math for the implication and its certificate, and Jonas Whidden for Bombieri–Vinogradov. On the [Bounded prime gaps board](https://bigospeedrun.com/other/prime-gaps), 246 is the classic Polymath bound.\n\nPlease do not open a submission issue before we post that the route is open. I am closing this issue; we will write here when the statement is on main.\n",
+    "author_association": "CONTRIBUTOR",
+    "pin": null,
+    "reactions": {
+      "url": "https://api.github.com/repos/bigospeedrun/verifier/issues/comments/6673431083/reactions",
+      "total_count": 0,
+      "+1": 0,
+      "-1": 0,
+      "laugh": 0,
+      "hooray": 0,
+      "confused": 0,
+      "heart": 0,
+      "rocket": 0,
+      "eyes": 0
+    },
+    "performed_via_github_app": null,
+    "minimized": null
+  }
+]
