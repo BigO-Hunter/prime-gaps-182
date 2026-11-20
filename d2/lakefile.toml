@@ -4,15 +4,16 @@ defaultTargets = ["Pg182D2"]
 
 [[require]]
 name = "mathlib"
-path = "/Users/dmitri.arkhipov/bigo-campaign/staircase-port/.lake/packages/mathlib"
+git = "https://github.com/leanprover-community/mathlib4.git"
+rev = "d13f23b723b8a846827a245b89c10fc7d3f11612"
 
 [[require]]
 name = "pg182-frame"
-path = "/Users/dmitri.arkhipov/bigo-campaign/pg182-frame"
+path = "../"
 
 [[require]]
 name = "pg182-d1"
-path = "/Users/dmitri.arkhipov/bigo-campaign/pg182-d1"
+path = "../d1"
 
 [[lean_lib]]
 name = "Pg182D2"

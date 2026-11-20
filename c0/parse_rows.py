@@ -1,7 +1,9 @@
+import os
 import re, json
 from fractions import Fraction
 
-src = open('/Users/dmitri.arkhipov/bigo-campaign/pg182-r2/prime-gaps-lean/formal/SourceData182.lean').read()
+SOURCE = os.environ.get("PG182_R2_SOURCE", os.path.join(os.path.dirname(__file__), "prime-gaps-lean/formal/SourceData182.lean"))
+src = open(SOURCE).read()
 start = src.index('def trialInnerCertificates')
 arr = src[start:]
 i = arr.index('![')+2

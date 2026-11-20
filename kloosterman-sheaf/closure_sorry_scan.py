@@ -3,11 +3,12 @@
 
 Read-only. Used as corroborating evidence before the decisive `#print axioms` run.
 """
+import os
 import re
 import sys
 from pathlib import Path
 
-WEIL = Path("/Users/dmitri.arkhipov/bigo-campaign/weil-verify/Weil")
+WEIL = Path(os.environ.get("WEIL_VERIFY", str(Path(__file__).resolve().parent / "Weil")))
 ROOTS = [WEIL / "Weil", WEIL / ".lake/packages/Stacks", WEIL / ".lake/packages/mathlib"]
 
 IMPORT_RE = re.compile(r"^\s*(?:public\s+)?import\s+([A-Za-z0-9_.']+)", re.M)

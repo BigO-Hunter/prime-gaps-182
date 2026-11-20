@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 """Measure the import closure of a Lean target: size, package split, and built/unbuilt counts."""
+import os
 import re
 import sys
 from pathlib import Path
 
-WEIL = Path("/Users/dmitri.arkhipov/bigo-campaign/weil-verify/Weil")
+WEIL = Path(os.environ.get("WEIL_VERIFY", str(Path(__file__).resolve().parent / "Weil")))
 PKGS = WEIL / ".lake/packages"
 ROOTS = [(WEIL / "Weil", "Weil")] + [(p / "Stacks", "Stacks") for p in [PKGS]] + [
     (WEIL / "Weil", "Weil")

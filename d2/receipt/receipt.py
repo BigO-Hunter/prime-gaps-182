@@ -32,7 +32,7 @@ from fractions import Fraction as F
 sys.set_int_max_str_digits(10 ** 6)
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-D1 = os.path.expanduser("~/bigo-campaign/pg182-d1")
+D1 = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "d1"))
 ARCH = os.path.join(D1, "frozen/extracted/prime-gaps-external-182")
 
 Z = F(1379373467, 1312494500)

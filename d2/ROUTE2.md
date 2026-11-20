@@ -1,3 +1,5 @@
+> Umbrella note (2026-11-20): this package now builds from `d2/` inside `prime-gaps-182`; frame and D1 dependencies are `../` and `../d1`. Any older absolute-path caveat describes the pre-consolidation checkout, not this umbrella.
+
 # ROUTE2.md — ranking the four envelope classes by closability
 
 Lane D2, work dir `~/bigo-campaign/pg182-d2/` (project `pg182-d2`, toolchain

@@ -1,3 +1,5 @@
+> Umbrella note (2026-11-20): this package now builds from `d2/` inside `prime-gaps-182`; frame and D1 dependencies are `../` and `../d1`. Any older absolute-path caveat describes the pre-consolidation checkout, not this umbrella.
+
 # pg182-d2
 
 Lane D2 of the prime-gaps-182 campaign: the stronger envelope class — composition and statement work toward the 182 gate.

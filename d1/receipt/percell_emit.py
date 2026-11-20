@@ -35,8 +35,8 @@ import os
 import sys
 from fractions import Fraction as F
 
-ARCH = os.path.expanduser(
-    "~/bigo-campaign/pg182-d1/frozen/extracted/prime-gaps-external-182")
+ARCH = os.environ.get(
+    "PG182_D1_DATA", os.path.join(os.path.dirname(__file__), "..", "frozen", "extracted", "prime-gaps-external-182"))
 OUT_DIR = os.path.dirname(os.path.abspath(__file__))
 LEAN_DIR = os.path.join(OUT_DIR, "lean")
 
