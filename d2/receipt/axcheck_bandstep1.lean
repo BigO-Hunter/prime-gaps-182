@@ -1,0 +1,6 @@
+import Pg182D2.BandStep1
+
+#print axioms PrimeGap182D2.n1ResidualBand_of_nonneg
+#print axioms PrimeGap182D2.n1ResidualBand_holds
+#print axioms PrimeGap182D2.ae_nonneg_normalize_of_ne_zero
+#print axioms PrimeGap182D2.ae_nonneg_cappedDyadicIntensity

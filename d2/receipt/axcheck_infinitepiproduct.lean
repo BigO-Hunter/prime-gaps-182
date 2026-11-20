@@ -1,0 +1,7 @@
+import Pg182D2.InfinitePiProduct
+
+#print axioms MeasureTheory.integral_finset_prod_infinitePi
+#print axioms MeasureTheory.ae_summable_norm_sub_one_infinitePi
+#print axioms MeasureTheory.hasProd_integral_tprod_infinitePi_of_norm_le
+#print axioms MeasureTheory.hasProd_integral_tprod_infinitePi
+#print axioms MeasureTheory.integral_tprod_infinitePi

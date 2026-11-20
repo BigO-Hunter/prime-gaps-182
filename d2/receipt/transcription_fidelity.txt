@@ -1,0 +1,28 @@
+# transcription_fidelity.txt — kernel proof that TableData.lean == the frozen source data
+#
+# Frozen upstream modules (romyar1/prime-gaps-lean, release external-numerics-20260909,
+# fetched into pg182-d1/frozen/extracted/prime-gaps-external-182/target/):
+3407df88c46cf5dce72bb5e1aadea6746f1a266fdcda4f12ed852b64c5b5482b  TrialData182.lean
+17cfa9f265299944b8f8755343494499bc2a90414751824bc6041832bc4d055c  SourceData182.lean
+#
+# Reproduce: copy those two modules into wip/vendor/, then
+#   export LEAN_PATH="$(lake env printenv LEAN_PATH):$PWD/wip/vendor"
+#   lake env lean -o wip/vendor/TrialData182.olean wip/vendor/TrialData182.lean
+#   lake env lean -o wip/vendor/SourceData182.olean wip/vendor/SourceData182.lean
+#   lake env lean receipt/transcription_crosscheck.lean
+#
+# Cross-check file: receipt/transcription_crosscheck.lean
+# 12 declarations (every transcribed column + the shared constants), rc=0:
+
+'innerFaceUpper_eq' depends on axioms: [propext, Classical.choice, Quot.sound]
+'innerCoefficientUpper_eq' depends on axioms: [propext, Classical.choice, Quot.sound]
+'innerNormalizedB_eq' depends on axioms: [propext, Classical.choice, Quot.sound]
+'innerWitnessUpper_eq' depends on axioms: [propext, Classical.choice, Quot.sound]
+'isLow_eq' depends on axioms: [propext, Classical.choice, Quot.sound]
+'innerFamily_eq' depends on axioms: [propext, Classical.choice, Quot.sound]
+'outerRootUpper_eq' depends on axioms: [propext, Classical.choice, Quot.sound]
+'outerFaceUpper_eq' depends on axioms: [propext, Classical.choice, Quot.sound]
+'rhoStarQ_eq' depends on axioms: [propext, Classical.choice, Quot.sound]
+'denominatorLowerQ_eq' depends on axioms: [propext, Classical.choice, Quot.sound]
+'cap_caps_eq' depends on axioms: [propext, Classical.choice, Quot.sound]
+'innerTotalUpperQ_eq' depends on axioms: [propext, Classical.choice, Quot.sound]

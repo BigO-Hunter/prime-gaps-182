@@ -1,0 +1,19 @@
+name = "pg182-d2"
+version = "0.1.0"
+defaultTargets = ["Pg182D2"]
+
+[[require]]
+name = "mathlib"
+path = "/Users/dmitri.arkhipov/bigo-campaign/staircase-port/.lake/packages/mathlib"
+
+[[require]]
+name = "pg182-frame"
+path = "/Users/dmitri.arkhipov/bigo-campaign/pg182-frame"
+
+[[require]]
+name = "pg182-d1"
+path = "/Users/dmitri.arkhipov/bigo-campaign/pg182-d1"
+
+[[lean_lib]]
+name = "Pg182D2"
+globs = ["Pg182D2", "COMPOSITION"]

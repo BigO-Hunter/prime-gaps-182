@@ -1,0 +1,9 @@
+import Pg182D2.CharFunBridge
+open PrimeGap182D2
+#print axioms charFun_mass_map
+#print axioms charFun_mass_map_single
+#print axioms ennreal_mass_weightedEmpirical
+#print axioms mass_weightedEmpirical_of_nonneg
+#print axioms exp_mass_weightedEmpirical
+#print axioms poisson_integral_pow
+#print axioms integral_finitePoissonLaw_normalized
