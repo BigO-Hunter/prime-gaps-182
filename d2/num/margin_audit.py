@@ -21,13 +21,14 @@ holds), which is the invariant `num/emit_table.py` asserts before emitting.
 
 Usage: python3 num/margin_audit.py
 """
+import os
 import math
 import re
 import sys
 from fractions import Fraction as Q
 from pathlib import Path
 
-SRC = (Path.home() / "bigo-campaign/pg182-d1/frozen/extracted"
+SRC = (Path(os.environ.get("PG182_D1_DATA", Path(__file__).resolve().parents[2] / "d1/frozen/extracted"))
        / "prime-gaps-external-182/target/SourceData182.lean")
 ZETA = Q(1379373467, 1312494500)
 HQ = ZETA / 393216

@@ -22,13 +22,14 @@ Usage:  python3 num/emit_table.py [--out Pg182D2/TableData.lean]
 """
 from __future__ import annotations
 
+import os
 import argparse
 import hashlib
 import re
 from fractions import Fraction as Q
 from pathlib import Path
 
-SRC = (Path.home() / "bigo-campaign/pg182-d1/frozen/extracted"
+SRC = (Path(os.environ.get("PG182_D1_DATA", Path(__file__).resolve().parents[2] / "d1/frozen/extracted"))
        / "prime-gaps-external-182/target/SourceData182.lean")
 TRIAL = SRC.parent / "TrialData182.lean"
 ZETA = Q(1379373467, 1312494500)          # Pg182D2.EnvLemmas.zeta

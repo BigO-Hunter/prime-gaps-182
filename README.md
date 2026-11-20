@@ -31,3 +31,11 @@ All four source repositories are merged with full history. Every Lake package us
 ### Optional regeneration inputs
 
 Committed artifacts need no external checkout. Optional regeneration/audit scripts accept `PG182_R2_SOURCE` (C0 source Lean file), `PG182_D1_DATA` (D1 frozen extraction), and `WEIL_VERIFY` (Kloosterman/Weil checkout). Those datasets are intentionally not duplicated in this umbrella.
+
+## Design and scout lanes
+
+- `r1/`: the 182 premise map, first-cut feasibility notes and expository bundle. This is design evidence, not a proof submission.
+- `r2/`: the 262-certification architecture, build plan and trust model. Its nested Lean project is fully inlined at `r2/prime-gaps-lean/` at upstream commit `b77bf175bdedc5123027b3fcf0abc38427975770`, so there is no submodule dependency.
+- `scout/`: the board map, claimability analysis and verification design used to position the 182 row. Scouting is complete; the actual proof lanes live in the root, `c0/`, `d1/` and `d2/`.
+
+These were added to preserve useful design history without creating more standalone notes repositories.

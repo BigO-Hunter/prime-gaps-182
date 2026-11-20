@@ -7,7 +7,7 @@
 set -euo pipefail
 
 KS="$(cd "$(dirname "$0")" && pwd)"
-WEIL="$HOME/bigo-campaign/weil-verify/Weil"
+WEIL="${WEIL_VERIFY:?Set WEIL_VERIFY to the Weil checkout containing .lake/packages}"
 export PATH="/opt/homebrew/bin:$PATH"
 export LEAN_NUM_THREADS=1
 
