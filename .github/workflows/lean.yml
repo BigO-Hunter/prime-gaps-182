@@ -37,6 +37,13 @@ jobs:
     steps:
       - name: Check out the proof
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      # c0 does not commit a lake-manifest.json; lean-action requires one.
+      - name: Install elan and generate c0 lake-manifest.json
+        run: |
+          curl -sSf https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh | sh -s -- -y --default-toolchain "$(cat c0/lean-toolchain)"
+          . "$HOME/.elan/env"
+          cd c0
+          lake update
       - name: Install Lean and cached Mathlib dependencies, build C0
         uses: leanprover/lean-action@24581d74d674803a25a81b10b059c5c0cdd344c6 # v1
         with:
