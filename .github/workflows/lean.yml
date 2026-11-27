@@ -44,11 +44,15 @@ jobs:
           . "$HOME/.elan/env"
           cd c0
           lake update
-      - name: Install Lean and cached Mathlib dependencies, build C0
+      # The default target Pg182C0 names a root module Pg182C0.lean that does not
+      # exist; the proof is Pg182C0/RowCert.lean (ROW_REPORT.md), which imports
+      # Pg182C0.Bridges transitively. Build that module target instead.
+      - name: Install Lean and cached Mathlib dependencies, build C0 RowCert
         uses: leanprover/lean-action@24581d74d674803a25a81b10b059c5c0cdd344c6 # v1
         with:
           lake-package-directory: c0
           build: "true"
+          build-args: "Pg182C0.RowCert"
           test: "false"
           lint: "false"
           use-mathlib-cache: "true"
