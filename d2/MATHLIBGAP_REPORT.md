@@ -1,15 +1,15 @@
 # MATHLIBGAP_REPORT — the Bochner `infinitePi` product integral: CLOSED
 
-Lane N3, work dir `~/bigo-campaign/pg182-d2/`, continuing N1N2.  Deliverables:
-`Pg182D2/InfinitePiProduct.lean` (the lemma), `PR_BODY.md` (Mathlib PR draft),
-`receipt/axcheck_infinitepiproduct.txt`.
+Lane N3, repo dir `d2/`, continuing N1N2.  Deliverables:
+`Pg182D2/InfinitePiProduct.lean` (the lemma), the Mathlib PR body
+(`receipt/pr_infinitepi_body_v2.md`), `receipt/axcheck_infinitepiproduct.txt`.
 
 ## 0. Verdict
 
 | item | verdict |
 |---|---|
 | **the lemma** (`N1N2_REPORT.md` §2 step 2, the named Mathlib gap) | **PROVED — unconditionally**, all four theorems on `[propext, Classical.choice, Quot.sound]` |
-| Mathlib PR | **DRAFT only** (`PR_BODY.md`); nothing opened, nothing posted externally |
+| Mathlib PR | **DRAFT only** at this stage; opened later as [mathlib4#45771](https://github.com/leanprover-community/mathlib4/pull/45771) — see `receipt/pr_infinitepi_verdict.md` |
 | (N1) residual as a whole | **still open**, but its only *Mathlib-level* blocker is gone: what remains is steps 1 and 3, both mechanical, plus a **correction to step 1's statement** (§3) |
 
 ## 1. What was proved
@@ -122,9 +122,10 @@ of this lane is: *the gap that was named is closed; the assembly that consumes i
 
 ## 5. What is NOT claimed
 
-* No PR was opened, no issue filed, nothing posted to any external service (coordinator's call; see
-  `PR_BODY.md` §"What the coordinator must decide").
+* No PR was opened at this stage; the upstream PR was opened later — see
+  `receipt/pr_infinitepi_verdict.md` (mathlib4#45771).
 * Step 1 is **not** landed (reduced to a coercion, `wip/BAND_STEP1_WIP.lean`); `N1Residual` itself
   remains a named `Prop` and the count of named inputs of the 182 data side is unchanged (one: the
   band assembly).  What changed is the *nature* of what is left: no Mathlib-level obstruction.
-* The `‖f i x‖ ≤ C i` generalization flagged in `PR_BODY.md` is not done.
+* The `‖f i x‖ ≤ C i` generalization flagged in the PR draft is not done at this stage
+  (done later in N3b — see `N3B_REPORT.md`).

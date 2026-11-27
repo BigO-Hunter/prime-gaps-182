@@ -1,6 +1,6 @@
 # N1N2_REPORT — the last two named inputs of the 182 data side
 
-Lane N1N2, work dir `~/bigo-campaign/pg182-d2/`, continuing D4.  Deliverables:
+Lane N1N2, repo dir `d2/`, continuing D4.  Deliverables:
 `Pg182D2/HeadTail.lean` (N2), `Pg182D2/CharFunBridge.lean` (N1), axchecks in `receipt/`.
 
 ## 0. Verdicts
@@ -113,7 +113,7 @@ estimate left as an assumption.
 
 `lakefile.toml` now requires `pg182-d1` (path dependency) for `fragmentLaw`,
 `finitePoissonLaw`, `cappedDyadicIntensity` and `measurable_mass` — a `lake update pg182-d1`
-was run; `lake-manifest.json` records `dir = ~/bigo-campaign/pg182-d1`.
+was run; the path dependency resolves as `../d1` in this umbrella (see `lakefile.toml`).
 
     LAKE_JOBS=1 LEAN_NUM_THREADS=1 lake build Pg182D2                     # 8936 jobs
     LAKE_JOBS=1 LEAN_NUM_THREADS=1 lake env lean receipt/axcheck_headtail.lean

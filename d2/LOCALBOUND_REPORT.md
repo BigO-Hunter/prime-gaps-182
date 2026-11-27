@@ -1,6 +1,6 @@
 # LOCALBOUND_REPORT — the Fejér smoothing lemma, and `HasLocalBound` at `d = 38`
 
-Lane D3, work dir `~/bigo-campaign/pg182-d2/`.  Deliverable: `Pg182D2/HasLocalBound.lean`
+Lane D3, repo dir `d2/`.  Deliverable: `Pg182D2/HasLocalBound.lean`
 (pointer `HasLocalBound.lean`), axcheck `receipt/axcheck_haslocalbound.{lean,txt}`.
 
 ## 0. Verdict

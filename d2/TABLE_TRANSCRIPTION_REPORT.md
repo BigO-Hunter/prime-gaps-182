@@ -1,6 +1,6 @@
 # TABLE_TRANSCRIPTION_REPORT.md — the frozen 182 certificate table, in Lean
 
-Lane: THE 182 TABLE TRANSCRIPTION, work dir `~/bigo-campaign/pg182-d2/`, continuing the FINAL-3 +
+Lane: THE 182 TABLE TRANSCRIPTION, repo dir `d2/`, continuing the FINAL-3 +
 JOIN lane (`FINAL_MAP.md`). The job was to turn the last non-analytic residue — the frozen
 numeric/certificate table stated as hypotheses — into kernel-checked Lean.
 

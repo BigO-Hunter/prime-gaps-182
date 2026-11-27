@@ -1,6 +1,6 @@
 # N3B_REPORT — the three rulings executed: fix, generalize, PR-ready
 
-Lane N3b, work dir `~/bigo-campaign/pg182-d2/`, continuing lane N3. Three commits on top of N3's
+Lane N3b, repo dir `d2/`, continuing lane N3. Three commits on top of N3's
 `685fca9`:
 
     Step 1 of (N1) LANDED: the single-band identity, with the nonnegativity hypothesis it needs
@@ -16,7 +16,7 @@ Nothing external was touched: no PR opened, no issue filed, nothing posted.
 | **(a) `N1ResidualBand` fixed** | **DONE — and it is now PROVED, not an input.** The def carries `∀ᵐ u ∂μ.normalize, 0 ≤ u`; `n1ResidualBand_holds` is a proof term. The only consumer of the name is the campaign prose, re-wired below. |
 | **(b) step 1 landed** | **YES** — `Pg182D2/BandStep1.lean`, `n1ResidualBand_of_nonneg`, no `sorry`, `[propext, Classical.choice, Quot.sound]`. `wip/BAND_STEP1_WIP.lean` is deleted (superseded). |
 | **(2) generalization `‖f i x‖ ≤ C i`** | **PROVED**, as the head theorem `hasProd_integral_tprod_infinitePi_of_norm_le`; the `≤ 1` version kept as the `C ≡ 1` corollary with its statement unchanged. |
-| **(3) PR form** | **DONE** — licence header filled (`Copyright (c) 2026 darkhipo`, Apache 2.0, `Authors: darkhipo`), modern Mathlib module form, docstrings, `autoImplicit false`, `PR_BODY.md` regenerated. Checklist: every box checked **except** "reviewed by a human Lean expert" (honest — no human with Lean expertise has read the proofs). |
+| **(3) PR form** | **DONE** — licence header filled (`Copyright (c) 2026 darkhipo`, Apache 2.0, `Authors: darkhipo`), modern Mathlib module form, docstrings, `autoImplicit false`, PR body regenerated (`receipt/pr_infinitepi_body_v2.md`). Checklist: every box checked **except** "reviewed by a human Lean expert" (honest — no human with Lean expertise has read the proofs). |
 | **(4) axcheck** | **DONE** — 11 receipt files, 116 declarations, all on `[propext, Classical.choice, Quot.sound]`; zero `sorryAx`. |
 | **(4) map update** | **DONE** — `OBLIGATION_MAP.md` §7 with the exact 4-step mechanical remainder; §4's (N1) row, §5's axcheck list and §6's stale claim corrected. |
 
@@ -99,7 +99,7 @@ theorem MeasureTheory.hasProd_integral_tprod_infinitePi_of_norm_le
   which `ℝ` has not; the `ℝ` version is `Finset.prod_le_prod₀` (with a nonnegativity hypothesis).
 
 **What was NOT done:** the `𝕜`-generalization (`RCLike 𝕜` instead of `ℂ`) — stated as open in
-`PR_BODY.md`, not attempted.
+the PR body (`receipt/pr_infinitepi_body_v2.md`), not attempted.
 
 ## 4. PR-ready state
 

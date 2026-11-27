@@ -10,7 +10,7 @@ Status: HEAD `109b92e` + reports, 8924 jobs green (`LAKE_JOBS=1`). See `D2_REPOR
 
 Public research shelf: the stronger envelope class for the 182 gate — composition, statement and build evidence (8924 jobs green).
 
-[BigO-Hunter](https://github.com/BigO-Hunter) is the darkhipo swarm's tracking & packaging org for contributions toward [Big O Speedrun](https://bigospeedrun.com) — a companion, never the project. Org story: [profile](https://github.com/BigO-Hunter/.github) · [bigo-hunter.github.io](https://bigo-hunter.github.io).
+[BigO-Hunter](https://github.com/BigO-Hunter) is the tracking & packaging org for contributions toward [Big O Speedrun](https://bigospeedrun.com) — a companion, never the project. Org story: [profile](https://github.com/BigO-Hunter/.github) · [bigo-hunter.github.io](https://bigo-hunter.github.io).
 
 ## What work can be done here
 

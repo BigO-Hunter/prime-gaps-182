@@ -3,7 +3,7 @@
 Lane of the 182 campaign. Target: discharge `PrimeGap186.kloosterman3_bound`
 (`‖normalizedKloosterman3 p c‖ ≤ 3`, Katz 1988 Thm 4.1.1 at `n = 3`, trivial characters,
 `bᵢ = 1`) by **instantiating** the formalized arithmetic geometry in
-`~/bigo-campaign/weil-verify/Weil` (AxiomMath/Weil + AxiomMath/Stacks), instead of formalizing
+`$WEIL_VERIFY/Weil` (AxiomMath/Weil + AxiomMath/Stacks), instead of formalizing
 Weil II from scratch.
 
 ## What is verified here (compiles, axiom-clean)
@@ -13,7 +13,7 @@ Weil II from scratch.
 | `KloostermanTraceBound.lean` | `norm_multiset_sum_le_card_mul`, `norm_trace_le_of_monic_charpoly_pure`, `kloosterman_bound` (`≤ 3√q`), `kloosterman_bound_unnormalized` (`≤ 3p`, Katz's form) | `[propext, Classical.choice, Quot.sound]` |
 | `KloostermanObligations.lean` | `Kl3Package` (rank ≤ 3, monic split charpoly, trace = `Kl_3`, weight-purity) and `Kl3Package.norm_kl3_le` — the packaging obligations are *sufficient* | `[propext, Classical.choice, Quot.sound]` |
 
-Receipt: `gate_trace.lean`, output in `AXIOM_GATE` of `../weil-verify/AXIOM_GATE.md`.
+Receipt: `gate_trace.lean`, output in `AXIOM_GATE` of `$WEIL_VERIFY/AXIOM_GATE.md`.
 
 ## What is not yet verified
 
@@ -23,10 +23,10 @@ Its imports' oleans do not exist: the closure of `LaumonFourierLineFamily` is 17
 modules of which **16,525 are unbuilt**. Resume with:
 
 ```bash
-cd ~/bigo-campaign/weil-verify/Weil
+cd "$WEIL_VERIFY/Weil"
 nohup env LAKE_JOBS=1 LEAN_NUM_THREADS=1 \
   lake build StacksFrontier.AlgebraicGeometry.EtaleCohomology.Trace.LaumonFourierLineFamily \
-  > /tmp/build_laumon.log 2>&1 &
+  > build_laumon.log 2>&1 &
 ```
 
 then `./build.sh KLOOSTERMAN_SHEAF.lean` (expect implicit-argument reconciliation; the binder
@@ -39,7 +39,7 @@ For the deeper gate (`weightBound`, `satisfiesWeilEstimate`), same command with
 ## Building
 
 `./build.sh <File.lean>` compiles against the Weil tree's existing oleans (no new lake package, no
-Mathlib rebuild): it borrows `LEAN_PATH` from `lake env` inside `~/bigo-campaign/weil-verify/Weil`
+Mathlib rebuild): it borrows `LEAN_PATH` from `lake env` inside `$WEIL_VERIFY/Weil`
 and uses the pinned toolchain `leanprover/lean4:v4.34.0-rc2`.
 
 ## Instruments
@@ -54,7 +54,7 @@ and uses the pinned toolchain `leanprover/lean4:v4.34.0-rc2`.
 
 Public design input: the instantiation plan (and verified fragments) for discharging the Kloosterman bound from formalized arithmetic geometry instead of formalizing Weil II from scratch.
 
-[BigO-Hunter](https://github.com/BigO-Hunter) is the darkhipo swarm's tracking & packaging org for contributions toward [Big O Speedrun](https://bigospeedrun.com) — a companion, never the project. Org story: [profile](https://github.com/BigO-Hunter/.github) · [bigo-hunter.github.io](https://bigo-hunter.github.io).
+[BigO-Hunter](https://github.com/BigO-Hunter) is the tracking & packaging org for contributions toward [Big O Speedrun](https://bigospeedrun.com) — a companion, never the project. Org story: [profile](https://github.com/BigO-Hunter/.github) · [bigo-hunter.github.io](https://bigo-hunter.github.io).
 
 ## What work can be done here
 

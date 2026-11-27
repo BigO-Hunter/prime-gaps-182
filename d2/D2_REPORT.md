@@ -1,7 +1,7 @@
 # D2_REPORT.md — Lane D2: the stronger envelope class
 
-Work dir `~/bigo-campaign/pg182-d2/` (fresh project, toolchain v4.34.1 + campaign
-Mathlib symlinked from `staircase-port/.lake/packages` — no closure was rebuilt).
+Repo dir `d2/` (toolchain v4.34.1 + Mathlib `d13f23b7` git-pinned; frame and
+D1 dependencies resolve as `../` and `../d1`).
 Builds `LAKE_JOBS=1`, `LEAN_NUM_THREADS=1`; HEAD `109b92e` + this commit, 8924
 jobs green.
 

@@ -13,7 +13,7 @@ with the kernel-proved required strength `E77 = rowFaceUpper77 * NLB / 39`.
 
 ## What D1 delivers to C0 today (all kernel-proved, axcheck-clean)
 
-From `~/bigo-campaign/pg182-d1/` (project `pg182-d1`, namespace
+From `d1/` (project `pg182-d1`, namespace
 `PrimeGap182D1`, import `Pg182D1.D1Cell` + `Pg182D1.D1Mgf`):
 
 1. **`cell_probability_le ζ n s hs`** — the per-cell majorant engine:

@@ -2,8 +2,8 @@
 
 # ROUTE2.md — ranking the four envelope classes by closability
 
-Lane D2, work dir `~/bigo-campaign/pg182-d2/` (project `pg182-d2`, toolchain
-v4.34.1 + campaign Mathlib symlinked from `staircase-port`, never rebuilt).
+Lane D2, repo dir `d2/` (project `pg182-d2`, toolchain v4.34.1 + Mathlib
+`d13f23b7` git-pinned).
 
 The question: D1's per-cell majorant
 

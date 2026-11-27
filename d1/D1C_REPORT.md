@@ -1,6 +1,6 @@
 # D1C_REPORT.md — Lane D1c: the frozen masses + the per-cell emission
 
-Work dir `~/bigo-campaign/pg182-d1/` (continues D1b at `68dcca6`).
+Repo dir `d1/` (continues D1b at `68dcca6`).
 
 ## 1. Archive fetched, sha-pinned, extracted (binary-safe)
 
@@ -89,7 +89,7 @@ supply is complete and the generator generalizes (all 137 rows emitted).
 
 | sha | content |
 |---|---|
-| `c49027c` | D1C-stage2: per-cell emission machinery + hEnv77 row-77 instantiation (via isolated worktree `d1c-emission` /private/tmp/pg182-d1c, ff-merged to main; the host pytest suite kept refusing the shared-checkout gate) |
+| `c49027c` | D1C-stage2: per-cell emission machinery + hEnv77 row-77 instantiation |
 | `c49027c` (same, stage 1 landed together) | fetch script + HASHES.md + .gitignore |
 
 ## What is next (for the next session)

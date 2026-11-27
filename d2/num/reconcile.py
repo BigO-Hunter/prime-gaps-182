@@ -1,8 +1,9 @@
 """Reconcile 94 slope!=0 covers vs 64 inner-low: where do the other 30 live?"""
+import os
 import json
 from pathlib import Path
 
-BASE = Path.home() / "bigo-campaign/pg182-d1/frozen/extracted/prime-gaps-external-182/snapshot/prime_gaps_20260903/experiments"
+BASE = Path(os.environ.get("PG182_D1_DATA", Path(__file__).resolve().parents[2] / "d1/frozen/extracted")) / "prime-gaps-external-182/snapshot/prime_gaps_20260903/experiments"
 # outer low stages mentioned by D1: G1/G2 low
 cands = sorted(BASE.rglob("*outer*low*.json")) + sorted(BASE.rglob("*low*outer*.json"))
 seen = set()

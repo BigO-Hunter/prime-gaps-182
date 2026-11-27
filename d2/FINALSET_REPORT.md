@@ -1,9 +1,7 @@
 # FINALSET_REPORT — the data side closed: zero mechanical residue
 
-Lane: THE 182 FINAL-3 + JOIN (re-fired on deepseek after a zai connectivity outage killed the first
-attempt at startup; nothing was lost — the earlier attempt had only reached a `wip/JOIN_WIP.lean`
-draft, superseded here). Work dir `~/bigo-campaign/pg182-d2/`. Nothing public: no PR, no issue, no
-post. `HOME` durable, `scratch/` gitignored.
+Lane: THE 182 FINAL-3 + JOIN (an earlier attempt reached only a `wip/JOIN_WIP.lean`
+draft, superseded here). Repo dir `d2/`.
 
 `FINALSET_REPORT.md` (D4) is kept as `FINALSET_REPORT_D4.md`; `OBLIGATION_MAP.md` is kept as the
 working history, with §8 pointing here. **The final map is `FINAL_MAP.md`.**

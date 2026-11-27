@@ -24,7 +24,7 @@ So "produce the first Lean-verified row" reduces to: **watch #148 for the open-r
 
 Every row B < 246 = admissible-tuple construction (finite, checkable — e.g. 39-tuple width 182) **plus** Maynard-sieve distribution estimates (infinite/asymptotic analysis). The tuple is trivially checkable; the distribution estimates are the proof. Lean-verified requires both, unconditionally. Our OMR/certificate tooling checks the first part only. (Contrast #158 directed-sssp: the whole claim WAS computational.)
 
-## Secondary openings (if the coordinator wants more than the row)
+## Secondary openings (beyond the row)
 
 - The 186 row's 152 numerical bounds are "Python-checked only" — a Lean interval-arithmetic certification of even a subset is a real, kernel-checkable community contribution toward an eventual 186 LV row. Bounded, but low-visibility (no row for us).
 - romyar1/prime-gaps-lean has "No independent check" — an independent rebuild report of its deduction (sorry-free given stated premises) is cheap goodwill. Optional; #152 warns against unasked packaging.

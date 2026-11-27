@@ -1,10 +1,10 @@
 # PRICE_LIST_UPDATE — the 182 price list after the Weil/Stacks content audit
 
-2026-11-07. Supersedes the Katz/FKM line items of `~/bigo-campaign/katz-fkm-scope/PROGRAM.md`
-(Stages 1–3) and rewrites the campaign statement at the end of
-`~/bigo-campaign/pg182-d2/OBLIGATION_MAP.md` §4. Evidence: `weil-verify/AXIOM_GATE.md`
-(what is measured), `weil-verify/{CONTENT_AUDIT,REPO_MAP,INSTANTIATION}.md`, and
-`kloosterman-sheaf/` (the packaging, with its own compiling receipts).
+2026-11-07. Supersedes the Katz/FKM line items of the earlier scope program
+(Stages 1–3) and rewrites the frame statement at the end of
+`../d2/OBLIGATION_MAP.md` §4. Evidence: `$WEIL_VERIFY/AXIOM_GATE.md`
+(what is measured), `$WEIL_VERIFY/{CONTENT_AUDIT,REPO_MAP,INSTANTIATION}.md`, and
+this directory (the packaging, with its own compiling receipts).
 
 ## The one-line change
 
@@ -65,8 +65,8 @@ statements, not their proofs.
 
 ## 4. Files written by this lane
 
-* `~/bigo-campaign/weil-verify/AXIOM_GATE.md` — the `#print axioms` output verbatim + the wall.
-* `~/bigo-campaign/kloosterman-sheaf/{KloostermanTraceBound,KloostermanObligations}.lean` —
+* `$WEIL_VERIFY/AXIOM_GATE.md` — the `#print axioms` output verbatim + the wall.
+* `{KloostermanTraceBound,KloostermanObligations}.lean` (this directory) —
   compiling, axiom-clean receipts.
-* `~/bigo-campaign/kloosterman-sheaf/KLOOSTERMAN_SHEAF.lean` — the packaging (status: pending build).
-* `~/bigo-campaign/pg182-d2/OBLIGATION_MAP.md` §4 — campaign statement updated in place.
+* `KLOOSTERMAN_SHEAF.lean` (this directory) — the packaging (status: pending build).
+* `../d2/OBLIGATION_MAP.md` §4 — frame statement updated in place.

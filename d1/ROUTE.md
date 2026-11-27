@@ -2,9 +2,8 @@
 
 Lane: the 182 gate's one multi-week item — the algorithm-to-integral
 correspondence: the 393,216-cell discrete law as a provable majorant of the
-fragment-law pushforward. Work dir `~/bigo-campaign/pg182-d1/`, toolchain
-v4.34.1 + campaign Mathlib (path-require, prebuilt packages symlinked from
-pg182-c0 — no closure rebuilds).
+fragment-law pushforward. Repo dir `d1/`, toolchain v4.34.1 + Mathlib
+`d13f23b7` (git-pinned).
 
 ## What is PROVED in Lean (all green, axcheck = {propext, Classical.choice, Quot.sound})
 

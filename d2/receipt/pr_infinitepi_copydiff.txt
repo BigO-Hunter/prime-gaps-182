@@ -1,4 +1,4 @@
---- /Users/dmitri.arkhipov/bigo-campaign/pg182-d2/Pg182D2/InfinitePiProduct.lean	2026-11-07 08:09:46
+--- Pg182D2/InfinitePiProduct.lean	2026-11-07 08:09:46
 +++ Mathlib/MeasureTheory/Integral/InfinitePiProduct.lean	2026-11-07 08:26:49
 @@ -43,8 +43,6 @@
  * `MeasureTheory.integral_tprod_infinitePi` — the equation form.

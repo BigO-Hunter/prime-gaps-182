@@ -8,7 +8,7 @@ row of the 262-obligation table now has either a theorem or a named frozen-data 
 **analytic-support half of the data side is empty**: no smoothing lemma, no integral estimate, no
 modulus computation, no charFun identity is an assumption any more.
 
-Lane: THE FINAL-3 + JOIN, work dir `~/bigo-campaign/pg182-d2/`, continuing D1 → D2 → D3 → D4 → N1N2
+Lane: THE FINAL-3 + JOIN, repo dir `d2/`, continuing D1 → D2 → D3 → D4 → N1N2
 → N3 → N3b. New in this lane: `Pg182D2/BandAssembly.lean` (17 declarations), `COMPOSITION.lean`
 (the composition theorem), `receipt/axcheck_bandassembly.txt`,
 `receipt/axcheck_composition.txt`.
@@ -216,8 +216,7 @@ and `COMPOSITION.lean` are warning-free.
   receipt carries the two sha256 digests and the reproduction recipe. Those two `.lean` modules are
   not committed (`wip/vendor/`, gitignored) — only the cross-check file and its output are.
 * `Pg182D2/InfinitePiProduct.lean` (the N3/N3b lemma) is upstream as
-  **leanprover-community/mathlib4 PR #45771**, opened by this lane's *earlier* attempt before the
-  zai connectivity outage killed it. The PR is verified green upstream (build with the Mathlib linter
-  set, `lint-style` rc=0, `#print axioms` clean) — see `receipt/pr_infinitepi_verdict.md` and its
-  logs. **This session published nothing new and did not touch the PR**; its "reviewed by a human
-  Lean expert" box is still unchecked, and the human-expert call is not mine to make.
+  **leanprover-community/mathlib4 PR #45771**. The PR is verified green upstream (build with the
+  Mathlib linter set, `lint-style` rc=0, `#print axioms` clean) — see
+  `receipt/pr_infinitepi_verdict.md` and its logs. Its "reviewed by a human Lean expert" box is
+  still unchecked.

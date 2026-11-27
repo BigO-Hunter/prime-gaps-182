@@ -1,8 +1,7 @@
 # D1B_REPORT.md — Lane D1b: the engine finished, the per-cell checks, the band form, the hEnv77 discharge
 
-Work dir `~/bigo-campaign/pg182-d1/`, toolchain v4.34.1 + campaign Mathlib
-(path-require, shared packages symlinked). Builds: `LAKE_JOBS=1
-LEAN_NUM_THREADS=1`, detached, ~8934 jobs green at HEAD (`83ddbdb`).
+Repo dir `d1/`, toolchain v4.34.1 + Mathlib `d13f23b7` (git-pinned).
+Builds: `LAKE_JOBS=1 LEAN_NUM_THREADS=1`, ~8934 jobs green at HEAD (`83ddbdb`).
 
 ## 1. D1Engine + D1Sum: INTO THE BUILD, GREEN (was: drafted, ~3 mechanical errors)
 

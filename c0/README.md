@@ -8,7 +8,7 @@ Status: the row is worked end to end (see `ROW_REPORT.md`); the remaining 67 inn
 
 Public evidence for the prime-gaps-182 method: the smallest rankTwo inner row worked end-to-end — the template for the remaining 67.
 
-[BigO-Hunter](https://github.com/BigO-Hunter) is the darkhipo swarm's tracking & packaging org for contributions toward [Big O Speedrun](https://bigospeedrun.com) — a companion, never the project. Org story: [profile](https://github.com/BigO-Hunter/.github) · [bigo-hunter.github.io](https://bigo-hunter.github.io).
+[BigO-Hunter](https://github.com/BigO-Hunter) is the tracking & packaging org for contributions toward [Big O Speedrun](https://bigospeedrun.com) — a companion, never the project. Org story: [profile](https://github.com/BigO-Hunter/.github) · [bigo-hunter.github.io](https://bigo-hunter.github.io).
 
 ## What work can be done here
 

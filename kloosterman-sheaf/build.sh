@@ -3,7 +3,7 @@
 # oleans, without creating a new lake package (no rebuild of mathlib, no new toolchain).
 #
 # The Lean search path is taken from the Weil package's own lake environment, so this script
-# only works while ~/bigo-campaign/weil-verify/Weil has its dependency oleans in place.
+# only works while "$WEIL_VERIFY" (the Weil checkout) has its dependency oleans in place.
 set -euo pipefail
 
 KS="$(cd "$(dirname "$0")" && pwd)"

@@ -2,9 +2,8 @@
 
 Lane: THE 182 CONDITIONAL FRAME (DZQ pattern on prime-gaps). Built
 2026-11-06/07. Toolchain: `leanprover/lean4:v4.34.1`, Mathlib
-`d13f23b723b8a846827a245b89c10fc7d3f11612` via
-`~/bigo-campaign/staircase-port/.lake/packages/mathlib` path-require (no
-closure rebuilds; small deps symlinked from pg182-c0's prebuilt packages).
+`d13f23b723b8a846827a245b89c10fc7d3f11612` (git-pinned; see
+`lake-manifest.json`).
 Build: `LAKE_JOBS=1 LEAN_NUM_THREADS=1 lake build` — **3332 jobs, green**.
 
 ## Frame theorem (exact shape)

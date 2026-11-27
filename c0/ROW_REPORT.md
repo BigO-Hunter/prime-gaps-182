@@ -82,7 +82,6 @@ value ≈ 2.165840251482751e-23
 
 ## Build notes
 
-Toolchain v4.34.1; Mathlib via symlink to `~/bigo-campaign/staircase-port/
-.lake/packages/mathlib`; LAKE_JOBS=1, LEAN_NUM_THREADS=1; detached nohup
-builds with log files (one host SIGTERM kill observed and absorbed).
+Toolchain v4.34.1; Mathlib `d13f23b7` (git-pinned); LAKE_JOBS=1,
+LEAN_NUM_THREADS=1.
 Files: `Pg182C0/Bridges.lean`, `Pg182C0/RowCert.lean`, committed 0de7aad.

@@ -1,8 +1,9 @@
 """Probe the RANK/HIGH payload: source_mass semantics + window per component."""
+import os
 import json
 from pathlib import Path
 
-BASE = Path.home() / "bigo-campaign/pg182-d1/frozen/extracted/prime-gaps-external-182/snapshot/prime_gaps_20260903"
+BASE = Path(os.environ.get("PG182_D1_DATA", Path(__file__).resolve().parents[2] / "d1/frozen/extracted")) / "prime-gaps-external-182/snapshot/prime_gaps_20260903"
 cands = list(BASE.rglob("fine_coarse_inner_sources_n393216.json"))
 print("found:", cands)
 p = cands[0]

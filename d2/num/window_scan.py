@@ -1,9 +1,10 @@
 """D2b: authoritative window scan from the certificate source (line-based, no backtracking)."""
+import os
 import re
 from fractions import Fraction as Q
 from pathlib import Path
 
-SRC = Path.home() / "bigo-campaign/pg182-d1/frozen/extracted/prime-gaps-external-182/target/SourceData182.lean"
+SRC = Path(os.environ.get("PG182_D1_DATA", Path(__file__).resolve().parents[2] / "d1/frozen/extracted")) / "prime-gaps-external-182/target/SourceData182.lean"
 ZETA = Q(1379373467, 1312494500)
 HQ = ZETA / 393216
 

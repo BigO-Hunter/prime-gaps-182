@@ -1,6 +1,6 @@
 # FINALSET_REPORT — the 182 data side: what is now computation, and what is not
 
-Lane D4, work dir `~/bigo-campaign/pg182-d2/`.  Deliverables: `Pg182D2/CharFunMod.lean`
+Lane D4, repo dir `d2/`.  Deliverables: `Pg182D2/CharFunMod.lean`
 (item i), `Pg182D2/IntegralBound.lean` (item ii), axchecks in `receipt/`.
 
 ## 0. Verdict, per item

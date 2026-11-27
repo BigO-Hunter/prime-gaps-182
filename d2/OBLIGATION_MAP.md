@@ -108,7 +108,8 @@ formalization of that machinery:
 If the gate passes: inputs 1–3 become **instantiate**, and the campaign statement tightens to
 *"182 certified given Type III + Kl₃ packaging."* Input 4 is untouched by all of this.
 
-Evidence: `~/bigo-campaign/weil-verify/AXIOM_GATE.md`, `~/bigo-campaign/kloosterman-sheaf/PRICE_LIST_UPDATE.md`.
+Evidence: `kloosterman-sheaf/PRICE_LIST_UPDATE.md` (this umbrella); the Weil axiom-gate audit
+(`AXIOM_GATE.md`) lives in the external `WEIL_VERIFY` checkout (see root README).
 
 ## 6. Receipts
 

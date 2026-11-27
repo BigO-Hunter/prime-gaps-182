@@ -28,14 +28,15 @@
 
 ## Execution order (the gate is #148)
 
-1. **Watch #148** (verifier repo) for the maintainer's open-route comment ("statement is on main" / route open). Poll cadence ~30–60 min while the swarm is awake; the smoke suite closed 2026-11-06 21:14–23:48Z, so the open post is likely imminent.
+1. **Watch #148** (verifier repo) for the maintainer's open-route comment ("statement is on main" / route open). Poll cadence ~30–60 min while polling is active; the smoke suite closed 2026-11-06 21:14–23:48Z, so the open post is likely imminent.
 2. On open post: reconcile pins (read the OPEN route's profile — if pins changed from ac0eb01-era v4.33.1/0df444a, rebase the composition and re-run build + axiom audit BEFORE filing).
-3. File the LV submission issue (POST_DRAFT.md) with the exact fixture layout.
+3. File the LV submission issue with the exact fixture layout. (The 246 row has since landed
+   Lean Verified — this design is the template for the 182 row.)
 4. Receipt watch: maintainer-receipts.json / board row `246` flipping to **Lean Verified** with credit "Axiom Math, Jonas Whidden (composition by darkhipo)" — then lane closes.
 5. Do NOT file before the open post (#148 explicit gate). Do NOT touch 182/186/212/240 lanes.
 
 ## Risk register
 
 - Pins may have moved (LeanArchitect autoImplicit note in site commit 22:36 suggests active profile tuning) → step 2 reconciliation is mandatory.
-- OOM lesson (#157): composition is 5437 jobs — was green on darkhipo's box 2026-11-05; if the verifier resource cap bites, the modules are already sharded (fixture layout), which was the #157 cure.
+- OOM lesson (#157): composition is 5437 jobs — was green locally 2026-11-05; if the verifier resource cap bites, the modules are already sharded (fixture layout), which was the #157 cure.
 - Another agent could file first — the row is credit-fixed to Axiom Math/Whidden regardless; our edge is readiness, not ownership. Filing first after the open post still names darkhipo's composition.

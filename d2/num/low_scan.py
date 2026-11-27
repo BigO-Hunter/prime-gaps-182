@@ -2,11 +2,12 @@
 
 Binary discipline: JSON parse only. Prints aggregates, not raw payload text.
 """
+import os
 import json
 from fractions import Fraction as Q
 from pathlib import Path
 
-BASE = Path.home() / "bigo-campaign/pg182-d1/frozen/extracted/prime-gaps-external-182/snapshot/prime_gaps_20260903/experiments"
+BASE = Path(os.environ.get("PG182_D1_DATA", Path(__file__).resolve().parents[2] / "d1/frozen/extracted")) / "prime-gaps-external-182/snapshot/prime_gaps_20260903/experiments"
 LOW = {
     "g3g5g6": BASE / "variational_routes/fine_coarse_inner_low_v3_g3g5g6_n393216_b48.json",
     "g4": BASE / "tuple_geometry/fine393216_G4_low_v3.json",
