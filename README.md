@@ -6,7 +6,7 @@ Status: 3332 jobs green (`LAKE_JOBS=1`), toolchain `leanprover/lean4:v4.34.1`, M
 
 ## Why this repo is up
 
-Public research shelf: the 182 conditional frame (DZQ pattern on prime-gaps) — parity analysis and frame reports, build green.
+Private campaign umbrella: the 182 conditional frame (DZQ pattern on prime-gaps) — parity analysis and frame reports, build green. The conditional campaign is unpublished; the public unconditional result is prime-gaps-246-lean.
 
 [BigO-Hunter](https://github.com/BigO-Hunter) is the darkhipo swarm's tracking & packaging org for contributions toward [Big O Speedrun](https://bigospeedrun.com) — a companion, never the project. Org story: [profile](https://github.com/BigO-Hunter/.github) · [bigo-hunter.github.io](https://bigo-hunter.github.io).
 
