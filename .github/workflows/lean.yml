@@ -1,0 +1,47 @@
+name: Lean proof
+
+on: [push, pull_request, workflow_dispatch]
+
+permissions:
+  contents: read
+
+# Active proof lanes only (README "Umbrella layout"): the root frame, C0, D1, D2.
+# D2 path-requires ../ (frame) and ../d1, so the d2 job builds all three.
+# Not built here: r2/prime-gaps-lean (inlined historical upstream baseline) and
+# kloosterman-sheaf (build.sh needs an external WEIL_VERIFY checkout).
+jobs:
+  d2-envelope:
+    name: Build D2 envelope (frame + D1 + D2)
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    env:
+      LEAN_NUM_THREADS: 2
+    steps:
+      - name: Check out the proof
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - name: Install Lean and cached Mathlib dependencies, build D2
+        uses: leanprover/lean-action@24581d74d674803a25a81b10b059c5c0cdd344c6 # v1
+        with:
+          lake-package-directory: d2
+          build: "true"
+          test: "false"
+          lint: "false"
+          use-mathlib-cache: "true"
+
+  c0-inner-row:
+    name: Build C0 inner row
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    env:
+      LEAN_NUM_THREADS: 2
+    steps:
+      - name: Check out the proof
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - name: Install Lean and cached Mathlib dependencies, build C0
+        uses: leanprover/lean-action@24581d74d674803a25a81b10b059c5c0cdd344c6 # v1
+        with:
+          lake-package-directory: c0
+          build: "true"
+          test: "false"
+          lint: "false"
+          use-mathlib-cache: "true"
